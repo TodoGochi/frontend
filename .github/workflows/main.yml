@@ -21,7 +21,7 @@ jobs:
           API_TOKEN_GITHUB: ${{ secrets.AUTO_ACTIONS }}
         with:
           source-directory: 'output'
-          destination-github-username: HelloWordlDogs
+          destination-github-username: HelloWordlDogs223
           destination-repository-name: todogochi
           user-email: ${{ secrets.EMAIL }}
           commit-message: ${{ github.event.commits[0].message }}
