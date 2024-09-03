@@ -18,12 +18,12 @@ jobs:
         id: push_directory
         uses: cpina/github-action-push-to-another-repository@main
         env:
-          API_TOKEN_GITHUB: ${{ secrets.YOUR_GITHUB_KEY }}
+          API_TOKEN_GITHUB: ${{ secrets.AUTO_ACTIONS }}
         with:
           source-directory: 'output'
-          destination-github-username: HelloWordlDogs
+          destination-github-username: HelloworldDogs223
           destination-repository-name: todogochi
-          user-email: ${{ secrets.YOUR_ACCOUNT_EMAIL }}
+          user-email: ${{ secrets.EMAIL }}
           commit-message: ${{ github.event.commits[0].message }}
           target-branch: main
       - name: Test get variable exported by push-to-another-repository
