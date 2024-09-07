@@ -6,7 +6,7 @@ import axios from "axios";
 
 export default function Page() {
   const loginKakao = () => {
-    axios.get("https://43.203.231.6:13000/auth/sign-in/kakao");
+    axios.get("http://43.203.231.6:13000/auth/sign-in/kakao");
   };
 
   return (
