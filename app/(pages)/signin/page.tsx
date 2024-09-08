@@ -6,11 +6,11 @@ import axios from "axios";
 
 export default function Page() {
   const loginKakao = () => {
-    axios.get("https://43.203.231.6/auth/sign-in/kakao");
+    axios.get("https://todogochi.store/auth/sign-in/kakao");
   };
 
   return (
-    <div className="bg-[#f2f2f2] h-screen flex justify-center items-center">
+    <div className="bg-[#EDEDED] h-screen flex justify-center items-center">
       <div className="w-[390px] max-xs:w-full max-xs:h-full h-[844px] flex flex-col justify-center mx-auto items-center">
         <div className="flex justify-start pl-[10px] w-full">
           <img
@@ -27,7 +27,6 @@ export default function Page() {
         <div className="mb-[10px] text-[#3f3f3f] text-xs font-normal font-neodunggeunmo">
           이메일
         </div>
-
         <input
           placeholder="example@example.com"
           className="p-[10px] w-[350px] h-[45px] text-[15px] font-normal font-['SUIT'] mb-[20px] rounded-lg"
