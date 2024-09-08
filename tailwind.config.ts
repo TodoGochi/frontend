@@ -12,6 +12,9 @@ const config: Config = {
         neodunggeunmo: ["NeoDunggeunmo", "sans-serif"],
       },
     },
+    screens: {
+      "max-xs": { max: "389px" },
+    },
   },
   plugins: [],
 };

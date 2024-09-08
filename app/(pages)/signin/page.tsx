@@ -6,27 +6,31 @@ import axios from "axios";
 
 export default function Page() {
   const loginKakao = () => {
-    axios.get("http://43.203.231.6:13000/auth/sign-in/kakao");
+    axios.get("https://43.203.231.6/auth/sign-in/kakao");
   };
 
   return (
-    <div className="bg-[#f2f2f2] w-screen h-screen flex justify-center flex-col items-center ">
-      <div className="w-[390px] h-[844px] flex flex-col justify-center ">
-        <img
-          className="w-[136px] h-[32px] mb-[13px]"
-          src="/logo.png"
-          alt="logo"
-        />
-        <div className="text-[#3f3f3f] text-[35px] font-normal font-neodunggeunmo mb-[35px]">
-          오늘의 할 일은?
+    <div className="bg-[#f2f2f2] h-screen flex justify-center items-center">
+      <div className="w-[390px] max-xs:w-full max-xs:h-full h-[844px] flex flex-col justify-center mx-auto items-center">
+        <div className="flex justify-start pl-[10px] w-full">
+          <img
+            className="w-[136px] h-[32px] mb-[13px]"
+            src="/logo.png"
+            alt="logo"
+          />
         </div>
-        <div className=" mb-[10px] text-[#3f3f3f] text-xs font-normal font-neodunggeunmo">
+        <div className="flex justify-start w-full pl-[10px]">
+          <div className="text-[#3f3f3f] text-[35px] font-normal font-neodunggeunmo mb-[35px]">
+            오늘의 할 일은?
+          </div>
+        </div>
+        <div className="mb-[10px] text-[#3f3f3f] text-xs font-normal font-neodunggeunmo">
           이메일
         </div>
 
         <input
           placeholder="example@example.com"
-          className="p-[10px] w-[350px] h-[45px]  text-[15px] font-normal font-['SUIT'] mb-[20px] rounded-lg"
+          className="p-[10px] w-[350px] h-[45px] text-[15px] font-normal font-['SUIT'] mb-[20px] rounded-lg"
         />
 
         <div className="text-[#3f3f3f] text-xs font-normal font-neodunggeunmo mb-[10px]">
@@ -35,7 +39,7 @@ export default function Page() {
 
         <input
           placeholder="비밀번호를 입력하세요"
-          className="p-[10px] bg-[#FAFAFA] w-[350px] h-[45px]  text-[15px] font-normal font-['SUIT'] mb-[30px] rounded-lg"
+          className="p-[10px] bg-[#FAFAFA] w-[350px] h-[45px] text-[15px] font-normal font-['SUIT'] mb-[30px] rounded-lg"
         />
 
         <div className="w-[350px] h-[45px] relative bg-[#3f3f3f] rounded-lg cursor-pointer">
@@ -44,24 +48,6 @@ export default function Page() {
           </div>
         </div>
 
-        <div className="flex mt-[15px] mb-[50px]">
-          <div className="ml-[16px] text-[#7f7f7f] text-xs font-normal font-neodunggeunmo mr-[26px] cursor-pointer">
-            이메일 찾기
-          </div>
-          <div className="text-[#7f7f7f] text-xs font-normal font-neodunggeunmo mr-[26px]">
-            |
-          </div>
-          <div className="text-[#7f7f7f] text-xs font-normal font-neodunggeunmo mr-[26px] cursor-pointer">
-            비밀번호 찾기
-          </div>
-          <div className="text-[#7f7f7f] text-xs font-normal font-neodunggeunmo mr-[26px]">
-            |
-          </div>
-
-          <div className="text-[#7f7f7f] text-xs font-normal font-neodunggeunmo cursor-pointer">
-            회원가입
-          </div>
-        </div>
         <div className="flex justify-center text-[#7f7f7f] text-xs font-normal font-neodunggeunmo mb-[10px] w-[350px]">
           SNS 계정으로 간편하게 로그인
         </div>
