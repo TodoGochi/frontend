@@ -4,8 +4,7 @@
 
 export default function Page() {
   const loginKakao = () => {
-    window.open("https://todogochi.store/auth/sign-in/kakao", "_blank");
-    
+    location.href = "https://todogochi.store/auth/sign-in/kakao";
   };
 
   return (
