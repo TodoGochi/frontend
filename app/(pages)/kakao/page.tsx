@@ -13,7 +13,7 @@ export default function Page() {
     const res = axios.post(
       `https://todogochi.store/auth/sign-in/kakao`,
       {
-        authCode: myCode,
+        code: myCode,
       },
       { withCredentials: true }
     );
