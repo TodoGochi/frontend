@@ -1,9 +1,13 @@
-import Calendar from "./components/Calendar";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center">
-      <Calendar />
-    </div>
+    <>
+      <div>TODO 고치</div>
+      <div>
+        <button onClick={() => router.push("/signin")}>로그인하기</button>
+      </div>
+    </>
   );
 }
