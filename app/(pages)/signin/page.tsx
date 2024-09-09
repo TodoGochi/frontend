@@ -2,13 +2,10 @@
 
 "use client";
 
-import axios from "axios";
-
 export default function Page() {
   const loginKakao = () => {
-    axios.get("https://todogochi.store/auth/sign-in/kakao", {
-      withCredentials: true,
-    });
+    window.open("https://todogochi.store/auth/sign-in/kakao", "_blank");
+    
   };
 
   return (
