@@ -2,18 +2,10 @@
 
 "use client";
 
-import axios from "axios";
-
 export default function Page() {
   const loginKakao = () => {
     const link = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_REST_API_KEY}&redirect_uri=${process.env.NEXT_PUBLIC_REDIRECT_URI}&response_type=code`;
     window.location.href = link;
-
-    axios.post(
-      "https://todogochi.store/auth/refresh",
-      {},
-      { withCredentials: true }
-    );
   };
 
   return (
