@@ -1,8 +1,6 @@
 "use client";
 
 import axios from "axios";
-import { headers } from "next/headers";
-
 import { useEffect, useState } from "react";
 
 export default function Page() {
@@ -16,7 +14,7 @@ export default function Page() {
       },
       { withCredentials: true }
     );
-  }, []);
+  }, [code]);
 
   return <div>{code}</div>;
 }
