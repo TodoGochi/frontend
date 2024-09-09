@@ -9,11 +9,8 @@ export default function Page() {
       "code"
     );
 
-    const res = axios.post(
+    const res = axios.get(
       `https://todogochi.store/auth/sign-in/kakao?code=${myCode}`,
-      {
-        authCode: myCode,
-      },
       { withCredentials: true }
     );
   }, []);
