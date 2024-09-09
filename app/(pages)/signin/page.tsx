@@ -6,7 +6,9 @@ import axios from "axios";
 
 export default function Page() {
   const loginKakao = () => {
-    axios.get("https://todogochi.store/auth/sign-in/kakao");
+    axios.get("https://todogochi.store/auth/sign-in/kakao", {
+      withCredentials: true,
+    });
   };
 
   return (
