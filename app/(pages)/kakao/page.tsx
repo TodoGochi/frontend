@@ -1,7 +1,7 @@
 "use client";
 
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 export default function Page() {
   useEffect(() => {
@@ -10,7 +10,7 @@ export default function Page() {
     );
 
     const res = axios.post(
-      `https://todogochi.store/auth/sign-in/kakao`,
+      `https://todogochi.store/auth/sign-in/kakao?code=${myCode}`,
       {
         authCode: myCode,
       },
