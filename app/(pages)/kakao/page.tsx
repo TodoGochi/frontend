@@ -1,19 +1,29 @@
 "use client";
 
-import axios from "axios";
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { instance } from "@/app/utils/axios";
 
 export default function Page() {
-  useEffect(() => {
+  const router = useRouter();
+
+  const getCode = async () => {
     const myCode = new URL(document.location.toString()).searchParams.get(
       "code"
     );
 
-    const res = axios.post(
-      `https://todogochi.store/auth/sign-in/kakao?code=${myCode}`,
-      {},
+    const res = await instance.post(
+      "/auth/kakao",
+      { code: myCode },
       { withCredentials: true }
     );
+
+    localStorage.setItem("accessToken", res.data.accessToken);
+    router.push("/main");
+  };
+
+  useEffect(() => {
+    getCode();
   }, []);
 
   return <div></div>;
