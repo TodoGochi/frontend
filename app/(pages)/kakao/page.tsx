@@ -13,8 +13,8 @@ export default function Page() {
     );
 
     const res = await instance.post(
-      "/auth/kakao",
-      { code: myCode },
+      `/auth/kakao?code=${myCode}`,
+      {},
       { withCredentials: true }
     );
 
