@@ -3,9 +3,11 @@
 "use client";
 
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function Page() {
+  const router = useRouter();
   useEffect(() => {
     axios.post(
       "https://todogochi.store/auth/refresh",
@@ -20,7 +22,7 @@ export default function Page() {
   };
 
   return (
-    <div className="bg-[#EDEDED] h-screen flex justify-center items-center">
+    <div className="bg-[#ededed] h-screen flex justify-center items-center">
       <div className="w-[390px] max-xs:w-full max-xs:h-full h-[844px] flex flex-col justify-center mx-auto items-center">
         <div className="flex justify-start pl-[10px] w-full">
           <img
@@ -34,7 +36,7 @@ export default function Page() {
             오늘의 할 일은?
           </div>
         </div>
-        <div className="mb-[10px] text-[#3f3f3f] text-xs font-normal font-neodunggeunmo">
+        <div className="w-[350px] mb-[10px] text-[#3f3f3f] text-xs font-normal font-neodunggeunmo">
           이메일
         </div>
         <input
@@ -42,7 +44,7 @@ export default function Page() {
           className="p-[10px] w-[350px] h-[45px] text-[15px] font-normal font-['SUIT'] mb-[20px] rounded-lg"
         />
 
-        <div className="text-[#3f3f3f] text-xs font-normal font-neodunggeunmo mb-[10px]">
+        <div className="w-[350px] text-[#3f3f3f] text-xs font-normal font-neodunggeunmo mb-[10px]">
           비밀번호
         </div>
 
@@ -52,8 +54,17 @@ export default function Page() {
         />
 
         <div className="w-[350px] h-[45px] relative bg-[#3f3f3f] rounded-lg cursor-pointer">
-          <div className="w-[52.50px] left-[149px] top-[14px] absolute text-[#f2f2f2] text-base font-normal font-['NeoDunggeunmo Pro']">
+          <div className="w-[52.50px] left-[149px] top-[14px] absolute text-[#f2f2f2] text-base font-normal font-neodunggeunmo">
             로그인
+          </div>
+        </div>
+
+        <div
+          onClick={() => router.push("/signup")}
+          className="w-[350px] h-[45px] relative bg-[#f9f9f9] rounded-lg cursor-pointer mt-[15px] mb-[50px]"
+        >
+          <div className="w-[100px] left-[149px] top-[14px] absolute text-[#3f3f3f] text-base font-normal font-neodunggeunmo">
+            회원가입
           </div>
         </div>
 
