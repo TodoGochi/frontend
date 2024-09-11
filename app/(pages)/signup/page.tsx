@@ -17,6 +17,7 @@ export default function Page() {
   const [passwordGood, setPasswordGood] = useState(true);
 
   const [nickname, setNickname] = useState("");
+  const [nicknameGood, setNicknameGood] = useState(true);
 
   const clickHandler = () => {
     if (
@@ -24,9 +25,11 @@ export default function Page() {
       person &&
       validatePassword(password) &&
       validateEmail(email) &&
+      !duplicated &&
       password === passwordConfirm &&
       nickname.length > 0
     ) {
+      console.log("He");
     }
   };
 
@@ -77,6 +80,22 @@ export default function Page() {
       setCheck(true);
     }
   };
+
+  const isValidInput = (input: string) => {
+    // 정규표현식: 최소 2자, 최대 15자, 알파벳, 숫자, 한글(자음, 모음 포함)만 허용
+    const regex = /^[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ]{2,15}$/;
+    return regex.test(input);
+  };
+
+  const nicknameChangeHandler = (e: any) => {
+    setNickname(e.target.value);
+    if (isValidInput(e.target.value)) {
+      setNicknameGood(true);
+    } else {
+      setNicknameGood(false);
+    }
+  };
+
   return (
     <div>
       <div className="bg-[#ededed] h-screen flex justify-center items-center">
@@ -106,9 +125,19 @@ export default function Page() {
               </div>
             </div>
           </div>
+          {!emailGood && email.length > 0 && (
+            <div className="w-[350px] h-2.5 text-[#f93629] text-[10px] font-normal font-['SUIT'] mt-[5px]">
+              올바른 도메인 형식을 입력해 주세요.
+            </div>
+          )}
           {!duplicated && emailGood && check && (
             <div className="w-[350px] h-2.5 text-[#11b729] text-[10px] font-normal font-['SUIT'] mt-[5px]">
               사용 가능한 이메일 입니다.
+            </div>
+          )}
+          {duplicated && emailGood && check && (
+            <div className="w-[350px] h-2.5 text-[#f93629] text-[10px] font-normal font-['SUIT'] mt-[5px]">
+              이미 사용 중인 이메일입니다.
             </div>
           )}
 
@@ -116,6 +145,7 @@ export default function Page() {
             비밀번호
           </div>
           <input
+            type="password"
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
@@ -135,24 +165,59 @@ export default function Page() {
             </div>
           )}
 
-          <div className="w-[350px] mb-[10px] text-[#3f3f3f] text-xs font-normal font-neodunggeunmo">
+          <div className="w-[350px] mb-[5px] text-[#3f3f3f] text-xs font-normal font-neodunggeunmo">
             비밀번호 확인
           </div>
+
           <input
+            type="password"
+            value={passwordConfirm}
+            onChange={(e) => setPasswordConfirm(e.target.value)}
             placeholder="비밀번호를 입력하세요."
-            className="p-[10px] w-[350px] h-[45px] text-[15px] font-normal font-['SUIT'] mb-[20px] rounded-lg mr-[10px]"
+            className="p-[10px] w-[350px] h-[45px] text-[15px] font-normal font-['SUIT'] mb-[5px] rounded-lg mr-[10px]"
           />
+
+          {passwordConfirm.length === 0 && <div className="mb-[20px]"></div>}
+
+          {password === passwordConfirm &&
+            password.length > 0 &&
+            passwordConfirm.length > 0 && (
+              <div className="w-[350px] h-2.5 text-[#11b729] text-[10px] font-normal font-['SUIT'] mb-[20px]">
+                비밀번호가 일치합니다.
+              </div>
+            )}
+
+          {password !== passwordConfirm &&
+            password.length > 0 &&
+            passwordConfirm.length > 0 && (
+              <div className="w-[350px] h-2.5 text-[#f93629] text-[10px] font-normal font-['SUIT'] mb-[20px]">
+                비밀번호가 일치하지 않습니다.
+              </div>
+            )}
+
           <div className="w-[350px] mb-[10px] text-[#3f3f3f] text-xs font-normal font-neodunggeunmo">
             닉네임
           </div>
 
           <input
+            value={nickname}
+            maxLength={15}
+            onChange={nicknameChangeHandler}
             placeholder="닉네임을 입력하세요"
             className="p-[10px] w-[350px] h-[45px] text-[15px] font-normal font-['SUIT']  rounded-lg mr-[10px] mb-[5px]"
           />
-          <div className="w-[350px] h-2.5 text-[#999999] text-[10px] font-light font-['SUIT'] mb-[20px]">
-            최소 2자 최대 15자, 알파벳, 숫자, 한글 가능
-          </div>
+          {nicknameGood && (
+            <div className="w-[350px] h-2.5 text-[#999999] text-[10px] font-light font-['SUIT'] mb-[20px]">
+              최소 2자 최대 15자, 알파벳, 숫자, 한글 가능
+            </div>
+          )}
+
+          {!nicknameGood && nickname.length > 0 && (
+            <div className="w-[350px] h-2.5 text-[#f93629] text-[10px] font-normal font-['SUIT'] mb-[20px]">
+              올바른 닉네임을 입력해주세요.
+            </div>
+          )}
+
           <div
             onClick={() => setUse(!use)}
             className="flex w-[390px] ml-[45px] mt-[32px] relative cursor-pointer"
@@ -239,9 +304,19 @@ export default function Page() {
 
           <div
             onClick={clickHandler}
-            className="w-[350px] h-[45px] bg-[#999999] rounded-lg flex justify-center items-center mt-[30px]"
+            className={`w-[350px] h-[45px] rounded-lg flex justify-center items-center mt-[30px] ${
+              use &&
+              person &&
+              validatePassword(password) &&
+              validateEmail(email) &&
+              !duplicated &&
+              password === passwordConfirm &&
+              nickname.length > 0
+                ? "bg-[#3F3F3F]"
+                : "bg-[#999999] "
+            }`}
           >
-            <div className="w-[70px] h-4 text-center text-[#f2f2f2] text-base font-normal font-neodunggeunmo">
+            <div className="w-[70px] h-4 text-[#f2f2f2] text-base font-normal font-neodunggeunmo">
               시작하기
             </div>
           </div>
