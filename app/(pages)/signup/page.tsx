@@ -19,6 +19,8 @@ export default function Page() {
   const [nickname, setNickname] = useState("");
   const [nicknameGood, setNicknameGood] = useState(true);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const clickHandler = () => {
     if (
       use &&
@@ -64,6 +66,8 @@ export default function Page() {
 
   const checkDuplicated = async () => {
     try {
+      setIsLoading(true);
+      setTimeout(() => {}, 3000);
       const res: any = await axios.post(
         "https://todogochi.store/auth/email-check",
         { email },
@@ -77,12 +81,12 @@ export default function Page() {
     } catch (e: any) {
       console.log(e);
     } finally {
+      setIsLoading(false);
       setCheck(true);
     }
   };
 
   const isValidInput = (input: string) => {
-    // 정규표현식: 최소 2자, 최대 15자, 알파벳, 숫자, 한글(자음, 모음 포함)만 허용
     const regex = /^[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ]{2,15}$/;
     return regex.test(input);
   };
@@ -114,16 +118,61 @@ export default function Page() {
               placeholder="example@example.com"
               className="p-[10px] w-[265px] h-[45px] text-[15px] font-normal font-['SUIT']  rounded-lg mr-[10px]"
             />
-            <div
-              className={` flex justify-center items-center w-[75px] h-[45px] rounded-lg cursor-pointer ${
-                emailGood ? "bg-[#3F3F3F]" : "bg-[#999999]"
-              }`}
-              onClick={checkDuplicated}
-            >
-              <div className="text-[#f2f2f2] text-xs font-normal font-neodunggeunmo">
-                중복확인
+            {!check && !isLoading && (
+              <div
+                className={` flex justify-center items-center w-[75px] h-[45px] rounded-lg cursor-pointer ${
+                  emailGood ? "bg-[#3F3F3F]" : "bg-[#999999]"
+                }`}
+                onClick={checkDuplicated}
+              >
+                <div className="text-[#f2f2f2] text-xs font-normal font-neodunggeunmo">
+                  중복확인
+                </div>
               </div>
-            </div>
+            )}
+            {isLoading && (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="75"
+                height="45"
+                viewBox="0 0 75 45"
+                fill="none"
+              >
+                <path
+                  d="M71 0L4 0V1H2V2H1V4H0V41H1V43H2V44H4V45H71V44H73V43H74V41H75V4H74V2H73V1H71V0Z"
+                  fill="#40403F"
+                />
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M21.5 19V19.75H20.75V20.5H20V23.5H20.75V24.25H21.5V25H24.5V24.25H25.25V23.5H26V20.5H25.25V19.75H21.5L24.5 19.75V19H21.5Z"
+                  fill="#F1F1F1"
+                />
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M36.5 19V19.75H35.75V20.5H35V23.5H35.75V24.25H36.5V25H39.5V24.25H40.25V23.5H41V20.5H40.25V19.75H36.5L39.5 19.75V19H36.5Z"
+                  fill="#F1F1F1"
+                  fill-opacity="0.6"
+                />
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M51.5 19V19.75H50.75V20.5H50V23.5H50.75V24.25H51.5V25H54.5V24.25H55.25V23.5H56V20.5H55.25V19.75H51.5L54.5 19.75V19H51.5Z"
+                  fill="#F1F1F1"
+                  fill-opacity="0.3"
+                />
+              </svg>
+            )}
+            {check && (
+              <div
+                className={`flex justify-center items-center w-[75px] h-[45px] rounded-lg cursor-pointer bg-[#999999]`}
+              >
+                <div className="text-[#f2f2f2] text-xs font-normal font-neodunggeunmo">
+                  확인 완료
+                </div>
+              </div>
+            )}
           </div>
           {!emailGood && email.length > 0 && (
             <div className="w-[350px] h-2.5 text-[#f93629] text-[10px] font-normal font-['SUIT'] mt-[5px]">
