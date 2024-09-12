@@ -58,11 +58,36 @@ export default function Page() {
     <div className="bg-[#ededed] h-screen flex justify-center items-center">
       <div className="w-[390px] max-xs:w-full max-xs:h-full h-[844px] flex flex-col justify-center mx-auto items-center">
         <div className="flex justify-start pl-[10px] w-full">
-          <img
+          <svg
             className="w-[136px] h-[32px] mb-[13px]"
-            src="/logo.png"
-            alt="logo"
-          />
+            xmlns="http://www.w3.org/2000/svg"
+            xmlnsXlink="http://www.w3.org/1999/xlink"
+            width="140"
+            height="24"
+            viewBox="0 0 140 24"
+            fill="none"
+          >
+            <rect width="140" height="24" fill="url(#pattern0_358_5329)" />
+            <defs>
+              <pattern
+                id="pattern0_358_5329"
+                patternContentUnits="objectBoundingBox"
+                width="1"
+                height="1"
+              >
+                <use
+                  xlinkHref="#image0_358_5329"
+                  transform="matrix(0.00540541 0 0 0.0315315 0 -0.0045045)"
+                />
+              </pattern>
+              <image
+                id="image0_358_5329"
+                width="185"
+                height="32"
+                xlinkHref="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALkAAAAgCAYAAABOxNnXAAAACXBIWXMAAAsTAAALEwEAmpwYAAACUklEQVR4nO2cW26DMBBFoerCzD/LYRksh/94Z/TLdGT5MWZm7CTcI6G2iXFcfHrrB8l8nucEwDfzO7oBn4hzTiUZvPezRj2gzM/oBnwaWoJr1wXyzBiu8KFSeu+ldV3fI9FtQZIz0RQ8rgOJbgskb+SO4M6565DWBdpJTjyXZREly+v1Mv33G7fP+vUkRMMS1bq5/fRO10er71rqweqKkJLEloIDPknJc38Vn5SgvfDeXzI75y6ZeyZ4rb/C16f2F8bkCkSTSCT4m4HhihI00eljI/nm5G753ZDkilCpRwsO/jFJcumsX7q6Y7nqQMfdKVrkjpO/J736iHuNc/XF53PLUZDkTOiupIac2PHsR9O2fm1W3zrrj8uNPp9DbXeytIyYKd8seGs/0HKjr/HdxL7r2jRh4tlMkDIne24ZMVcPsAeS3yQlaRA/scrSVehaavZsg1Y5CRiTK5KSOSe4c+4Mh33Lng0kV4ZKXRK89DPQBZIb4L2fOYJv29avUQ8GknckdU96EB1pbgcmng3kRGydWAbB13WdjuOQNwwUQZIzKSUtZwIZnk/tiH5jmi/LctJjZFuQ5Axqb32T7IAize1R3fHMlcuhde8Kd8eP+/oU7ns7OaLnzj+OY9r3PZRhD30k12nUvSvau9KcckhyJrGgNH3Xde3cGtACPpKiQm4sHZJ72zax5HeTHPDAxJPJyNtigQxIXiF1iy1NcSmYdNoDyRmkRA+Ch6FK6nNV6Dmp5yB4HyA5k9RWvdaEE+NxW7C6cpNY8Pgd+/Tx0tIjBLfnDzRVsQyyCTQ/AAAAAElFTkSuQmCC"
+              />
+            </defs>
+          </svg>
         </div>
         <div className="flex justify-start w-full pl-[10px]">
           <div className="text-[#3f3f3f] text-[35px] font-normal font-neodunggeunmo mb-[35px]">
@@ -91,18 +116,18 @@ export default function Page() {
         />
         <div
           onClick={loginByEmail}
-          className="w-[350px] h-[45px] relative bg-[#3f3f3f] rounded-lg cursor-pointer"
+          className="w-[350px] h-[45px] relative bg-[#3f3f3f] rounded-lg cursor-pointer flex justify-center items-center"
         >
-          <div className="w-[52.50px] left-[149px] top-[14px] absolute text-[#f2f2f2] text-base font-normal font-neodunggeunmo">
+          <div className="  text-[#f2f2f2] text-base font-normal font-neodunggeunmo">
             로그인
           </div>
         </div>
 
         <div
           onClick={() => router.push("/signup")}
-          className="w-[350px] h-[45px] relative bg-[#f9f9f9] rounded-lg cursor-pointer mt-[15px] mb-[50px]"
+          className="w-[350px] h-[45px] relative bg-[#f9f9f9] rounded-lg cursor-pointer mt-[15px] mb-[50px] flex justify-center items-center"
         >
-          <div className="w-[100px] left-[149px] top-[14px] absolute text-[#3f3f3f] text-base font-normal font-neodunggeunmo">
+          <div className="   text-[#3f3f3f] text-base font-normal font-neodunggeunmo">
             회원가입
           </div>
         </div>

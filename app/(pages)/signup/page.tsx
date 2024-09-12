@@ -122,7 +122,7 @@ export default function Page() {
           <div className="w-[350px] text-[rgb(63,63,63)] text-xs font-normal font-neodunggeunmo mb-[10px]">
             이메일
           </div>
-          <div className="flex">
+          <div className="flex w-[350px] ml-[-9px]">
             <input
               value={email}
               onChange={(e) => emailChangeHandler(e)}
