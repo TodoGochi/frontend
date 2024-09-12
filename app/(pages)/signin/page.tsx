@@ -4,17 +4,50 @@
 
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function Page() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   const router = useRouter();
+
+  const getToken = async () => {
+    try {
+      const res: any = axios.post(
+        "https://todogochi.store/auth/refresh",
+        {},
+        { withCredentials: true }
+      );
+      localStorage.setItem("accessToken", res.data.accessToken);
+    } catch (e: any) {
+      console.log(e);
+    }
+  };
+
   useEffect(() => {
-    axios.post(
-      "https://todogochi.store/auth/refresh",
-      {},
-      { withCredentials: true }
-    );
-  }, []);
+    if (!localStorage.getItem("accessToken")) getToken();
+    else {
+      router.push("/main");
+    }
+  }, [router]);
+
+  const loginByEmail = async () => {
+    try {
+      const res: any = await axios.post(
+        "https://todogochi.store/auth/sign-in",
+        {
+          email,
+          password,
+        },
+        { withCredentials: true }
+      );
+      localStorage.setItem("accessToken", res.data.accessToken);
+    } catch (e) {
+      console.log(e);
+    }
+    router.push("/main");
+  };
 
   const loginKakao = () => {
     const link = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_REST_API_KEY}&redirect_uri=${process.env.NEXT_PUBLIC_REDIRECT_URI}&response_type=code`;
@@ -39,21 +72,27 @@ export default function Page() {
         <div className="w-[350px] mb-[10px] text-[#3f3f3f] text-xs font-normal font-neodunggeunmo">
           이메일
         </div>
+
         <input
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           placeholder="example@example.com"
           className="p-[10px] w-[350px] h-[45px] text-[15px] font-normal font-['SUIT'] mb-[20px] rounded-lg"
         />
-
         <div className="w-[350px] text-[#3f3f3f] text-xs font-normal font-neodunggeunmo mb-[10px]">
           비밀번호
         </div>
-
         <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           placeholder="비밀번호를 입력하세요"
           className="p-[10px] bg-[#FAFAFA] w-[350px] h-[45px] text-[15px] font-normal font-['SUIT'] mb-[30px] rounded-lg"
         />
-
-        <div className="w-[350px] h-[45px] relative bg-[#3f3f3f] rounded-lg cursor-pointer">
+        <div
+          onClick={loginByEmail}
+          className="w-[350px] h-[45px] relative bg-[#3f3f3f] rounded-lg cursor-pointer"
+        >
           <div className="w-[52.50px] left-[149px] top-[14px] absolute text-[#f2f2f2] text-base font-normal font-neodunggeunmo">
             로그인
           </div>

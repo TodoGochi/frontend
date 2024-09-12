@@ -1,9 +1,11 @@
 "use client";
 
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function Page() {
+  const router = useRouter();
   const [use, setUse] = useState(false);
   const [person, setPerson] = useState(false);
 
@@ -31,7 +33,16 @@ export default function Page() {
       password === passwordConfirm &&
       nickname.length > 0
     ) {
-      console.log("He");
+      axios.post(
+        "https://todogochi.store/auth/sign-up",
+        {
+          email,
+          nickName: nickname,
+          password,
+        },
+        { withCredentials: true }
+      );
+      router.push("/signin");
     }
   };
 
@@ -67,7 +78,7 @@ export default function Page() {
   const checkDuplicated = async () => {
     try {
       setIsLoading(true);
-      setTimeout(() => {}, 3000);
+      await setTimeout(() => {}, 3000);
       const res: any = await axios.post(
         "https://todogochi.store/auth/email-check",
         { email },
@@ -153,14 +164,14 @@ export default function Page() {
                   clipRule="evenodd"
                   d="M36.5 19V19.75H35.75V20.5H35V23.5H35.75V24.25H36.5V25H39.5V24.25H40.25V23.5H41V20.5H40.25V19.75H36.5L39.5 19.75V19H36.5Z"
                   fill="#F1F1F1"
-                  fill-opacity="0.6"
+                  fillOpacity="0.6"
                 />
                 <path
                   fillRule="evenodd"
                   clipRule="evenodd"
                   d="M51.5 19V19.75H50.75V20.5H50V23.5H50.75V24.25H51.5V25H54.5V24.25H55.25V23.5H56V20.5H55.25V19.75H51.5L54.5 19.75V19H51.5Z"
                   fill="#F1F1F1"
-                  fill-opacity="0.3"
+                  fillOpacity="0.3"
                 />
               </svg>
             )}
@@ -361,7 +372,7 @@ export default function Page() {
               !duplicated &&
               password === passwordConfirm &&
               nickname.length > 0
-                ? "bg-[#3F3F3F]"
+                ? "bg-[#3F3F3F] cursor-pointer"
                 : "bg-[#999999] "
             }`}
           >
