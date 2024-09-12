@@ -43,10 +43,10 @@ export default function Page() {
         { withCredentials: true }
       );
       localStorage.setItem("accessToken", res.data.accessToken);
+      router.push("/main");
     } catch (e) {
       console.log(e);
     }
-    router.push("/main");
   };
 
   const loginKakao = () => {
