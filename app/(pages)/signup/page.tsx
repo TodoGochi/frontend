@@ -134,7 +134,7 @@ export default function Page() {
                 className={` flex justify-center items-center w-[75px] h-[45px] rounded-lg cursor-pointer ${
                   emailGood ? "bg-[#3F3F3F]" : "bg-[#999999]"
                 }`}
-                onClick={checkDuplicated}
+                onClick={emailGood ? checkDuplicated : () => {}}
               >
                 <div className="text-[#f2f2f2] text-xs font-normal font-neodunggeunmo">
                   중복확인
