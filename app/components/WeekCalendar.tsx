@@ -67,8 +67,8 @@ const WeekCalendar = () => {
     selectedDate && date.toDateString() === selectedDate.toDateString();
 
   return (
-    <div className="w-64 mx-auto text-center">
-      <div className="flex justify-between items-center p-4 bg-gray-100 rounded-t-lg">
+    <div className="w-64 text-center">
+      <div className="flex  items-center p-4 bg-gray-100 rounded-t-lg">
         <button
           onClick={handlePrevWeek}
           className="text-gray-600 hover:text-gray-900"
@@ -112,7 +112,7 @@ const WeekCalendar = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-7 gap-2 p-2 bg-white rounded-b-lg">
+      <div className="grid grid-cols-7 gap-2 p-2  rounded-b-lg">
         {weekDates.map((date, index) => (
           <div
             key={`weekday-${date.toISOString()}`}
@@ -132,7 +132,7 @@ const WeekCalendar = () => {
               {weekdays[index]}
             </div>
             <span
-              className={`z-20 relative ${
+              className={`z-20 relative mt-[8px] ${
                 isDateSelected(date) ? "text-white" : "text-black"
               } ${
                 date.getMonth() !== weekDates[0].getMonth()

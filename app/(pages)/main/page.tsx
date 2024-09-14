@@ -3,6 +3,7 @@
 
 import MonthCalendar from "@/app/components/MonthCalendar";
 import TaskList from "@/app/components/Todo";
+import TodoAdd from "@/app/components/TodoAdd";
 import WeekCalendar from "@/app/components/WeekCalendar";
 
 export default function Page() {
@@ -78,7 +79,7 @@ export default function Page() {
           />
         </svg>
         <WeekCalendar />
-        <MonthCalendar />
+        {/* <MonthCalendar /> */}
         <TaskList />
       </div>
     </div>

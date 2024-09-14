@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import TodoAdd from "./TodoAdd";
 
 const TaskItem = ({ task }) => {
   return (
@@ -15,29 +16,33 @@ const TaskItem = ({ task }) => {
 
 const TaskList = () => {
   const [tasks, setTasks] = useState(["저녁 메뉴 장보기", "빨래 돌리기"]);
+  const [add, setAdd] = useState(false);
 
   const addTask = () => {
-    setTasks([...tasks, "새로운 할 일"]);
+    setAdd(true);
   };
 
   return (
-    <div className="max-w-md mx-auto p-4 bg-gray-50 rounded-lg shadow-lg">
-      <div className="flex justify-between items-center pb-4">
-        <div className="text-lg font-bold text-gray-800">Today Coin 2</div>
-        <div className="text-sm text-gray-600">얼 컬러 태그 순</div>
+    <>
+      <div className="max-w-md mx-auto p-4 bg-gray-50 rounded-lg shadow-lg">
+        <div className="flex justify-between items-center pb-4">
+          <div className="text-lg font-bold text-gray-800">Today Coin 2</div>
+          <div className="text-sm text-gray-600">얼 컬러 태그 순</div>
+        </div>
+
+        {tasks.map((task, index) => (
+          <TaskItem key={index} task={task} />
+        ))}
+
+        <button
+          onClick={addTask}
+          className="w-full p-2 mt-2 bg-white text-gray-500 border border-gray-200 rounded-lg text-center shadow-sm"
+        >
+          + 할 일 추가
+        </button>
       </div>
-
-      {tasks.map((task, index) => (
-        <TaskItem key={index} task={task} />
-      ))}
-
-      <button
-        onClick={addTask}
-        className="w-full p-2 mt-2 bg-white text-gray-500 border border-gray-200 rounded-lg text-center shadow-sm"
-      >
-        + 할 일 추가
-      </button>
-    </div>
+      {add && <TodoAdd setAdd={setAdd} />}
+    </>
   );
 };
 
