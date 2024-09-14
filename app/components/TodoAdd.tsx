@@ -17,7 +17,7 @@ const TodoAdd = ({ setAdd }: any) => {
   ];
 
   return (
-    <div className="w-[350px] mx-auto bg-white shadow-lg rounded-lg">
+    <div className="w-[390px] mx-auto  shadow-lg rounded-lg">
       <div className="p-4">
         <div className="flex mb-[20px]">
           <input className="border-b border-[#a5a5a5] w-[269px] mr-[8px]" />

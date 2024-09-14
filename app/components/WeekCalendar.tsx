@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { useState } from "react";
 
 const getWeekDates = (baseDate) => {
@@ -13,7 +14,7 @@ const getWeekDates = (baseDate) => {
   return dates;
 };
 
-const WeekCalendar = () => {
+const WeekCalendar = ({ setMonth, month }: any) => {
   const [currentDate, setCurrentDate] = useState(new Date()); // 현재 날짜를 기준으로 설정
   const [selectedDate, setSelectedDate] = useState(null);
 
@@ -67,11 +68,11 @@ const WeekCalendar = () => {
     selectedDate && date.toDateString() === selectedDate.toDateString();
 
   return (
-    <div className="w-64 text-center">
+    <div className="w-[380px] text-center">
       <div className="flex  items-center p-4 bg-gray-100 rounded-t-lg">
         <button
           onClick={handlePrevWeek}
-          className="text-gray-600 hover:text-gray-900"
+          className="text-gray-600 hover:text-gray-900 mr-[20px]"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -89,10 +90,12 @@ const WeekCalendar = () => {
             </g>
           </svg>
         </button>
-        <div className="font-bold">{formatDateForHeader(weekDates)}</div>
+        <div className="font-bold min-w-[82px]">
+          {formatDateForHeader(weekDates)}
+        </div>
         <button
           onClick={handleNextWeek}
-          className="text-gray-600 hover:text-gray-900"
+          className="text-gray-600 hover:text-gray-900 ml-[20px] mr-[90px]"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -110,6 +113,13 @@ const WeekCalendar = () => {
             </g>
           </svg>
         </button>
+        <img
+          onClick={() => setMonth(!month)}
+          src="/calendar.png"
+          alt="calendar"
+          className="mr-[12px] cursor-pointer"
+        />
+        <img src="/setting.svg" alt="setting" className=" cursor-pointer" />
       </div>
 
       <div className="grid grid-cols-7 gap-2 p-2  rounded-b-lg">
