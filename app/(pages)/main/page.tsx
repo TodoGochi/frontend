@@ -2,6 +2,7 @@
 "use client";
 
 import MonthCalendar from "@/app/components/MonthCalendar";
+import SwipeActionList from "@/app/components/Task";
 import TaskList from "@/app/components/Todo";
 import WeekCalendar from "@/app/components/WeekCalendar";
 import { useState } from "react";
@@ -70,7 +71,7 @@ export default function Page() {
         <img className="cursor-pointer" src="/union.png" alt="union" />
         {!month && <WeekCalendar month={month} setMonth={setMonth} />}
         {month && <MonthCalendar month={month} setMonth={setMonth} />}
-        <TaskList />
+        <SwipeActionList />
       </div>
     </div>
   );
