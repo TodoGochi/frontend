@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useState, useEffect } from "react";
 
-const getWeekDates = (baseDate) => {
+const getWeekDates = (baseDate: any) => {
   const dates = [];
   const startOfWeek = new Date(baseDate);
   const dayOfWeek = baseDate.getDay();
@@ -53,7 +53,7 @@ const WeekCalendar = ({ setMonth, month }: any) => {
     });
   };
 
-  const handleDateClick = (date) => {
+  const handleDateClick = (date: any) => {
     setSelectedDate(date);
   };
 
@@ -65,7 +65,7 @@ const WeekCalendar = ({ setMonth, month }: any) => {
     setSelectedDate(today); // Set today's date initially
   }, []);
 
-  const formatDateForHeader = (dates) => {
+  const formatDateForHeader = (dates: any) => {
     const startDate = dates[0];
     const startMonth = monthNames[startDate.getMonth()];
     const startYear = startDate.getFullYear();
@@ -73,7 +73,7 @@ const WeekCalendar = ({ setMonth, month }: any) => {
   };
 
   // Correct the isDateSelected function
-  const isDateSelected = (date) =>
+  const isDateSelected = (date: any) =>
     selectedDate && date.toDateString() === selectedDate.toDateString();
 
   return (

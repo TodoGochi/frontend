@@ -2,12 +2,12 @@
 import React, { useState } from "react";
 
 // Helper function to get the number of days in a month
-const getDaysInMonth = (year, month) => {
+const getDaysInMonth = (year: any, month: any) => {
   return new Date(year, month + 1, 0).getDate();
 };
 
 // Helper function to get the dates for the current month
-const getMonthCalendarDates = (year, month) => {
+const getMonthCalendarDates = (year: any, month: any) => {
   const dates = [];
   const firstDayOfMonth = new Date(year, month, 1);
   const firstDayWeekday = firstDayOfMonth.getDay();
@@ -30,7 +30,7 @@ const getMonthCalendarDates = (year, month) => {
 
 const CalendarModal = ({ setModal, setModal2 }: any) => {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState(new Date().getDate());
+  const [selectedDate, setSelectedDate] = useState<any>(new Date().getDate());
   const monthNames = [
     "JAN",
     "FEB",
@@ -64,7 +64,7 @@ const CalendarModal = ({ setModal, setModal2 }: any) => {
     setSelectedDate(null);
   };
 
-  const handleDateClick = (date) => {
+  const handleDateClick = (date: any) => {
     if (date) {
       setSelectedDate(date);
     }

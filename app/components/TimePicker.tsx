@@ -20,7 +20,7 @@ const CustomTimePicker = () => {
 
   // Handler for minutes input change
   // Handler for minutes input change
-  const handleMinutesChange = (e) => {
+  const handleMinutesChange = (e: any) => {
     let value = Math.max(0, Math.min(59, Number(e.target.value))); // Ensure value is between 0 and 59
     setMinutes(value.toString().padStart(2, "0")); // Always keep minutes as two digits
   };
