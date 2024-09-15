@@ -9,10 +9,15 @@ import { useState } from "react";
 
 export default function Page() {
   const [month, setMonth] = useState(false);
+  const [sized, setSized] = useState(false);
 
   return (
-    <div className="bg-neutral-700 flex items-center justify-center min-h-screen w-screen max-xs:w-full max-xs:h-full relative flex-col">
-      <div className="relative w-[360px] mt-[30px] h-[300px]">
+    <div className="bg-neutral-700 flex items-center justify-center min-h-screen h-full w-screen max-xs:w-full max-xs:h-full relative flex-col">
+      <div
+        className={`relative w-[360px] mt-[30px] h-[300px] ${
+          sized ? "z-[129]" : ""
+        }`}
+      >
         <img src="/room.png" className="absolute z-1" alt="room" />
         <div className=" inset-0 flex items-start justify-center absolute z-[101] top-[10px] ">
           <div className="relative  flex flex-col justify-center items-center">
@@ -67,12 +72,24 @@ export default function Page() {
         </div>
       </div>
 
-      <div className="w-[390px] min-h-[369px] bg-[#f4f4f4] rounded-tl-[30px] rounded-tr-[30px] flex flex-col justify-start items-center pt-[10px] mt-[20px]">
-        <img className="cursor-pointer" src="/union.png" alt="union" />
+      <div
+        className={`w-[390px]  ${
+          sized
+            ? "min-h-[749px] absolute top-[50%] translate-y-[-40%] z-[130] overflow-auto"
+            : "min-h-[369px]"
+        } bg-[#f4f4f4] rounded-tl-[30px] rounded-tr-[30px] flex flex-col justify-start items-center pt-[10px] mt-[20px]`}
+      >
+        <img
+          className="cursor-pointer"
+          src="/union.png"
+          alt="union"
+          onClick={() => setSized(!sized)}
+        />
         {!month && <WeekCalendar month={month} setMonth={setMonth} />}
         {month && <MonthCalendar month={month} setMonth={setMonth} />}
         <SwipeActionList />
       </div>
+      <div className={`${sized ? "w-full h-[369px]" : ""}`}></div>
     </div>
   );
 }

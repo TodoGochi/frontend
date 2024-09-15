@@ -1,10 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const getWeekDates = (baseDate) => {
   const dates = [];
   const startOfWeek = new Date(baseDate);
-  startOfWeek.setDate(baseDate.getDate() - baseDate.getDay() + 1); // Adjust to Monday
+  const dayOfWeek = baseDate.getDay();
+  const offsetToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // If Sunday (0), move to last Monday (-6), otherwise move to Monday
+  startOfWeek.setDate(baseDate.getDate() + offsetToMonday); // Adjust to Monday
 
   for (let i = 0; i < 7; i++) {
     dates.push(new Date(startOfWeek));
@@ -15,8 +17,8 @@ const getWeekDates = (baseDate) => {
 };
 
 const WeekCalendar = ({ setMonth, month }: any) => {
-  const [currentDate, setCurrentDate] = useState(new Date()); // 현재 날짜를 기준으로 설정
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const monthNames = [
     "JAN",
@@ -57,6 +59,12 @@ const WeekCalendar = ({ setMonth, month }: any) => {
 
   const weekDates = getWeekDates(currentDate);
 
+  // Effect for initialization
+  useEffect(() => {
+    const today = new Date();
+    setSelectedDate(today); // Set today's date initially
+  }, []);
+
   const formatDateForHeader = (dates) => {
     const startDate = dates[0];
     const startMonth = monthNames[startDate.getMonth()];
@@ -64,12 +72,13 @@ const WeekCalendar = ({ setMonth, month }: any) => {
     return `${startMonth} ${startYear}`;
   };
 
+  // Correct the isDateSelected function
   const isDateSelected = (date) =>
     selectedDate && date.toDateString() === selectedDate.toDateString();
 
   return (
     <div className="w-[380px] text-center">
-      <div className="flex  items-center p-4 bg-gray-100 rounded-t-lg">
+      <div className="flex items-center p-4 bg-gray-100 rounded-t-lg">
         <button
           onClick={handlePrevWeek}
           className="text-gray-600 hover:text-gray-900 mr-[20px]"
@@ -119,10 +128,10 @@ const WeekCalendar = ({ setMonth, month }: any) => {
           alt="calendar"
           className="mr-[12px] cursor-pointer"
         />
-        <img src="/setting.svg" alt="setting" className=" cursor-pointer" />
+        <img src="/setting.svg" alt="setting" className="cursor-pointer" />
       </div>
 
-      <div className="grid grid-cols-7 gap-2 p-2  rounded-b-lg">
+      <div className="grid grid-cols-7 gap-2 p-2 rounded-b-lg">
         {weekDates.map((date, index) => (
           <div
             key={`weekday-${date.toISOString()}`}

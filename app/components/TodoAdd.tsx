@@ -23,7 +23,7 @@ const TodoAdd = ({ setAdd }: any) => {
     <div className="w-[348px] mx-auto  shadow-lg rounded-lg bg-[#FFFFFF] mt-[10px]">
       <div className="p-4">
         <div className="flex mb-[20px]">
-          <input className="border-b border-[#a5a5a5] w-[269px] mr-[8px]" />
+          <input className="border-b border-[#a5a5a5] w-[269px] mr-[8px] focus:outline-none" />
           <svg
             className="cursor-pointer"
             onClick={() => setAdd(false)}

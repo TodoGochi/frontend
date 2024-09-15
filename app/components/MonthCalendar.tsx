@@ -29,8 +29,8 @@ const getMonthCalendarDates = (year, month) => {
 };
 
 const MonthCalendar = ({ setMonth, month }: any) => {
-  const [currentDate, setCurrentDate] = useState(new Date(2024, 8, 1));
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(new Date().getDate());
   const monthNames = [
     "JAN",
     "FEB",
@@ -74,7 +74,7 @@ const MonthCalendar = ({ setMonth, month }: any) => {
   const currentMonth = currentDate.getMonth();
 
   return (
-    <div className="w-[380px]  text-center ">
+    <div className="w-[380px] text-center">
       <div className="flex items-center p-4 bg-gray-100 rounded-t-lg">
         <button
           onClick={handlePrevMonth}
@@ -125,23 +125,25 @@ const MonthCalendar = ({ setMonth, month }: any) => {
           alt="calendar"
           className="mr-[12px] cursor-pointer"
         />
-        <img src="/setting.svg" alt="setting" className=" cursor-pointer" />
+        <img src="/setting.svg" alt="setting" className="cursor-pointer" />
       </div>
-      <div className="grid grid-cols-7 gap-2 text-xs p-2 ">
+      <div className="grid grid-cols-7 gap-2 text-xs p-2">
         {["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"].map((day) => (
           <div key={day} className="text-gray-600">
             {day}
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7 gap-2 p-2  rounded-b-lg">
+      <div className="grid grid-cols-7 gap-2 p-2 rounded-b-lg">
         {getMonthCalendarDates(currentYear, currentMonth).map(
           ({ date }, index) => (
             <div
               key={index}
               className={`rounded-full w-8 h-8 flex items-center justify-center cursor-pointer ${
                 date
-                  ? date === selectedDate
+                  ? date === selectedDate &&
+                    currentDate.getMonth() === new Date().getMonth() &&
+                    currentDate.getFullYear() === new Date().getFullYear()
                     ? "bg-black text-white"
                     : "text-black hover:bg-gray-200"
                   : "text-transparent"

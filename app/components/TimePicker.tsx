@@ -38,19 +38,31 @@ const CustomTimePicker = () => {
         type="number"
         value={hours}
         onChange={handleHoursChange}
-        className="max-w-[45px]  text-lg text-right bg-gray-100 outline-none flex justify-center items-center"
+        className="max-w-[55px] text-lg text-center bg-gray-100 outline-none flex justify-center items-center appearance-none no-spinner"
         min="1"
         max="12"
       />
+
       <span className="mx-2 text-lg">:</span>
       <input
         type="number"
         value={minutes}
         onChange={handleMinutesChange}
-        className="max-w-[45px] text-lg text-right bg-gray-100 outline-none flex justify-center items-center"
+        className="max-w-[55px] text-lg text-center bg-gray-100 outline-none flex justify-center items-center appearance-none no-spinner"
         min="0"
         max="59"
       />
+      <style jsx>{`
+        .no-spinner::-webkit-outer-spin-button,
+        .no-spinner::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+
+        .no-spinner {
+          -moz-appearance: textfield; /* Firefox */
+        }
+      `}</style>
     </div>
   );
 };
