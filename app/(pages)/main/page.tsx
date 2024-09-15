@@ -11,7 +11,7 @@ export default function Page() {
   const [month, setMonth] = useState(false);
 
   return (
-    <div className="bg-neutral-700 flex items-center justify-center h-screen w-screen max-xs:w-full max-xs:h-full relative flex-col">
+    <div className="bg-neutral-700 flex items-center justify-center min-h-screen w-screen max-xs:w-full max-xs:h-full relative flex-col">
       <div className="relative w-[360px] mt-[30px] h-[300px]">
         <img src="/room.png" className="absolute z-1" alt="room" />
         <div className=" inset-0 flex items-start justify-center absolute z-[101] top-[10px] ">

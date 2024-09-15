@@ -1,4 +1,7 @@
+"use client";
+
 import React, { useState } from "react";
+import CustomTimePicker from "./TimePicker";
 
 const TodoAdd = ({ setAdd }: any) => {
   const [selectedDay, setSelectedDay] = useState("TUE");
@@ -17,7 +20,7 @@ const TodoAdd = ({ setAdd }: any) => {
   ];
 
   return (
-    <div className="w-[390px] mx-auto  shadow-lg rounded-lg">
+    <div className="w-[348px] mx-auto  shadow-lg rounded-lg bg-[#FFFFFF] mt-[10px]">
       <div className="p-4">
         <div className="flex mb-[20px]">
           <input className="border-b border-[#a5a5a5] w-[269px] mr-[8px]" />
@@ -51,15 +54,7 @@ const TodoAdd = ({ setAdd }: any) => {
           ))}
         </div>
 
-        <div className="flex items-center mb-4">
-          <span className="mr-2">AM</span>
-          <input
-            type="time"
-            value={selectedTime}
-            onChange={(e) => setSelectedTime(e.target.value)}
-            className="border rounded px-2 py-1"
-          />
-        </div>
+        <CustomTimePicker />
 
         <div className="flex space-x-2">
           {colors.map((color, index) => (
