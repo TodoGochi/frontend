@@ -106,7 +106,7 @@ const ListItem: React.FC<ListItemProps> = ({
 
   return (
     <div className="flex mb-[10px]">
-      <div className={`bg-[#FF9B99] w-[5px] ${COLOR[color]}`}></div>
+      <div className={` w-[5px] ${COLOR[color]}`}></div>
       <li
         ref={itemRef}
         className="relative bg-white overflow-hidden cursor-grab active:cursor-grabbing select-none  w-[348px]"
