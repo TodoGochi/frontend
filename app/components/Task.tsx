@@ -1,33 +1,34 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import TodoAdd from "./TodoAdd";
 import Modal from "./Modal";
-
-const COLOR: { [key: string]: string } = {
-  red: "bg-[#FF9B99]",
-  blue: "bg-[#79C2F7]",
-};
-
-interface ListItemProps {
-  text: string;
-  onEdit: () => void;
-  onDelete: () => void;
-  onDelay: () => void;
-  color: string;
-}
 
 interface TodoItem {
   id: number;
   text: string;
   color: string;
+  days: string[];
+  time: string;
+}
+
+interface ListItemProps {
+  id: number;
+  text: string;
+  onEdit: (id: number) => void;
+  onDelete: (id: number) => void;
+  onDelay: () => void;
+  color: string;
+  onSelect: (id: number) => void;
 }
 
 const ListItem: React.FC<ListItemProps> = ({
+  id,
   text,
   onEdit,
   onDelete,
   onDelay,
   color,
+  onSelect,
 }) => {
   const [translation, setTranslation] = useState(0);
   const [click, setClick] = useState(false);
@@ -35,7 +36,7 @@ const ListItem: React.FC<ListItemProps> = ({
   const [isSwiped, setIsSwiped] = useState(false);
   const startXRef = useRef(0);
   const itemRef = useRef<HTMLLIElement>(null);
-  const isButtonAreaRef = useRef(false); // 버튼 영역인지 여부 추적
+  const isButtonAreaRef = useRef(false);
 
   const handleDragStart = useCallback((clientX: number) => {
     setIsDragging(true);
@@ -46,7 +47,7 @@ const ListItem: React.FC<ListItemProps> = ({
   const handleDragMove = useCallback(
     (clientX: number) => {
       if (!isDragging) return;
-      if (isButtonAreaRef.current) return; // 버튼 영역에서는 스와이프 불가
+      if (isButtonAreaRef.current) return;
 
       const diff = startXRef.current - clientX;
       const maxTranslation = 150;
@@ -72,8 +73,17 @@ const ListItem: React.FC<ListItemProps> = ({
     }
   }, [translation]);
 
+  const handleClick = useCallback(
+    (e: React.MouseEvent) => {
+      if (!isDragging && !isButtonAreaRef.current) {
+        onSelect(id);
+      }
+    },
+    [id, isDragging, onSelect]
+  );
+
   const handleTouchStart = (e: React.TouchEvent) => {
-    if (isButtonAreaRef.current) return; // 버튼 영역에서는 스와이프 시작 안 함
+    if (isButtonAreaRef.current) return;
     handleDragStart(e.touches[0].clientX);
   };
 
@@ -86,30 +96,59 @@ const ListItem: React.FC<ListItemProps> = ({
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (isButtonAreaRef.current) return; // 버튼 영역에서는 스와이프 시작 안 함
+    if (isButtonAreaRef.current) return;
     handleDragStart(e.clientX);
   };
 
-  const handleMouseMove = (e: React.MouseEvent) => handleDragMove(e.clientX);
-
-  const handleMouseUp = (e: React.MouseEvent) => handleDragEnd();
-
-  const handleMouseLeave = () => isDragging && handleDragEnd();
-
-  const handleButtonClick = (
-    e: React.MouseEvent | React.TouchEvent,
-    callback: () => void
-  ) => {
-    e.stopPropagation();
-    callback();
+  const handleMouseMove = (e: React.MouseEvent) => {
+    handleDragMove(e.clientX);
   };
+
+  const handleMouseUp = (e: React.MouseEvent) => {
+    handleDragEnd();
+  };
+
+  const handleMouseLeave = () => {
+    if (isDragging) handleDragEnd();
+  };
+
+  // Define specific button handlers
+  const handleEditClick = useCallback(
+    (e: React.MouseEvent | React.TouchEvent) => {
+      e.stopPropagation();
+      onEdit(id);
+    },
+    [id, onEdit]
+  );
+
+  const handleDeleteClick = useCallback(
+    (e: React.MouseEvent | React.TouchEvent) => {
+      e.stopPropagation();
+      onDelete(id);
+    },
+    [id, onDelete]
+  );
+
+  const handleDelayClick = useCallback(
+    (e: React.MouseEvent | React.TouchEvent) => {
+      e.stopPropagation();
+      onDelay();
+    },
+    [onDelay]
+  );
+
+  const handleCheckboxChange = useCallback(() => {
+    setClick((prev) => !prev);
+  }, []);
+
+  console.log(color);
 
   return (
     <div className="flex mb-[10px]">
-      <div className={` w-[5px] ${COLOR[color]}`}></div>
+      <div className={`w-[5px] bg-[#${color}]`}></div>
       <li
         ref={itemRef}
-        className="relative bg-white overflow-hidden cursor-grab active:cursor-grabbing select-none  w-[348px]"
+        className="relative bg-white overflow-hidden cursor-grab active:cursor-grabbing select-none w-[348px]"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -117,6 +156,7 @@ const ListItem: React.FC<ListItemProps> = ({
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseLeave}
+        onClick={handleClick}
       >
         <div
           className="flex items-center p-4 transition-transform duration-300 ease-out"
@@ -126,7 +166,7 @@ const ListItem: React.FC<ListItemProps> = ({
             <input
               type="checkbox"
               className="mr-3 opacity-0"
-              onChange={() => setClick(!click)}
+              onChange={handleCheckboxChange}
             />
             {click ? (
               <svg
@@ -174,18 +214,18 @@ const ListItem: React.FC<ListItemProps> = ({
           style={{
             transform: isSwiped ? "translateX(0)" : "translateX(150%)",
           }}
-          onMouseEnter={() => (isButtonAreaRef.current = true)} // 버튼 영역에 들어갈 때 스와이프 방지
-          onMouseLeave={() => (isButtonAreaRef.current = false)} // 버튼 영역을 벗어나면 스와이프 가능
-          onTouchStart={() => (isButtonAreaRef.current = true)} // 버튼 영역 터치 시작 시
-          onTouchEnd={() => (isButtonAreaRef.current = false)} // 버튼 영역 터치 종료 시
+          onMouseEnter={() => (isButtonAreaRef.current = true)}
+          onMouseLeave={() => (isButtonAreaRef.current = false)}
+          onTouchStart={() => (isButtonAreaRef.current = true)}
+          onTouchEnd={() => (isButtonAreaRef.current = false)}
         >
-          <button onClick={(e) => handleButtonClick(e, onEdit)}>
+          <button onClick={handleEditClick}>
             <img src="/modify.svg" alt="edit" />
           </button>
-          <button onClick={(e) => handleButtonClick(e, onDelay)}>
+          <button onClick={handleDelayClick}>
             <img src="/delay.svg" alt="delay" />
           </button>
-          <button onClick={(e) => handleButtonClick(e, onDelete)}>
+          <button onClick={handleDeleteClick}>
             <img src="/delete.svg" alt="delete" />
           </button>
         </div>
@@ -198,66 +238,98 @@ const SwipeActionList: React.FC = () => {
   const [add, setAdd] = useState(false);
   const [modal, setModal] = useState(false);
   const [items, setItems] = useState<TodoItem[]>([
-    { id: 1, text: "저녁 메뉴 장보기", color: "red" },
-    { id: 2, text: "운동하기", color: "red" },
-    { id: 3, text: "책 읽기", color: "blue" },
+    // Your initial items
   ]);
+  const [selectedItem, setSelectedItem] = useState<TodoItem | null>(null);
 
-  const addTask = () => {
+  // Handlers
+  const handleAddTask = useCallback(() => {
+    setSelectedItem(null);
     setAdd(true);
-  };
+  }, []);
 
-  const handleEdit = (index: number) => {
-    console.log(`Edit item at index ${index}`);
-  };
+  const handleEdit = useCallback(
+    (id: number) => {
+      console.log("handleEdit called with id:", id);
+      const itemToEdit = items.find((item) => item.id === id);
+      if (itemToEdit) {
+        setSelectedItem(itemToEdit);
+        setAdd(true);
+      }
+    },
+    [items]
+  );
 
-  const handleDelete = (id: number) => {
-    setItems(items.filter((item) => item.id !== id)); // ID 기반으로 삭제
-  };
+  const handleDelete = useCallback((id: number) => {
+    setItems((prevItems) => prevItems.filter((item) => item.id !== id));
+  }, []);
 
-  const handleDelay = () => {
+  const handleDelay = useCallback(() => {
     setModal(true);
-  };
+  }, []);
+
+  const handleAddTodo = useCallback(
+    (newTodo: Omit<TodoItem, "id">) => {
+      setItems((prevItems) => {
+        if (selectedItem) {
+          return prevItems.map((item) =>
+            item.id === selectedItem.id ? { ...item, ...newTodo } : item
+          );
+        } else {
+          return [...prevItems, { ...newTodo, id: prevItems.length + 1 }];
+        }
+      });
+      setAdd(false);
+      setSelectedItem(null);
+    },
+    [selectedItem]
+  );
+
+  const handleSelect = useCallback(
+    (id: number) => {
+      console.log("handleSelect called with id:", id);
+      handleEdit(id);
+    },
+    [handleEdit]
+  );
 
   return (
     <>
-      <div className="w-[380px] mx-auto p-4  rounded-lg shadow-lg">
-        <div className="flex justify-between items-center pb-4">
-          <div className="text-lg font-bold text-gray-800 flex">
-            <img src="/coin.svg" alt="coin" className="mr-[5px]" />
-            <span className="font-neodunggeunmo text-[12px]">Today Coin</span>
-            <span className="font-neodunggeunmo ml-[5px] text-[12px]">2</span>
-          </div>
-          <div className="text-sm text-gray-600 flex cursor-pointer">
-            <img src="/list.svg" alt="list" className="mr-[5px]" />
-            컬러 태그 순
-          </div>
-        </div>
+      {!add && (
+        <button
+          onClick={handleAddTask}
+          className="w-[350px] h-[50px] p-2 mt-2 text-gray-500 border border-gray-200 rounded-lg text-center shadow-sm"
+        >
+          + 할 일 추가
+        </button>
+      )}
+      {add && (
+        <TodoAdd
+          setAdd={setAdd}
+          onAddTodo={handleAddTodo}
+          initialData={selectedItem}
+        />
+      )}
+      <div className="w-[380px] mx-auto p-4 rounded-lg shadow-lg">
+        {/* ... */}
         <ul className="bg-gray-100 rounded-lg overflow-hidden">
           {items.map((item) => (
             <ListItem
-              key={item.id} // 고유한 ID를 key로 사용
+              key={item.id}
+              id={item.id}
               text={item.text}
               color={item.color}
-              onEdit={() => handleEdit(item.id)}
-              onDelete={() => handleDelete(item.id)}
-              onDelay={() => handleDelay()}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              onDelay={handleDelay}
+              onSelect={handleSelect}
             />
           ))}
         </ul>
-        {!add && (
-          <button
-            onClick={addTask}
-            className="w-full p-2 mt-2 text-gray-500 border border-gray-200 rounded-lg text-center shadow-sm"
-          >
-            + 할 일 추가
-          </button>
-        )}
-        {add && <TodoAdd setAdd={setAdd} />}
       </div>
       {modal && <Modal setModal={setModal} />}
     </>
   );
 };
 
-export default SwipeActionList;
+export default React.memo(SwipeActionList);

@@ -2,12 +2,12 @@
 import React, { useState } from "react";
 
 // Helper function to get the number of days in a month
-const getDaysInMonth = (year: any, month: any) => {
+const getDaysInMonth = (year: number, month: number) => {
   return new Date(year, month + 1, 0).getDate();
 };
 
 // Helper function to get the dates for the current month
-const getMonthCalendarDates = (year: any, month: any) => {
+const getMonthCalendarDates = (year: number, month: number) => {
   const dates = [];
   const firstDayOfMonth = new Date(year, month, 1);
   const firstDayWeekday = firstDayOfMonth.getDay();
@@ -30,7 +30,9 @@ const getMonthCalendarDates = (year: any, month: any) => {
 
 const MonthCalendar = ({ setMonth, month }: any) => {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState<any>(new Date().getDate());
+  const [selectedDate, setSelectedDate] = useState<number | null>(
+    new Date().getDate()
+  );
   const monthNames = [
     "JAN",
     "FEB",
@@ -64,7 +66,7 @@ const MonthCalendar = ({ setMonth, month }: any) => {
     setSelectedDate(null);
   };
 
-  const handleDateClick = (date: any) => {
+  const handleDateClick = (date: number | null) => {
     if (date) {
       setSelectedDate(date);
     }
@@ -141,9 +143,7 @@ const MonthCalendar = ({ setMonth, month }: any) => {
               key={index}
               className={`rounded-full w-8 h-8 flex items-center justify-center cursor-pointer ${
                 date
-                  ? date === selectedDate &&
-                    currentDate.getMonth() === new Date().getMonth() &&
-                    currentDate.getFullYear() === new Date().getFullYear()
+                  ? date === selectedDate
                     ? "bg-black text-white"
                     : "text-black hover:bg-gray-200"
                   : "text-transparent"
