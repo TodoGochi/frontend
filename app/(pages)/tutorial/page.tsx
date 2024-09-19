@@ -145,10 +145,14 @@ export default function Page() {
           }`}
         >
           {isClient && currentStep <= 20 && (
-            <div className="absolute z-[130] min-w-[360px] h-[300px] bg-[#00000080]/50  rounded-2xl flex flex-col justify-center items-center">
+            <div
+              className={`absolute  ${
+                currentStep === 6 ? "z-[129]" : "z-[130]"
+              } min-w-[360px] h-[300px] bg-[#00000080]/50  rounded-2xl flex flex-col justify-center items-center`}
+            >
               <div
                 onClick={goToNextStep}
-                className="cursor-pointer absolute z-[131] top-1/2 -translate-y-[185%] w-[80%] max-w-[300px]"
+                className="cursor-pointer absolute z-[135] top-1/2 -translate-y-[185%] w-[80%] max-w-[300px]"
               >
                 <div className="relative">
                   <img
@@ -157,7 +161,7 @@ export default function Page() {
                     alt="speech"
                   />
                   <svg
-                    className="absolute bottom-[-8px] right-[5%]"
+                    className="absolute bottom-[12px] right-[5%]"
                     xmlns="http://www.w3.org/2000/svg"
                     width="15"
                     height="8"
@@ -228,17 +232,42 @@ export default function Page() {
             </div>
           )}
           <img src="/room.png" className="absolute z-1" alt="room" />
-          <div className=" inset-0 flex items-start justify-center absolute z-[101] top-[10px] ">
+          <div
+            className={`inset-0 flex items-start justify-center absolute ${
+              currentStep === 6 || currentStep === 7 ? "z-[130]" : "z-[101]"
+            } top-[10px]`}
+          >
             <div
               className={`relative  flex flex-col justify-center items-center ${
-                currentStep === 6 ? "z-[155]" : ""
+                currentStep === 6 || currentStep === 7
+                  ? "z-[130] bg-white px-[5px]"
+                  : ""
               }`}
             >
-              <div className="flex items-center">
-                <img src="/coin.svg" alt="coin" />
-                <span className="font-neodunggeunmo mr-[13px] ml-[3px]">
-                  10
-                </span>
+              {currentStep === 6 && (
+                <div
+                  className="w-[390px] cursor-pointer h-[50px] absolute z-[131]  top-[40px]"
+                  onClick={goToNextStep}
+                ></div>
+              )}
+
+              <div
+                className={`relative flex items-center ${
+                  currentStep === 7 ? "z-[132] bg-white" : ""
+                }`}
+              >
+                <div className="flex">
+                  <img
+                    src="/coin.svg"
+                    alt="coin"
+                    className={`${
+                      currentStep === 7 ? "z-[132] bg-white" : ""
+                    } `}
+                  />
+                  <span className="font-neodunggeunmo mr-[13px] ml-[3px]">
+                    10
+                  </span>
+                </div>
                 <span className="font-neodunggeunmo mr-[8px]">Day 2</span>
                 <img src="/energy.png" alt="energy" className="mr-[8px]" />
                 <img src="/heart.png" alt="heart" />
