@@ -238,8 +238,22 @@ const SwipeActionList: React.FC = () => {
   const [add, setAdd] = useState(false);
   const [modal, setModal] = useState(false);
   const [items, setItems] = useState<TodoItem[]>([
-    // Your initial items
+    {
+      id: 1,
+      text: "저녁 메뉴 장보기",
+      color: "ff9b99",
+      days: ["월", "화"],
+      time: "09:00",
+    },
+    {
+      id: 2,
+      text: "빨래 돌리기",
+      color: "ff9b99",
+      days: ["월", "수", "금"],
+      time: "18:30",
+    },
   ]);
+
   const [selectedItem, setSelectedItem] = useState<TodoItem | null>(null);
 
   // Handlers

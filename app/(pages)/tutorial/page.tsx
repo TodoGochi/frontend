@@ -176,9 +176,29 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-              <div className="mt-4 w-[60%] max-w-[120px]">
-                <img src="/dog.png" alt="dog" className="w-full h-auto" />
-              </div>
+
+              {currentStep >= 1 && currentStep <= 5 ? (
+                <div className="flex">
+                  {currentStep === 1 || currentStep === 2 ? (
+                    <img src="egg.png" alt="egg" />
+                  ) : (
+                    <>
+                      <img src="egg.png" alt="egg" className="opacity-50" />
+                    </>
+                  )}
+                  {currentStep === 4 || currentStep === 5 ? (
+                    <img src="baby.png" className="opacity-50" alt="baby" />
+                  ) : (
+                    <img src="baby.png" alt="baby" />
+                  )}
+
+                  <img src="dog.png" alt="dog" />
+                </div>
+              ) : (
+                <div className="mt-4 w-[60%] max-w-[120px]">
+                  <img src="/dog.png" alt="dog" className="w-full h-auto" />
+                </div>
+              )}
             </div>
           )}
           {isClient && currentStep >= 21 && (
@@ -209,7 +229,11 @@ export default function Page() {
           )}
           <img src="/room.png" className="absolute z-1" alt="room" />
           <div className=" inset-0 flex items-start justify-center absolute z-[101] top-[10px] ">
-            <div className="relative  flex flex-col justify-center items-center">
+            <div
+              className={`relative  flex flex-col justify-center items-center ${
+                currentStep === 6 ? "z-[155]" : ""
+              }`}
+            >
               <div className="flex items-center">
                 <img src="/coin.svg" alt="coin" />
                 <span className="font-neodunggeunmo mr-[13px] ml-[3px]">
