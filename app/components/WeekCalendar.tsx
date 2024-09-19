@@ -1,3 +1,6 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 /* eslint-disable @next/next/no-img-element */
 import React, { useState, useEffect } from "react";
 
@@ -17,6 +20,7 @@ const getWeekDates = (baseDate: any) => {
 };
 
 const WeekCalendar = ({ setMonth, month }: any) => {
+  const router = useRouter();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
 
@@ -128,7 +132,12 @@ const WeekCalendar = ({ setMonth, month }: any) => {
           alt="calendar"
           className="mr-[12px] cursor-pointer"
         />
-        <img src="/setting.svg" alt="setting" className="cursor-pointer" />
+        <img
+          src="/setting.svg"
+          alt="setting"
+          className="cursor-pointer"
+          onClick={() => router.push("/settings")}
+        />
       </div>
 
       <div className="grid grid-cols-7 gap-2 p-2 rounded-b-lg">
