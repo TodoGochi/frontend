@@ -28,7 +28,7 @@ export default function Page() {
   useEffect(() => {
     if (!localStorage.getItem("accessToken")) getToken();
     else {
-      router.push("/main");
+      router.push("/tutorial");
     }
   }, [router]);
 
@@ -43,7 +43,7 @@ export default function Page() {
         { withCredentials: true }
       );
       localStorage.setItem("accessToken", res.data.accessToken);
-      router.push("/main");
+      router.push("/tutorial");
     } catch (e) {
       console.log(e);
     }
