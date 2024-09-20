@@ -2,7 +2,7 @@
 "use client";
 
 import MonthCalendar from "@/app/components/MonthCalendar";
-import SwipeActionList from "@/app/components/Task";
+import TutorialTask from "@/app/components/TutorialTask";
 import WeekCalendar from "@/app/components/WeekCalendar";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
@@ -361,18 +361,22 @@ export default function Page() {
             </div>
           </div>
         </div>
-
         <div
           className={`w-[390px]  ${
             sized
-              ? "min-h-[749px] absolute top-[50%] translate-y-[-40%] z-[132] overflow-auto"
+              ? "min-h-[749px] absolute top-[50%] translate-y-[-40%]  overflow-auto"
               : "min-h-[369px]"
-          } relative z-[131] bg-[#f4f4f4] rounded-tl-[30px] rounded-tr-[30px] flex flex-col justify-start items-center pt-[10px] mt-[20px]`}
+          } relative   rounded-tl-[30px] rounded-tr-[30px] flex flex-col justify-start items-center pt-[10px] mt-[20px] bg-[#f4f4f4] z-[131] `}
         >
+          <div
+            className={`flex flex-col absolute ${
+              currentStep >= 15 ? "bg-[#00000080]/50 z-[180]" : ""
+            } w-[390px] h-[369px] bottom-[0px] rounded-tl-[30px] rounded-tr-[30px]`}
+          ></div>
           <img className="cursor-pointer" src="/union.png" alt="union" />
           {!month && <WeekCalendar month={month} setMonth={setMonth} />}
           {month && <MonthCalendar month={month} setMonth={setMonth} />}
-          <SwipeActionList />
+          <TutorialTask currentStep={currentStep} />
         </div>
         <div className={`${sized ? "w-full h-[369px]" : ""}`}></div>
       </div>
