@@ -236,6 +236,7 @@ const ListItem: React.FC<ListItemProps> = ({
 
 const SwipeActionList: React.FC = () => {
   const [add, setAdd] = useState(false);
+  const [simpleAdd, setSimpleAdd] = useState(false);
   const [modal, setModal] = useState(false);
   const [items, setItems] = useState<TodoItem[]>([
     {
@@ -258,8 +259,7 @@ const SwipeActionList: React.FC = () => {
 
   // Handlers
   const handleAddTask = useCallback(() => {
-    setSelectedItem(null);
-    setAdd(true);
+    setSimpleAdd(true);
   }, []);
 
   const handleEdit = useCallback(
@@ -307,9 +307,15 @@ const SwipeActionList: React.FC = () => {
     [handleEdit]
   );
 
+  const handleShowFullAdd = useCallback(() => {
+    setSimpleAdd(false);
+    setSelectedItem(null);
+    setAdd(true);
+  }, []);
+
   return (
     <>
-      {!add && (
+      {!add && !simpleAdd && (
         <button
           onClick={handleAddTask}
           className="w-[350px] h-[50px] p-2 mt-2 text-gray-500 border border-gray-200 rounded-lg text-center shadow-sm"
@@ -317,6 +323,15 @@ const SwipeActionList: React.FC = () => {
           + 할 일 추가
         </button>
       )}
+
+      {simpleAdd && (
+        <div className="w-[350px] h-[50px] p-2 mt-2 text-gray-500 border border-gray-200 rounded-lg text-center shadow-sm flex items-center justify-center">
+          <button onClick={handleShowFullAdd} className="text-2xl font-bold">
+            +
+          </button>
+        </div>
+      )}
+
       {add && (
         <TodoAdd
           setAdd={setAdd}
@@ -324,6 +339,7 @@ const SwipeActionList: React.FC = () => {
           initialData={selectedItem}
         />
       )}
+
       <div className="w-[380px] mx-auto p-4 rounded-lg shadow-lg">
         {/* ... */}
         <ul className="bg-gray-100 rounded-lg overflow-hidden">

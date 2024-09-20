@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, KeyboardEvent, useEffect } from "react";
+import React, { useState, KeyboardEvent, useEffect, useCallback } from "react";
 import CustomTimePicker from "./TimePicker";
 import { useTimePicker } from "../hooks/timepicker";
 
@@ -31,6 +31,7 @@ const TodoAdd: React.FC<TodoAddProps> = ({
     initialData?.color ? `bg-[#${initialData.color}]` : "bg-[#ff9b99]"
   );
   const [inputValue, setInputValue] = useState(initialData?.text || "");
+  const [click, setClick] = useState(false);
 
   const days = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
   const colors = [
@@ -42,6 +43,10 @@ const TodoAdd: React.FC<TodoAddProps> = ({
     "bg-[#ba9edd]",
     "bg-[#d7d7d7]",
   ];
+
+  const handleCheckboxChange = useCallback(() => {
+    setClick((prev) => !prev);
+  }, []);
 
   useEffect(() => {
     if (initialData) {
@@ -100,9 +105,53 @@ const TodoAdd: React.FC<TodoAddProps> = ({
   return (
     <div className="w-[348px] mx-auto shadow-lg rounded-lg bg-[#FFFFFF] mt-[10px]">
       <div className="p-4">
-        <div className="flex mb-[20px]">
+        <div className="flex mb-[20px] mt-[5px]">
+          <div className="relative w-[10px]">
+            <input
+              type="checkbox"
+              className="absolute z-[1] mr-3 opacity-0"
+              onChange={handleCheckboxChange}
+            />
+            {click ? (
+              <svg
+                className="absolute z-[0] bottom-[13px]"
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+              >
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M14.4 0H1.6V0.8H0.8V1.6H0V14.4H0.8V15.2H1.6V16H14.4V15.2H15.2V14.4H16V1.6H15.2V0.8H14.4V0ZM15.2 1.6H14.4V0.8H1.6V1.6H0.8V14.4H1.6V15.2H14.4V14.4H15.2V1.6Z"
+                  fill="#3F3F3F"
+                />
+                <path
+                  d="M12.8004 3.19984V2.39984H3.20039V3.19984H2.40039V12.7998H3.20039V13.5998H12.8004V12.7998H13.6004V3.19984H12.8004Z"
+                  fill="#3F3F3F"
+                />
+              </svg>
+            ) : (
+              <svg
+                className="absolute z-[0] bottom-[13px]"
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+              >
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M14.4 0H1.6V0.8H0.8V1.6H0V14.4H0.8V15.2H1.6V16H14.4V15.2H15.2V14.4H16V1.6H15.2V0.8H14.4V0ZM15.2 1.6H14.4V0.8H1.6V1.6H0.8V14.4H1.6V15.2H14.4V14.4H15.2V1.6Z"
+                  fill="#3F3F3F"
+                />
+              </svg>
+            )}
+          </div>
           <input
-            className="border-b border-[#a5a5a5] w-[269px] mr-[8px] focus:outline-none"
+            className="border-b border-[#a5a5a5] w-[269px] mr-[8px] focus:outline-none ml-[20px]"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}

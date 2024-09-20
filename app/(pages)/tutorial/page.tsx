@@ -148,7 +148,9 @@ export default function Page() {
             <div
               className={`absolute  ${
                 currentStep === 6 ? "z-[129]" : "z-[130]"
-              } min-w-[360px] h-[300px] bg-[#00000080]/50  rounded-2xl flex flex-col justify-center items-center`}
+              } min-w-[360px] h-[300px] ${
+                currentStep >= 14 ? "" : " bg-[#00000080]/50"
+              }  rounded-2xl flex flex-col justify-center items-center`}
             >
               <div
                 onClick={goToNextStep}
@@ -302,9 +304,17 @@ export default function Page() {
               </div>
             </div>
           </div>
-          <div className="absolute flex justify-center items-center left-[7px] bottom-[10px] z-[102]">
+          <div
+            className={`absolute flex justify-center items-center left-[7px] bottom-[10px] ${
+              currentStep >= 10 && currentStep <= 13 ? "z-[132]" : "z-[102]"
+            }`}
+          >
             <div className="flex space-x-[8px]">
-              <div className="relative cursor-pointer">
+              <div
+                className={`relative cursor-pointer ${
+                  currentStep === 13 ? "opacity-40" : ""
+                }`}
+              >
                 <img src="/button.png" alt="button" />
                 <img
                   className="absolute z-[2] top-[2px] left-[21px]"
@@ -312,7 +322,11 @@ export default function Page() {
                   alt="button"
                 />
               </div>
-              <div className="relative cursor-pointer">
+              <div
+                className={`relative cursor-pointer ${
+                  currentStep === 13 ? "opacity-40" : ""
+                }`}
+              >
                 <img src="/button.png" alt="button" />
                 <img
                   className="absolute z-[2] top-[2px] left-[21px]"
@@ -320,7 +334,11 @@ export default function Page() {
                   alt="button"
                 />
               </div>
-              <div className="relative cursor-pointer">
+              <div
+                className={`relative cursor-pointer ${
+                  currentStep === 13 ? "opacity-40" : ""
+                }`}
+              >
                 <img src="/button.png" alt="button" />
                 <img
                   className="absolute z-[2] top-[2px] left-[21px]"
@@ -328,7 +346,11 @@ export default function Page() {
                   alt="button"
                 />
               </div>
-              <div className="relative cursor-pointer">
+              <div
+                className={`relative cursor-pointer ${
+                  currentStep === 13 ? "z-[135] " : ""
+                }`}
+              >
                 <img src="/disableButton.png" alt="button" />
                 <img
                   className="absolute z-[2] top-[2px] left-[21px]"
@@ -347,12 +369,7 @@ export default function Page() {
               : "min-h-[369px]"
           } relative z-[131] bg-[#f4f4f4] rounded-tl-[30px] rounded-tr-[30px] flex flex-col justify-start items-center pt-[10px] mt-[20px]`}
         >
-          <img
-            className="cursor-pointer"
-            src="/union.png"
-            alt="union"
-            onClick={() => setSized(!sized)}
-          />
+          <img className="cursor-pointer" src="/union.png" alt="union" />
           {!month && <WeekCalendar month={month} setMonth={setMonth} />}
           {month && <MonthCalendar month={month} setMonth={setMonth} />}
           <SwipeActionList />
