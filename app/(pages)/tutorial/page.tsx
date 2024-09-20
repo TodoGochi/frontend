@@ -234,47 +234,71 @@ export default function Page() {
           <img src="/room.png" className="absolute z-1" alt="room" />
           <div
             className={`inset-0 flex items-start justify-center absolute ${
-              currentStep === 6 || currentStep === 7 ? "z-[130]" : "z-[101]"
-            } top-[10px]`}
+              currentStep === 6 ? "z-[130]" : "z-[101]"
+            } top-[10px] ${currentStep === 7 ? "z-[130]" : ""} ${
+              currentStep === 8 || currentStep === 9 ? "z-[130]" : ""
+            }`}
           >
             <div
               className={`relative  flex flex-col justify-center items-center ${
-                currentStep === 6 || currentStep === 7
-                  ? "z-[130] bg-white px-[5px]"
-                  : ""
-              }`}
+                currentStep === 6 ? "z-[130] bg-white px-[5px]" : ""
+              } ${currentStep === 7 ? "z-[130]" : ""} `}
             >
-              {currentStep === 6 && (
+              {currentStep === 6 ||
+              currentStep === 7 ||
+              currentStep === 8 ||
+              currentStep === 9 ? (
                 <div
                   className="w-[390px] cursor-pointer h-[50px] absolute z-[131]  top-[40px]"
                   onClick={goToNextStep}
                 ></div>
+              ) : (
+                <></>
               )}
 
               <div
                 className={`relative flex items-center ${
-                  currentStep === 7 ? "z-[132] bg-white" : ""
+                  currentStep === 7 ? "" : ""
                 }`}
               >
-                <div className="flex">
+                <div
+                  className={`flex mr-[13px]  ${
+                    currentStep === 7 ? " text-white" : ""
+                  } `}
+                >
                   <img
                     src="/coin.svg"
                     alt="coin"
-                    className={`${
-                      currentStep === 7 ? "z-[132] bg-white" : ""
-                    } `}
+                    className={`${currentStep === 7 ? "z-[132] " : ""} `}
                   />
-                  <span className="font-neodunggeunmo mr-[13px] ml-[3px]">
-                    10
-                  </span>
+                  <span className="font-neodunggeunmo ml-[3px]">10</span>
                 </div>
-                <span className="font-neodunggeunmo mr-[8px]">Day 2</span>
-                <img src="/energy.png" alt="energy" className="mr-[8px]" />
-                <img src="/heart.png" alt="heart" />
-                <img src="/heart.png" alt="heart" />
-                <img src="/heart.png" alt="heart" />
-                <img src="/heartHalf.png" alt="heart" />
-                <img src="/emptyHeart.png" alt="heart" />
+
+                <span
+                  className={`${
+                    currentStep === 8 ? "z-[135] text-white p-1" : ""
+                  } font-neodunggeunmo mr-[8px]`}
+                >
+                  Day 2
+                </span>
+
+                <img
+                  src="/energy.svg"
+                  alt="energy"
+                  className={`mr-[8px] ${
+                    currentStep === 7 || currentStep === 8
+                      ? "relative z-[1] opacity-40"
+                      : ""
+                  }`}
+                />
+
+                <div className={` flex ${currentStep === 9 ? "z-[135]" : ""}`}>
+                  <img src="/heart.png" alt="heart" />
+                  <img src="/heart.png" alt="heart" />
+                  <img src="/heart.png" alt="heart" />
+                  <img src="/heartHalf.png" alt="heart" />
+                  <img src="/emptyHeart.png" alt="heart" />
+                </div>
               </div>
             </div>
           </div>

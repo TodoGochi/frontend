@@ -24,7 +24,7 @@ export default function Page() {
               <img src="/coin.svg" alt="coin" />
               <span className="font-neodunggeunmo mr-[13px] ml-[3px]">10</span>
               <span className="font-neodunggeunmo mr-[8px]">Day 2</span>
-              <img src="/energy.png" alt="energy" className="mr-[8px]" />
+              <img src="/energy.svg" alt="energy" className="mr-[8px]" />
               <img src="/heart.png" alt="heart" />
               <img src="/heart.png" alt="heart" />
               <img src="/heart.png" alt="heart" />

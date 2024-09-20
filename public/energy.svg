@@ -1,0 +1,54 @@
+<svg width="121" height="24" viewBox="0 0 121 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<rect width="121" height="24" fill="url(#pattern0_535_3808)"/>
+<rect x="7" y="7" width="8" height="10" fill="url(#pattern1_535_3808)"/>
+<rect x="18" y="7" width="8" height="10" fill="url(#pattern2_535_3808)"/>
+<rect x="29" y="7" width="8" height="10" fill="url(#pattern3_535_3808)"/>
+<rect x="40" y="7" width="8" height="10" fill="url(#pattern4_535_3808)"/>
+<rect x="51" y="7" width="8" height="10" fill="url(#pattern5_535_3808)"/>
+<rect x="62" y="7" width="8" height="10" fill="url(#pattern6_535_3808)"/>
+<rect x="73" y="7" width="8" height="10" fill="url(#pattern7_535_3808)"/>
+<rect x="84" y="7" width="8" height="10" fill="url(#pattern8_535_3808)"/>
+<rect x="95" y="7" width="8" height="10" fill="url(#pattern9_535_3808)"/>
+<rect x="106" y="7" width="8" height="10" fill="url(#pattern10_535_3808)"/>
+<defs>
+<pattern id="pattern0_535_3808" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image0_535_3808" transform="scale(0.00826446 0.0416667)"/>
+</pattern>
+<pattern id="pattern1_535_3808" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image1_535_3808" transform="scale(0.125 0.1)"/>
+</pattern>
+<pattern id="pattern2_535_3808" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image1_535_3808" transform="scale(0.125 0.1)"/>
+</pattern>
+<pattern id="pattern3_535_3808" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image2_535_3808" transform="scale(0.125 0.1)"/>
+</pattern>
+<pattern id="pattern4_535_3808" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image2_535_3808" transform="scale(0.125 0.1)"/>
+</pattern>
+<pattern id="pattern5_535_3808" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image3_535_3808" transform="scale(0.125 0.1)"/>
+</pattern>
+<pattern id="pattern6_535_3808" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image3_535_3808" transform="scale(0.125 0.1)"/>
+</pattern>
+<pattern id="pattern7_535_3808" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image4_535_3808" transform="scale(0.125 0.1)"/>
+</pattern>
+<pattern id="pattern8_535_3808" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image4_535_3808" transform="scale(0.125 0.1)"/>
+</pattern>
+<pattern id="pattern9_535_3808" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image5_535_3808" transform="scale(0.125 0.1)"/>
+</pattern>
+<pattern id="pattern10_535_3808" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image5_535_3808" transform="scale(0.125 0.1)"/>
+</pattern>
+<image id="image0_535_3808" width="121" height="24" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHkAAAAYCAYAAADeUlK2AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAu0lEQVRoge3asQoCMRCE4V25PFfSiSDa+KJWYpd7rititcJ52AgqyfxfdVyawDApsvHWmmFsu39vAN83xYe7rxZyzlS8M/M8r0KMU5omC5hef0SDr7f773eDjy3LYpfTsZltG02TB5FServmcW6XUmjwIM6HvZmZ1VrdjCZLIGQBhCyAkAUQsgBCFkDIAghZACELIGQBhCzgeXcd82SmUP2KO+uYQjFPFrJpcuBlSH94GSLMea05Ppos4AHyIjkv3Pe7IAAAAABJRU5ErkJggg=="/>
+<image id="image1_535_3808" width="8" height="10" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAKCAYAAACJxx+AAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAF0lEQVQYlWP8NLvsPwMewIRPclQBAgAA52kDFhoy8r8AAAAASUVORK5CYII="/>
+<image id="image2_535_3808" width="8" height="10" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAKCAYAAACJxx+AAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAF0lEQVQYlWP8dbbzPwMewIRPclQBAgAAShUDY2AlLtMAAAAASUVORK5CYII="/>
+<image id="image3_535_3808" width="8" height="10" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAKCAYAAACJxx+AAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAF0lEQVQYlWM883DGfwY8gAmf5KgCBAAAO8ADWCuMsCAAAAAASUVORK5CYII="/>
+<image id="image4_535_3808" width="8" height="10" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAKCAYAAACJxx+AAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAF0lEQVQYlWPsPDn9PwMewIRPclQBAgAAxY8C/DaNaqMAAAAASUVORK5CYII="/>
+<image id="image5_535_3808" width="8" height="10" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAKCAYAAACJxx+AAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAF0lEQVQYlWNsOXPyPwMewIRPclQBAgAAAucDLD/qjr0AAAAASUVORK5CYII="/>
+</defs>
+</svg>
