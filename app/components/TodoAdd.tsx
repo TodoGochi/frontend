@@ -103,7 +103,7 @@ const TodoAdd: React.FC<TodoAddProps> = ({
   };
 
   return (
-    <div className="w-[348px] mx-auto shadow-lg rounded-lg bg-[#FFFFFF] mt-[10px]">
+    <div className="w-[348px] mx-auto  rounded-lg bg-[#FFFFFF] mt-[10px]">
       <div className="p-4">
         <div className="flex mb-[20px] mt-[5px]">
           <div className="relative w-[10px]">
