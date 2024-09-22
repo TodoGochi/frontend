@@ -9,10 +9,7 @@ const tokenRefresh = async () => {
 };
 
 export const instance = axios.create({
-  // 상대적인 URL을 인스턴스 메서드에 전달하려면 baseURL을 설정하는 것은 편리하다.
-  // URL(서버 주소) 예시 - http://127.0.0.1:5500
   baseURL: "https://todogochi.store",
-  // 요청이 timeout보다 오래 걸리면 요청이 중단된다.
   timeout: 4000,
 });
 
@@ -38,8 +35,6 @@ instance.interceptors.response.use(
   },
   async (error) => {
     if (error.response?.status === 401) {
-      // isTokenExpired() - 토큰 만료 여부를 확인하는 함수
-      // tokenRefresh() - 토큰을 갱신해주는 함수
       await tokenRefresh();
 
       const accessToken = localStorage.getItem("accessToken");

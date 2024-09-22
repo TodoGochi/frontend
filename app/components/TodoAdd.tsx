@@ -3,6 +3,7 @@
 import React, { useState, KeyboardEvent, useEffect, useCallback } from "react";
 import CustomTimePicker from "./TimePicker";
 import { useTimePicker } from "../hooks/timepicker";
+import { instance } from "../utils/axios";
 
 interface TodoItem {
   id: number;
@@ -12,9 +13,17 @@ interface TodoItem {
   time: string;
 }
 
+interface ApiTodoItem {
+  userId: number;
+  todoText: string;
+  colorTag: string;
+  days: string[];
+  targetTime: string;
+}
+
 interface TodoAddProps {
   setAdd: (value: boolean) => void;
-  onAddTodo: (todo: Omit<TodoItem, "id">) => void;
+  onAddTodo: (todo: ApiTodoItem) => void;
   initialData: TodoItem | null;
 }
 
@@ -44,6 +53,26 @@ const TodoAdd: React.FC<TodoAddProps> = ({
     "bg-[#d7d7d7]",
   ];
 
+  const colorToTag: { [key: string]: string } = {
+    "bg-[#ff9b99]": "RED",
+    "bg-[#fdc38e]": "ORANGE",
+    "bg-[#f7e583]": "YELLOW",
+    "bg-[#a6e091]": "GREEN",
+    "bg-[#78c1f6]": "BLUE",
+    "bg-[#ba9edd]": "PURPLE",
+    "bg-[#d7d7d7]": "GRAY",
+  };
+
+  const dayToFull: { [key: string]: string } = {
+    MON: "Monday",
+    TUE: "Tuesday",
+    WED: "Wednesday",
+    THU: "Thursday",
+    FRI: "Friday",
+    SAT: "Saturday",
+    SUN: "Sunday",
+  };
+
   const handleCheckboxChange = useCallback(() => {
     setClick((prev) => !prev);
   }, []);
@@ -55,19 +84,16 @@ const TodoAdd: React.FC<TodoAddProps> = ({
       const newMinutes = m;
       const newAmPm = p as "AM" | "PM";
 
-      // 시간 설정
       const event = {
         target: { value: newHours.toString() },
       } as React.ChangeEvent<HTMLInputElement>;
       timeActions.handleHoursChange(event);
 
-      // 분 설정
       const minutesEvent = {
         target: { value: newMinutes },
       } as React.ChangeEvent<HTMLInputElement>;
       timeActions.handleMinutesChange(minutesEvent);
 
-      // AM/PM 설정
       if (timeState.amPm !== newAmPm) {
         timeActions.toggleAmPm();
       }
@@ -89,17 +115,29 @@ const TodoAdd: React.FC<TodoAddProps> = ({
   };
 
   const handleSubmit = () => {
-    const newTodo = {
-      text: inputValue,
-      color: selectedColor.replace("bg-[#", "").replace("]", ""),
-      days: selectedDays,
-      time: `${timeState.hours}:${timeState.minutes} ${timeState.amPm}`,
+    const hours =
+      timeState.hours === 12
+        ? timeState.amPm === "AM"
+          ? "00"
+          : "12"
+        : timeState.amPm === "PM"
+        ? (timeState.hours + 12).toString()
+        : timeState.hours.toString().padStart(2, "0");
+
+    const apiTodo: ApiTodoItem = {
+      userId: 1, // 임시로 고정된 userId 사용
+      todoText: inputValue,
+      colorTag: colorToTag[selectedColor] || "RED",
+      days: selectedDays.map((day) => dayToFull[day]),
+      targetTime: `${hours}:${timeState.minutes}`,
     };
-    onAddTodo(newTodo);
+    onAddTodo(apiTodo);
     setInputValue("");
     setSelectedDays([]);
     setSelectedColor("bg-[#ff9b99]");
     setAdd(false);
+
+    const res = instance.post("/todolist/weekly", apiTodo);
   };
 
   return (

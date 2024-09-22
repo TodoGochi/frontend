@@ -11,6 +11,34 @@ interface TodoItem {
   time: string;
 }
 
+const colorTagToColor: { [key: string]: string } = {
+  RED: "ff9b99",
+  ORANGE: "fdc38e",
+  YELLOW: "f7e583",
+  GREEN: "a6e091",
+  BLUE: "78c1f6",
+  PURPLE: "ba9edd",
+  GRAY: "d7d7d7",
+};
+
+const fullDayToShort: { [key: string]: string } = {
+  Monday: "MON",
+  Tuesday: "TUE",
+  Wednesday: "WED",
+  Thursday: "THU",
+  Friday: "FRI",
+  Saturday: "SAT",
+  Sunday: "SUN",
+};
+
+interface ApiTodoItem {
+  userId: number;
+  todoText: string;
+  colorTag: string;
+  days: string[];
+  targetTime: string;
+}
+
 interface ListItemProps {
   id: number;
   text: string;
@@ -140,8 +168,6 @@ const ListItem: React.FC<ListItemProps> = ({
   const handleCheckboxChange = useCallback(() => {
     setClick((prev) => !prev);
   }, []);
-
-  console.log(color);
 
   return (
     <div className="flex mb-[10px]">
@@ -283,14 +309,21 @@ const SwipeActionList: React.FC = () => {
   }, []);
 
   const handleAddTodo = useCallback(
-    (newTodo: Omit<TodoItem, "id">) => {
+    (newTodo: ApiTodoItem) => {
       setItems((prevItems) => {
+        const convertedTodo: Omit<TodoItem, "id"> = {
+          text: newTodo.todoText,
+          color: colorTagToColor[newTodo.colorTag] || "ff9b99",
+          days: newTodo.days.map((day) => fullDayToShort[day] || day),
+          time: newTodo.targetTime,
+        };
+
         if (selectedItem) {
           return prevItems.map((item) =>
-            item.id === selectedItem.id ? { ...item, ...newTodo } : item
+            item.id === selectedItem.id ? { ...item, ...convertedTodo } : item
           );
         } else {
-          return [...prevItems, { ...newTodo, id: prevItems.length + 1 }];
+          return [...prevItems, { ...convertedTodo, id: prevItems.length + 1 }];
         }
       });
       setAdd(false);

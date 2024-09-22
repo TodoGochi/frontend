@@ -86,6 +86,17 @@ export default function Page() {
         />
         {!month && <WeekCalendar month={month} setMonth={setMonth} />}
         {month && <MonthCalendar month={month} setMonth={setMonth} />}
+        <div className="w-full px-[30px] flex justify-between font-neodunggeunmo items-center mb-[15px] mt-[30px]">
+          <div className="flex text-[12px] items-center">
+            <img src="/coin.svg" alt="coin" />
+            <span className="ml-[5px]">Today Coin</span>
+            <span className="ml-[5px]">2</span>
+          </div>
+          <div className="flex items-center">
+            <img src="list.svg" alt="sort" />
+            <span className="ml-[5px] text-[12px]">컬러태그 순</span>
+          </div>
+        </div>
         <SwipeActionList />
       </div>
       <div className={`${sized ? "w-full h-[369px]" : ""}`}></div>
