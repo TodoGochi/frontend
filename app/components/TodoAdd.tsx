@@ -25,12 +25,14 @@ interface TodoAddProps {
   setAdd: (value: boolean) => void;
   onAddTodo: (todo: ApiTodoItem) => void;
   initialData: TodoItem | null;
+  tutorial?: boolean;
 }
 
 const TodoAdd: React.FC<TodoAddProps> = ({
   setAdd,
   onAddTodo,
   initialData,
+  tutorial,
 }) => {
   const [timeState, timeActions] = useTimePicker();
   const [selectedDays, setSelectedDays] = useState<string[]>(
@@ -196,7 +198,7 @@ const TodoAdd: React.FC<TodoAddProps> = ({
           />
           <svg
             className="cursor-pointer"
-            onClick={() => setAdd(false)}
+            onClick={!tutorial ? () => setAdd(false) : () => {}}
             xmlns="http://www.w3.org/2000/svg"
             width="30"
             height="30"
@@ -237,13 +239,6 @@ const TodoAdd: React.FC<TodoAddProps> = ({
             />
           ))}
         </div>
-
-        <button
-          onClick={handleSubmit}
-          className="w-full bg-blue-500 text-white py-2 rounded mt-4"
-        >
-          {initialData ? "수정" : "추가"}
-        </button>
       </div>
     </div>
   );

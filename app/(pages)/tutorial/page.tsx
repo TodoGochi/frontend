@@ -89,10 +89,18 @@ const tutorialSteps = [
     title: "Step 4",
     content: "컬러태그를 설정하고, 요일 별 반복도 \n설정할 수   있어. ",
   },
+
   {
     title: "Step 4",
-    content: "각 컬러태그의 할 일을 모두 완수해야 1코인을 \n 받을 수 있고,",
+    content:
+      "작성한 후에 화면 아무 곳이나 터치하면 작성 \n이 완료되니까 이 점 알아둬.",
   },
+
+  {
+    title: "Step 4",
+    content: "작성한 투두는 스와이프하면 수정, 미루기, \n삭제가능해.",
+  },
+
   {
     title: "Step 4",
     content:
@@ -144,7 +152,7 @@ export default function Page() {
             sized ? "z-[129]" : ""
           }`}
         >
-          {isClient && currentStep <= 20 && (
+          {isClient && currentStep <= 21 && (
             <div
               className={`absolute  ${
                 currentStep === 6 ? "z-[129]" : "z-[130]"
@@ -186,28 +194,40 @@ export default function Page() {
               {currentStep >= 1 && currentStep <= 5 ? (
                 <div className="flex">
                   {currentStep === 1 || currentStep === 2 ? (
-                    <img src="egg.png" alt="egg" />
+                    <img src="/egg_default.gif" alt="egg" />
                   ) : (
                     <>
-                      <img src="egg.png" alt="egg" className="opacity-50" />
+                      <img
+                        src="/egg_default.gif"
+                        alt="egg"
+                        className="opacity-50"
+                      />
                     </>
                   )}
                   {currentStep === 4 || currentStep === 5 ? (
-                    <img src="baby.png" className="opacity-50" alt="baby" />
+                    <img
+                      src="/step1_default.gif"
+                      className="opacity-50"
+                      alt="baby"
+                    />
                   ) : (
-                    <img src="baby.png" alt="baby" />
+                    <img src="/step1_default.gif" alt="baby" />
                   )}
 
-                  <img src="dog.png" alt="dog" />
+                  <img src="/step2_default.gif" alt="dog" />
                 </div>
               ) : (
                 <div className="mt-4 w-[60%] max-w-[120px]">
-                  <img src="/dog.png" alt="dog" className="w-full h-auto" />
+                  <img
+                    src="/step2_talking.gif"
+                    alt="dog"
+                    className="w-full h-auto"
+                  />
                 </div>
               )}
             </div>
           )}
-          {isClient && currentStep >= 21 && (
+          {isClient && currentStep >= 22 && (
             <div className="absolute z-[130] w-[360px] h-full bg-[#00000080]/50 rounded-2xl left-0">
               <div className="absolute z-[131] w-[330px] h-[160px] left-[4%] top-[20%]">
                 <img
@@ -374,7 +394,9 @@ export default function Page() {
             } w-[390px]  
             
             ${
-              currentStep === 17 ? "h-[643px]" : "h-[422px]"
+              currentStep === 17 || currentStep === 18
+                ? "h-[595px]"
+                : "h-[422px]"
             } bottom-[0px] rounded-tl-[30px] rounded-tr-[30px]   ${
               currentStep === 16 ? "h-[428px]" : ""
             }`}

@@ -19,7 +19,7 @@ export default function Page() {
     );
 
     localStorage.setItem("accessToken", res.data.accessToken);
-    router.push("/main");
+    router.push("/tutorial");
   };
 
   useEffect(() => {
