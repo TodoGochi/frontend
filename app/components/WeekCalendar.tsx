@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 /* eslint-disable @next/next/no-img-element */
 import React, { useState, useEffect } from "react";
+import { useStore } from "../store/date";
 
 const getWeekDates = (baseDate: any) => {
   const dates = [];
@@ -22,7 +23,9 @@ const getWeekDates = (baseDate: any) => {
 const WeekCalendar = ({ setMonth, month }: any) => {
   const router = useRouter();
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState(new Date());
+
+  const selectedDate = useStore((state) => state.selectedDate);
+  const setSelectedDate = useStore((state) => state.setSelectedDate);
 
   const monthNames = [
     "JAN",

@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 /* eslint-disable @next/next/no-img-element */
 import React, { useState } from "react";
+import { useStore } from "../store/date";
 
 // Helper function to get the number of days in a month
 const getDaysInMonth = (year: number, month: number) => {
@@ -34,9 +35,10 @@ const getMonthCalendarDates = (year: number, month: number) => {
 const MonthCalendar = ({ setMonth, month }: any) => {
   const router = useRouter();
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState<number | null>(
-    new Date().getDate()
-  );
+
+  const selectedDate = useStore((state) => state.selectedDate);
+  const setSelectedDate = useStore((state) => state.setSelectedDate);
+
   const monthNames = [
     "JAN",
     "FEB",
@@ -58,7 +60,8 @@ const MonthCalendar = ({ setMonth, month }: any) => {
       newDate.setMonth(newDate.getMonth() - 1);
       return newDate;
     });
-    setSelectedDate(null);
+    // Optionally reset selectedDate when changing months
+    // setSelectedDate(null);
   };
 
   const handleNextMonth = () => {
@@ -67,12 +70,14 @@ const MonthCalendar = ({ setMonth, month }: any) => {
       newDate.setMonth(newDate.getMonth() + 1);
       return newDate;
     });
-    setSelectedDate(null);
+    // Optionally reset selectedDate when changing months
+    // setSelectedDate(null);
   };
 
-  const handleDateClick = (date: number | null) => {
-    if (date) {
-      setSelectedDate(date);
+  const handleDateClick = (day: number | null) => {
+    if (day) {
+      const newSelectedDate = new Date(currentYear, currentMonth, day);
+      setSelectedDate(newSelectedDate);
     }
   };
 
@@ -147,21 +152,30 @@ const MonthCalendar = ({ setMonth, month }: any) => {
       </div>
       <div className="grid grid-cols-7 gap-2 p-2 rounded-b-lg">
         {getMonthCalendarDates(currentYear, currentMonth).map(
-          ({ date }, index) => (
-            <div
-              key={index}
-              className={`rounded-full w-8 h-8 flex items-center justify-center cursor-pointer ${
-                date
-                  ? date === selectedDate
-                    ? "bg-black text-white"
-                    : "text-black hover:bg-gray-200"
-                  : "text-transparent"
-              }`}
-              onClick={() => handleDateClick(date)}
-            >
-              {date || ""}
-            </div>
-          )
+          ({ date }, index) => {
+            const isSelected =
+              date &&
+              selectedDate &&
+              selectedDate.getFullYear() === currentYear &&
+              selectedDate.getMonth() === currentMonth &&
+              selectedDate.getDate() === date;
+
+            return (
+              <div
+                key={index}
+                className={`rounded-full w-8 h-8 flex items-center justify-center cursor-pointer ${
+                  date
+                    ? isSelected
+                      ? "bg-black text-white"
+                      : "text-black hover:bg-gray-200"
+                    : "text-transparent"
+                }`}
+                onClick={() => handleDateClick(date)}
+              >
+                {date || ""}
+              </div>
+            );
+          }
         )}
       </div>
     </div>

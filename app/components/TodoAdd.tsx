@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, KeyboardEvent, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import CustomTimePicker from "./TimePicker";
 import { useTimePicker } from "../hooks/timepicker";
 import { instance } from "../utils/axios";
@@ -23,26 +23,29 @@ interface ApiTodoItem {
 
 interface TodoAddProps {
   setAdd: (value: boolean) => void;
-  onAddTodo: (todo: ApiTodoItem) => void;
   initialData: TodoItem | null;
   tutorial?: boolean;
+  val?: string;
 }
 
 const TodoAdd: React.FC<TodoAddProps> = ({
   setAdd,
-  onAddTodo,
   initialData,
   tutorial,
+  val,
 }) => {
   const [timeState, timeActions] = useTimePicker();
-  const [selectedDays, setSelectedDays] = useState<string[]>(
-    initialData?.days || []
-  );
-  const [selectedColor, setSelectedColor] = useState(
-    initialData?.color ? `bg-[#${initialData.color}]` : "bg-[#ff9b99]"
-  );
-  const [inputValue, setInputValue] = useState(initialData?.text || "");
+  const [selectedDays, setSelectedDays] = useState<string[]>([]);
+  const [selectedColor, setSelectedColor] = useState("bg-[#ff9b99]");
+  const [inputValue, setInputValue] = useState("");
   const [click, setClick] = useState(false);
+
+  const [todoState, setTodoState] = useState({
+    selectedDays: [] as string[],
+    selectedColor: "bg-[#ff9b99]",
+    inputValue: "",
+  });
+  const ref = useRef<HTMLDivElement>(null);
 
   const days = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
   const colors = [
@@ -75,48 +78,71 @@ const TodoAdd: React.FC<TodoAddProps> = ({
     SUN: "Sunday",
   };
 
-  const handleCheckboxChange = useCallback(() => {
-    setClick((prev) => !prev);
-  }, []);
+  const initialDataRef = useRef(initialData);
 
   useEffect(() => {
-    if (initialData) {
-      const [h, m, p] = initialData.time.split(/:| /);
+    if (initialDataRef.current) {
+      const { days, color, text, time } = initialDataRef.current;
+      setTodoState({
+        selectedDays: days,
+        selectedColor: `bg-[#${color}]`,
+        inputValue: text,
+      });
+      setInputValue(text);
+
+      const [h, m, p] = time.split(/:| /);
       const newHours = parseInt(h);
       const newMinutes = m;
       const newAmPm = p as "AM" | "PM";
 
-      const event = {
+      timeActions.handleHoursChange({
         target: { value: newHours.toString() },
-      } as React.ChangeEvent<HTMLInputElement>;
-      timeActions.handleHoursChange(event);
-
-      const minutesEvent = {
+      } as React.ChangeEvent<HTMLInputElement>);
+      timeActions.handleMinutesChange({
         target: { value: newMinutes },
-      } as React.ChangeEvent<HTMLInputElement>;
-      timeActions.handleMinutesChange(minutesEvent);
+      } as React.ChangeEvent<HTMLInputElement>);
 
       if (timeState.amPm !== newAmPm) {
         timeActions.toggleAmPm();
       }
-    }
-  }, [initialData, timeActions, timeState.amPm]);
 
-  const toggleDay = (day: string) => {
-    setSelectedDays((prevSelectedDays) =>
-      prevSelectedDays.includes(day)
-        ? prevSelectedDays.filter((d) => d !== day)
-        : [...prevSelectedDays, day]
+      initialDataRef.current = null;
+    }
+  }, []); // 초기화에만 의존
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        ref.current &&
+        !ref.current.contains(event.target as Node) &&
+        !tutorial &&
+        selectedDays.length > 0
+      ) {
+        handleSubmit();
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [tutorial, selectedDays.length]); // 필요한 의존성만 추가
+
+  const handleCheckboxChange = useCallback(() => {
+    setClick((prev) => !prev);
+  }, []);
+
+  const toggleDay = useCallback((day: string) => {
+    setSelectedDays((prev) =>
+      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
     );
-  };
+  }, []);
 
-  const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && inputValue.trim() !== "") {
-      handleSubmit();
+  const handleSubmit = useCallback(async () => {
+    if (selectedDays.length === 0) {
+      alert("요일을 하나 이상 설정해주세요!");
+      return;
     }
-  };
 
-  const handleSubmit = () => {
     const hours =
       timeState.hours === 12
         ? timeState.amPm === "AM"
@@ -126,24 +152,40 @@ const TodoAdd: React.FC<TodoAddProps> = ({
         ? (timeState.hours + 12).toString()
         : timeState.hours.toString().padStart(2, "0");
 
-    const apiTodo: ApiTodoItem = {
-      userId: 1, // 임시로 고정된 userId 사용
-      todoText: inputValue,
-      colorTag: colorToTag[selectedColor] || "RED",
-      days: selectedDays.map((day) => dayToFull[day]),
-      targetTime: `${hours}:${timeState.minutes}`,
-    };
-    onAddTodo(apiTodo);
-    setInputValue("");
-    setSelectedDays([]);
-    setSelectedColor("bg-[#ff9b99]");
-    setAdd(false);
+    try {
+      const res = await instance.get("/user");
+      const apiTodo: ApiTodoItem = {
+        userId: res.data.userId,
+        todoText: todoState.inputValue,
+        colorTag: colorToTag[todoState.selectedColor] || "RED",
+        days: selectedDays.map((day) => dayToFull[day]),
+        targetTime: `${hours}:${timeState.minutes}`,
+      };
 
-    const res = instance.post("/todolist/weekly", apiTodo);
-  };
+      await instance.post("/todolist/weekly", apiTodo);
+
+      setTodoState({
+        selectedDays: [],
+        selectedColor: "bg-[#ff9b99]",
+        inputValue: "",
+      });
+      setAdd(false);
+    } catch (error) {
+      console.error("Error submitting todo:", error);
+    }
+  }, [
+    selectedDays,
+    timeState,
+    todoState.inputValue,
+    todoState.selectedColor,
+    setAdd,
+  ]);
 
   return (
-    <div className="w-[348px] mx-auto  rounded-lg bg-[#FFFFFF] mt-[10px]">
+    <div
+      ref={ref}
+      className="w-[348px] mx-auto rounded-lg bg-[#FFFFFF] mt-[10px]"
+    >
       <div className="p-4">
         <div className="flex mb-[20px] mt-[5px]">
           <div className="relative w-[10px]">
@@ -154,7 +196,7 @@ const TodoAdd: React.FC<TodoAddProps> = ({
             />
             {click ? (
               <svg
-                className="absolute z-[0] bottom-[13px]"
+                className="absolute z-[0] bottom-[13px] cursor-pointer"
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
                 height="16"
@@ -174,7 +216,7 @@ const TodoAdd: React.FC<TodoAddProps> = ({
               </svg>
             ) : (
               <svg
-                className="absolute z-[0] bottom-[13px]"
+                className="absolute z-[0] bottom-[13px] cursor-pointer"
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
                 height="16"
@@ -194,7 +236,6 @@ const TodoAdd: React.FC<TodoAddProps> = ({
             className="border-b border-[#a5a5a5] w-[269px] mr-[8px] focus:outline-none ml-[20px]"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            onKeyPress={handleKeyPress}
           />
           <svg
             className="cursor-pointer"
@@ -229,11 +270,11 @@ const TodoAdd: React.FC<TodoAddProps> = ({
         <CustomTimePicker />
 
         <div className="flex space-x-2 mb-4">
-          {colors.map((color, index) => (
+          {colors.map((color) => (
             <button
               key={color}
               className={`w-10 h-5 rounded-[5px] border-2 
-        ${colors[index]}
+        ${color}
         ${selectedColor === color ? "border-gray-800" : "border-transparent"}`}
               onClick={() => setSelectedColor(color)}
             />
