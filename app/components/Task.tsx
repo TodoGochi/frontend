@@ -474,7 +474,7 @@ const SwipeActionList: React.FC = () => {
           ))}
         </ul>
       </div>
-      {modal && <Modal setModal={setModal} />}
+      {modal && <Modal setModal={setModal} text="" />}
     </>
   );
 };

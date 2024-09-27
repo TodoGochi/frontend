@@ -4,11 +4,55 @@
 import MonthCalendar from "@/app/components/MonthCalendar";
 import SwipeActionList from "@/app/components/Task";
 import WeekCalendar from "@/app/components/WeekCalendar";
-import { useState } from "react";
+import { instance } from "@/app/utils/axios";
+import { useEffect, useState } from "react";
+
+interface Experience {
+  user_id: number;
+  feed: number;
+  play: number;
+  pet: number;
+}
+
+interface Monster {
+  user_id: number;
+  level: string;
+  health_status: string;
+  nickname: string;
+  happiness: number;
+  created_at: string;
+  sick_at: string | null;
+  hunger: number;
+  experience: Experience;
+}
 
 export default function Page() {
   const [month, setMonth] = useState(false);
   const [sized, setSized] = useState(false);
+  const [status, setStatus] = useState<Monster>({
+    user_id: 0,
+    level: "",
+    health_status: "",
+    nickname: "",
+    happiness: 0,
+    created_at: "",
+    sick_at: "",
+    hunger: 0,
+    experience: { user_id: 0, feed: 0, play: 0, pet: 0 },
+  });
+
+  const getStatus = async () => {
+    const res = await instance.get("/user");
+    const resGotchi = await instance.get(
+      `/tamagotchi/${res.data.userId}/status?`
+    );
+    setStatus(resGotchi.data);
+  };
+
+  useEffect(() => {
+    getStatus();
+    console.log(status);
+  }, []);
 
   return (
     <div className="bg-neutral-700 flex items-center justify-center min-h-screen h-full w-screen max-xs:w-full max-xs:h-full relative flex-col">
@@ -33,6 +77,35 @@ export default function Page() {
             </div>
           </div>
         </div>
+        {status.level === "egg" && (
+          <div>
+            <div className="absolute z-[101] top-[90px] left-[130px]">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="100"
+                height="35"
+                viewBox="0 0 100 35"
+                fill="none"
+              >
+                <path
+                  d="M96 0H4V1H2V2H1V4H0V31H1V33H2V34H4V35H96V34H98V33H99V31H100V4H99V2H98V1H96V0Z"
+                  fill="#FAFAFA"
+                />
+                <rect x="6" y="2" width="88" height="1" fill="#D8D8D8" />
+                <rect x="6" y="32" width="88" height="1" fill="#D8D8D8" />
+              </svg>
+              <div className="font-neodunggeunmo absolute z-[130] top-[12px] left-[35px]">
+                48:00
+              </div>
+            </div>
+            <img
+              className="absolute z-[103] bottom-[70px] left-[120px]"
+              src="/egg_default.gif"
+              alt="egg"
+            />
+          </div>
+        )}
+        {status.level === "baby" && <img src="/step1_default.gif" alt="baby" />}
         <div className="absolute flex justify-center items-center left-[7px] bottom-[10px] z-[102]">
           <div className="flex space-x-[8px]">
             <div className="relative cursor-pointer">

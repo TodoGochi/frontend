@@ -83,7 +83,7 @@ const ListItem = ({ item, currentStep }: any) => {
         currentStep === 19 || currentStep === 20 ? "z-[180] bg-white" : ""
       }`}
     >
-      <div className={`w-[5px] bg-[#ff9b99]`}></div>
+      <div className={`w-[5px] bg-[#${item.color}]`}></div>
       <li
         ref={itemRef}
         className="relative bg-white overflow-hidden cursor-grab active:cursor-grabbing select-none w-[348px]"
@@ -153,6 +153,29 @@ const TutorialTask = ({ currentStep }: any) => {
   const [add, setAdd] = useState(false);
   const [simpleAdd, setSimpleAdd] = useState(currentStep === 16 ? true : false);
   const [modal, setModal] = useState(false);
+  const [color, setColor] = useState("ff9b99");
+
+  useEffect(() => {
+    if (currentStep === 20) {
+      setItems([
+        {
+          id: 1,
+          text: "저녁 메뉴 장보기",
+          color: "ff9b99",
+          days: ["월", "화"],
+          time: "09:00",
+        },
+        {
+          id: 2,
+          text: "빨래 돌리기",
+          color: "78c1f6",
+          days: ["월", "수", "금"],
+          time: "18:30",
+        },
+      ]);
+    }
+  }, [currentStep]);
+
   const [items, setItems] = useState<any>([
     {
       id: 1,
@@ -164,7 +187,7 @@ const TutorialTask = ({ currentStep }: any) => {
     {
       id: 2,
       text: "빨래 돌리기",
-      color: "ff9b99",
+      color: color,
       days: ["월", "수", "금"],
       time: "18:30",
     },
@@ -292,8 +315,13 @@ const TutorialTask = ({ currentStep }: any) => {
           <TodoAdd
             tutorial={true}
             setAdd={setAdd}
-            onAddTodo={handleAddTodo}
-            initialData={selectedItem}
+            initialData={{
+              id: 0,
+              text: "강아지 산책",
+              color: "RED",
+              days: [],
+              time: "10:00",
+            }}
           />
         </div>
       )}
@@ -305,7 +333,7 @@ const TutorialTask = ({ currentStep }: any) => {
           ))}
         </ul>
       </div>
-      {modal && <Modal setModal={setModal} />}
+      {modal && <Modal setModal={setModal} text="" />}
     </>
   );
 };

@@ -1,9 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
+import Modal from "@/app/components/Modal";
 import MonthCalendar from "@/app/components/MonthCalendar";
 import TutorialTask from "@/app/components/TutorialTask";
 import WeekCalendar from "@/app/components/WeekCalendar";
+import { instance } from "@/app/utils/axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { useState } from "react";
@@ -98,13 +100,12 @@ const tutorialSteps = [
 
   {
     title: "Step 4",
-    content: "작성한 투두는 스와이프하면 수정, 미루기, \n삭제가능해.",
+    content: "각 컬러태그의 할 일을 모두 완수해야 1코인을 \n받을 수 있고,",
   },
-
   {
     title: "Step 4",
     content:
-      "모든 컬러태그를 완료 시에는 2개의 보너스 \n코인  을 지급하니까 꼭 모두 완수해 봐..",
+      "모든 컬러태그를 완료 시에는 2개의 보너스 \n코인을 지급하니까 꼭 모두 완수해 봐..",
   },
   {
     title: "Step 4",
@@ -135,13 +136,32 @@ export default function Page() {
   const [sized, setSized] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [isClient, setIsClient] = useState(false);
+  const [modal, setModal] = useState(false);
+
+  const [nickname, setNickname] = useState("");
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
   const goToNextStep = () => {
+    if (currentStep === 19) {
+      setModal(true);
+    }
     setCurrentStep(currentStep + 1);
+  };
+
+  const makeGochi = async () => {
+    const res = await instance.get("/user");
+    try {
+      instance.post("/tamagotchi/create", {
+        userId: res.data.userId,
+        nickname,
+      });
+      router.push("/main");
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
@@ -227,6 +247,16 @@ export default function Page() {
               )}
             </div>
           )}
+
+          {isClient && currentStep === 20 && modal && (
+            <Modal
+              tutorial={true}
+              setModal={setModal}
+              text={`할 일을 전부 완료했어요!
+보너스 코인을 드릴게요.`}
+            />
+          )}
+
           {isClient && currentStep >= 22 && (
             <div className="absolute z-[130] w-[360px] h-full bg-[#00000080]/50 rounded-2xl left-0">
               <div className="absolute z-[131] w-[330px] h-[160px] left-[4%] top-[20%]">
@@ -241,12 +271,14 @@ export default function Page() {
               </div>
               <div className="absolute z-[131] top-[41%] left-[11%]  w-[280px] h-[35px]">
                 <input
+                  value={nickname}
+                  onChange={(e) => setNickname(e.target.value)}
                   className="w-[280px] h-[35px] pl-[50px] py-[10px] rounded-lg text-[12px] border-[#CCCCCC] border border-solid"
                   placeholder="참고로 나는 강아지야. 토끼 아니다!"
                 />
               </div>
               <div
-                onClick={() => router.push("/main")}
+                onClick={() => makeGochi()}
                 className="cursor-pointer absolute z-[131] top-[56%] left-[11%] bg-[#3F3F3F] text-[#FAFAFA] w-[280px] h-[35px] rounded-lg flex justify-center items-center"
               >
                 완료
@@ -399,14 +431,20 @@ export default function Page() {
                 : "h-[422px]"
             } bottom-[0px] rounded-tl-[30px] rounded-tr-[30px]   ${
               currentStep === 16 ? "h-[428px]" : ""
-            }`}
+            } ${currentStep === 19 || currentStep === 20 ? "h-[423px] " : ""}`}
           ></div>
           <img className="cursor-pointer" src="/union.png" alt="union" />
 
           {!month && <WeekCalendar month={month} setMonth={setMonth} />}
           {month && <MonthCalendar month={month} setMonth={setMonth} />}
           <div className="w-full px-[30px] flex justify-between font-neodunggeunmo items-center mb-[15px] mt-[30px]">
-            <div className="flex text-[12px] items-center">
+            <div
+              className={`flex text-[12px] items-center ${
+                currentStep === 19 || currentStep === 20
+                  ? "relative z-[180] bg-white p-[1px]"
+                  : ""
+              }`}
+            >
               <img src="/coin.svg" alt="coin" />
               <span className="ml-[5px]">Today Coin</span>
               <span className="ml-[5px]">2</span>
