@@ -47,13 +47,13 @@ instance.interceptors.response.use(
   },
   async (error) => {
     if (error.response?.status === 401) {
-      await tokenRefresh();
+      const responseToken = await tokenRefresh().data.accessToken;
 
-      const accessToken = localStorage.getItem("accessToken");
+      localStorage.setItem("accessToken", responseToken);
 
       error.config.headers = {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${responseToken}`,
       };
 
       // 중단된 요청을(에러난 요청)을 토큰 갱신 후 재요청

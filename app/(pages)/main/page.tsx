@@ -29,6 +29,10 @@ interface Monster {
 export default function Page() {
   const [month, setMonth] = useState(false);
   const [sized, setSized] = useState(false);
+  const [day, setDay] = useState(0);
+  const [walking, setWalking] = useState(false);
+  const [timeLeft, setTimeLeft] = useState<any>({});
+
   const [status, setStatus] = useState<Monster>({
     user_id: 0,
     level: "",
@@ -41,17 +45,129 @@ export default function Page() {
     experience: { user_id: 0, feed: 0, play: 0, pet: 0 },
   });
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime: any) => {
+        if (prevTime.hour === 0 && prevTime.min === 0) {
+          clearInterval(timer);
+          return prevTime;
+        }
+
+        let newHour = prevTime.hour;
+        let newMin = prevTime.min;
+
+        if (newMin > 0) {
+          newMin--;
+        } else if (newHour > 0) {
+          newHour--;
+          newMin = 59;
+        }
+
+        return { hour: newHour, min: newMin };
+      });
+    }, 60000); // 1분(60000ms)마다 업데이트
+
+    return () => clearInterval(timer);
+  }, []);
+
+  function calculateDaysSinceCreation(userData: Monster): number {
+    const createdAt = new Date(userData.created_at);
+    const today = new Date();
+
+    // 시간대 차이로 인한 오차를 방지하기 위해 날짜만 비교
+    const createdAtUTC = Date.UTC(
+      createdAt.getFullYear(),
+      createdAt.getMonth(),
+      createdAt.getDate()
+    );
+    const todayUTC = Date.UTC(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
+
+    const millisecondsPerDay = 1000 * 60 * 60 * 24;
+    const daysDifference = Math.floor(
+      (todayUTC - createdAtUTC) / millisecondsPerDay
+    );
+
+    return daysDifference;
+  }
+
   const getStatus = async () => {
     const res = await instance.get("/user");
     const resGotchi = await instance.get(
-      `/tamagotchi/${res.data.userId}/status?`
+      `/tamagotchi/${res.data.userId}/status`
+    );
+    const resTime = await instance.get(
+      `/tamagotchi/${res.data.userId}/level-progress`
     );
     setStatus(resGotchi.data);
+    setDay(calculateDaysSinceCreation(resGotchi.data));
+    setTimeLeft({ hour: res.data.hour, min: res.data.min });
+  };
+
+  const feed = async () => {
+    const res = await instance.get("/user");
+    try {
+      const resGotchi = await instance.post(`tamagotchi/feed`, {
+        userId: res.data.userId,
+      });
+    } catch (e: any) {
+      if (e.status === 403) {
+        alert("아픈 친구에게는 먹이를 줄 수 없어요");
+      }
+      console.log(e);
+    }
+    getStatus();
+  };
+
+  const pet = async () => {
+    const res = await instance.get("/user");
+    try {
+      const resGotchi = await instance.post(`tamagotchi/pet`, {
+        userId: res.data.userId,
+      });
+    } catch (e: any) {
+      if (e.status === 403) {
+        alert("아픈 친구를 쓰다듬을 수 없어요");
+      }
+      console.log(e);
+    }
+    getStatus();
+  };
+
+  const walk = async () => {
+    const res = await instance.get("/user");
+    try {
+      const resGotchi = await instance.post(`tamagotchi/play`, {
+        userId: res.data.userId,
+      });
+      setWalking(true);
+    } catch (e: any) {
+      if (e.status === 403) {
+        alert("아픈 친구를 쓰다듬을 수 없어요");
+      }
+      setWalking(false);
+      console.log(e);
+    }
+    getStatus();
+  };
+
+  const cure = async () => {
+    const res = await instance.get("/user");
+    try {
+      const resGotchi = await instance.post(`tamagotchi/cure`, {
+        userId: res.data.userId,
+      });
+    } catch (e: any) {
+      console.log(e);
+    }
+    getStatus();
   };
 
   useEffect(() => {
     getStatus();
-    console.log(status);
   }, []);
 
   return (
@@ -61,19 +177,44 @@ export default function Page() {
           sized ? "z-[129]" : ""
         }`}
       >
-        <img src="/room.png" className="absolute z-1" alt="room" />
+        {walking ? (
+          <img src="/back.gif" className="absolute z-1" alt="room" />
+        ) : (
+          <img src="/room.png" className="absolute z-1" alt="room" />
+        )}
+
         <div className=" inset-0 flex items-start justify-center absolute z-[101] top-[10px] ">
           <div className="relative  flex flex-col justify-center items-center">
             <div className="flex items-center">
               <img src="/coin.svg" alt="coin" />
               <span className="font-neodunggeunmo mr-[13px] ml-[3px]">10</span>
-              <span className="font-neodunggeunmo mr-[8px]">Day 2</span>
+              <span className="font-neodunggeunmo mr-[8px]">Day {day}</span>
               <img src="/energy.svg" alt="energy" className="mr-[8px]" />
-              <img src="/heart.png" alt="heart" />
-              <img src="/heart.png" alt="heart" />
-              <img src="/heart.png" alt="heart" />
-              <img src="/heartHalf.png" alt="heart" />
-              <img src="/emptyHeart.png" alt="heart" />
+
+              {Array.from({ length: status.happiness / 2 }, (_, index) => (
+                <img
+                  key={index}
+                  src="/heart.png"
+                  alt={`Repeated image ${index + 1}`}
+                />
+              ))}
+              {Array.from({ length: status.happiness % 2 }, (_, index) => (
+                <img
+                  key={index}
+                  src="/heartHalf.png"
+                  alt={`Repeated image ${index + 1}`}
+                />
+              ))}
+              {Array.from(
+                { length: 5 - (status.happiness / 2 + (status.happiness % 2)) },
+                (_, index) => (
+                  <img
+                    key={index}
+                    src="/emptyHeart.png"
+                    alt={`Repeated image ${index + 1}`}
+                  />
+                )
+              )}
             </div>
           </div>
         </div>
@@ -94,8 +235,9 @@ export default function Page() {
                 <rect x="6" y="2" width="88" height="1" fill="#D8D8D8" />
                 <rect x="6" y="32" width="88" height="1" fill="#D8D8D8" />
               </svg>
-              <div className="font-neodunggeunmo absolute z-[130] top-[12px] left-[35px]">
-                48:00
+              <div className="font-neodunggeunmo absolute z-[130] top-[12px] left-[0px] flex justify-center items-center">
+                {String(timeLeft.hour).padStart(2, "0")}:
+                {String(timeLeft.min).padStart(2, "0")}
               </div>
             </div>
             <img
@@ -105,10 +247,16 @@ export default function Page() {
             />
           </div>
         )}
-        {status.level === "baby" && <img src="/step1_default.gif" alt="baby" />}
+        {status.level === "baby" && (
+          <img src="/step2_default.gif" alt="adult" />
+        )}
+        {status.level === "adult" && (
+          <img src="/step1_default.gif" alt="baby" />
+        )}
+
         <div className="absolute flex justify-center items-center left-[7px] bottom-[10px] z-[102]">
           <div className="flex space-x-[8px]">
-            <div className="relative cursor-pointer">
+            <div className="relative cursor-pointer" onClick={feed}>
               <img src="/button.png" alt="button" />
               <img
                 className="absolute z-[2] top-[2px] left-[21px]"
@@ -116,7 +264,7 @@ export default function Page() {
                 alt="button"
               />
             </div>
-            <div className="relative cursor-pointer">
+            <div className="relative cursor-pointer" onClick={pet}>
               <img src="/button.png" alt="button" />
               <img
                 className="absolute z-[2] top-[2px] left-[21px]"
@@ -124,7 +272,7 @@ export default function Page() {
                 alt="button"
               />
             </div>
-            <div className="relative cursor-pointer">
+            <div className="relative cursor-pointer" onClick={walk}>
               <img src="/button.png" alt="button" />
               <img
                 className="absolute z-[2] top-[2px] left-[21px]"
@@ -132,8 +280,18 @@ export default function Page() {
                 alt="button"
               />
             </div>
-            <div className="relative cursor-pointer">
-              <img src="/disableButton.png" alt="button" />
+            <div
+              className={`relative ${
+                status.health_status === "sick" ? "cursor-pointer" : ""
+              } `}
+              onClick={cure}
+            >
+              {status.health_status === "sick" ? (
+                <img src="/button.png" alt="button" />
+              ) : (
+                <img src="/disableButton.png" alt="button" />
+              )}
+
               <img
                 className="absolute z-[2] top-[2px] left-[21px]"
                 src="/fix.png"
