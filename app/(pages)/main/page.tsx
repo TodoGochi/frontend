@@ -156,7 +156,7 @@ export default function Page() {
   const cure = async () => {
     const res = await instance.get("/user");
     try {
-      const resGotchi = await instance.post(`tamagotchi/cure`, {
+      const resGotchi = await instance.post(`/tamagotchi/cure`, {
         userId: res.data.userId,
       });
     } catch (e: any) {

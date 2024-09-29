@@ -48,7 +48,7 @@ instance.interceptors.response.use(
   async (error) => {
     if (error.response?.status === 401) {
       const res: any = await tokenRefresh();
-      const responseToken = res.data.accessToken;
+      const responseToken = res;
 
       localStorage.setItem("accessToken", responseToken);
 
