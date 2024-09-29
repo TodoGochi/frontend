@@ -31,7 +31,8 @@ export default function Page() {
   const [sized, setSized] = useState(false);
   const [day, setDay] = useState(0);
   const [walking, setWalking] = useState(false);
-  const [timeLeft, setTimeLeft] = useState<any>({});
+  const [message, setMessage] = useState("");
+  const [timeLeft, setTimeLeft] = useState<any>({ hour: 48, min: 0 });
 
   const [status, setStatus] = useState<Monster>({
     user_id: 0,
@@ -124,14 +125,12 @@ export default function Page() {
 
   const pet = async () => {
     const res = await instance.get("/user");
+
     try {
       const resGotchi = await instance.post(`tamagotchi/pet`, {
         userId: res.data.userId,
       });
     } catch (e: any) {
-      if (e.status === 403) {
-        alert("아픈 친구를 쓰다듬을 수 없어요");
-      }
       console.log(e);
     }
     getStatus();
@@ -146,7 +145,7 @@ export default function Page() {
       setWalking(true);
     } catch (e: any) {
       if (e.status === 403) {
-        alert("아픈 친구를 쓰다듬을 수 없어요");
+        alert("아픈 친구와 산책할 수 없어요");
       }
       setWalking(false);
       console.log(e);
@@ -166,9 +165,58 @@ export default function Page() {
     getStatus();
   };
 
+  const eggSay = () => {
+    const messages: string[] = [
+      "이 순간을 만끽하고 있어!",
+      "너를 위해 내가 더 귀여워질게, 기대해!",
+      "너는 나의 소중한 친구야.",
+      "몸이 막 근질근질해!",
+      "너와 함께 할 수 있어 정말 행복해!",
+      "내 목소리 들리니?",
+    ];
+    const randomIndex = Math.floor(Math.random() * messages.length);
+    setMessage(message[randomIndex]);
+  };
+
+  const babySay = () => {
+    const messages: string[] = [
+      "너의 사랑이 필요해!",
+      "내가 이렇게 귀여운 건 네 덕분이야!",
+      "너를 생각하면서 놀고 있었어.",
+      "내가 최고의 강아지라는 건 모두가 알아!",
+      "너와 함께하는 매일이 소중해.",
+      "산책 가는 건 나의 특권이야!",
+      "내가 귀여운 건 대체로 사실이야.",
+    ];
+    const randomIndex = Math.floor(Math.random() * messages.length);
+    setMessage(message[randomIndex]);
+  };
+
+  const adultSay = () => {
+    const messages: string[] = [
+      "어른 강아지로서 품격을 지켜야 해.",
+      "나의 성숙한 매력에 빠져봐!",
+      "너는 나의 소중한 친구야.",
+      "너와 함께하는 매일이 소중해.",
+      "꾸준한 모습 진짜 멋져, 내 자랑이야!",
+      "일 끝나면 나랑 산책하러 가자, 약속이야!",
+      "일할 때 나도 옆에서 응원해 줄게!",
+      "내 귀여움이 힘이 돼.",
+    ];
+    const randomIndex = Math.floor(Math.random() * messages.length);
+    setMessage(message[randomIndex]);
+  };
+
   useEffect(() => {
     getStatus();
   }, []);
+
+  useEffect(() => {
+    if (!walking) return;
+    setTimeout(() => {
+      setWalking(false);
+    }, 3000);
+  }, [walking]);
 
   return (
     <div className="bg-neutral-700 flex items-center justify-center min-h-screen h-full w-screen max-xs:w-full max-xs:h-full relative flex-col">
@@ -191,13 +239,16 @@ export default function Page() {
               <span className="font-neodunggeunmo mr-[8px]">Day {day}</span>
               <img src="/energy.svg" alt="energy" className="mr-[8px]" />
 
-              {Array.from({ length: status.happiness / 2 }, (_, index) => (
-                <img
-                  key={index}
-                  src="/heart.png"
-                  alt={`Repeated image ${index + 1}`}
-                />
-              ))}
+              {Array.from(
+                { length: Math.floor(status.happiness / 2) },
+                (_, index) => (
+                  <img
+                    key={index}
+                    src="/heart.png"
+                    alt={`Repeated image ${index + 1}`}
+                  />
+                )
+              )}
               {Array.from({ length: status.happiness % 2 }, (_, index) => (
                 <img
                   key={index}
@@ -206,7 +257,11 @@ export default function Page() {
                 />
               ))}
               {Array.from(
-                { length: 5 - (status.happiness / 2 + (status.happiness % 2)) },
+                {
+                  length:
+                    5 -
+                    (Math.floor(status.happiness / 2) + (status.happiness % 2)),
+                },
                 (_, index) => (
                   <img
                     key={index}
@@ -241,6 +296,7 @@ export default function Page() {
               </div>
             </div>
             <img
+              onClick={eggSay}
               className="absolute z-[103] bottom-[70px] left-[120px]"
               src="/egg_default.gif"
               alt="egg"
@@ -248,10 +304,10 @@ export default function Page() {
           </div>
         )}
         {status.level === "baby" && (
-          <img src="/step2_default.gif" alt="adult" />
+          <img onClick={babySay} src="/step2_default.gif" alt="adult" />
         )}
         {status.level === "adult" && (
-          <img src="/step1_default.gif" alt="baby" />
+          <img onClick={adultSay} src="/step1_default.gif" alt="baby" />
         )}
 
         <div className="absolute flex justify-center items-center left-[7px] bottom-[10px] z-[102]">
