@@ -166,9 +166,7 @@ const WeekCalendar = ({ setMonth, month }: any) => {
               className={`z-20 relative mt-[8px] ${
                 isDateSelected(date) ? "text-white" : "text-black"
               } ${
-                date.getMonth() !== weekDates[0].getMonth()
-                  ? "text-gray-400"
-                  : ""
+                date.getMonth() !== weekDates[0].getMonth() ? "text-black" : ""
               }`}
             >
               {date.getDate()}
