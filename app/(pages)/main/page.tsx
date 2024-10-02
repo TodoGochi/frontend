@@ -31,8 +31,10 @@ interface Monster {
 export default function Page() {
   const [month, setMonth] = useState(false);
   const [modal, setModal] = useState(false);
+  const [button, setButton] = useState(2);
   const [sized, setSized] = useState(false);
-  const [modalCoin, setModalCoin] = useState(0);
+  const [modalCoin, setModalCoin] = useState(10);
+  const [buttonText, setButtonText] = useState("REVIVE");
   const [day, setDay] = useState(0);
   const [walking, setWalking] = useState(false);
   const [modalText, setModalText] = useState("");
@@ -105,6 +107,13 @@ export default function Page() {
     const resGotchi = await instance.get(
       `/tamagotchi/${res.data.userId}/status`
     );
+
+    if (resGotchi.data.health_status !== "HEALTHY") {
+      setModalText(`다마고치가 아파요. \n 치료 하시겠어요?`);
+    }
+
+    console.log(resGotchi.data);
+
     const resTime = await instance.get(
       `/tamagotchi/${res.data.userId}/level-progress`
     );
@@ -175,9 +184,17 @@ export default function Page() {
       console.log(e);
     }
     setModal(true);
-    setModalText(`다마고치가 아파요.
-치료 하시겠어요?`);
+    setModalText(`다마고치가 아파요. \n 치료 하시겠어요?`);
     getStatus();
+  };
+
+  const revive = async () => {
+    try {
+      // const res = await instance.post("");
+      setModalText(`정말 부활시킬 건가요?`);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const eggSay = () => {
@@ -224,6 +241,7 @@ export default function Page() {
 
   useEffect(() => {
     getStatus();
+    revive(); // 지울 것
   }, []);
 
   useEffect(() => {
@@ -543,9 +561,15 @@ export default function Page() {
         </div>
         <div className={`${sized ? "w-full h-[369px]" : ""}`}></div>
       </div>
-      {modal && (
-        <GochiModal text={modalText} setModal={setModal} coin={modalCoin} />
-      )}
+      {
+        <GochiModal
+          text={modalText}
+          setModal={setModal}
+          coin={modalCoin}
+          button={button}
+          buttonText={buttonText}
+        />
+      }
     </>
   );
 }
