@@ -20,7 +20,7 @@ const colorTagToColor: { [key: string]: string } = {
   YELLOW: "f7e583",
   GREEN: "a6e091",
   BLUE: "78c1f6",
-  PURPLE: "ba9edd",
+  INDIGO: "ba9edd",
   GRAY: "d7d7d7",
 };
 
@@ -33,6 +33,7 @@ interface ListItemProps {
   color: string;
   onSelect: (id: number) => void;
   item: any;
+  getData: () => void;
 }
 
 const ListItem: React.FC<ListItemProps> = ({
@@ -44,6 +45,7 @@ const ListItem: React.FC<ListItemProps> = ({
   color,
   onSelect,
   item,
+  getData,
 }) => {
   const [translation, setTranslation] = useState(0);
   const [click, setClick] = useState(false);
@@ -251,7 +253,13 @@ const ListItem: React.FC<ListItemProps> = ({
         </div>
       ) : (
         <div className="mb-[30px]">
-          <TodoAdd initialData={item} setAdd={setClickEdit} />
+          <TodoAdd
+            getData={getData}
+            edit={true}
+            id={id}
+            initialData={item}
+            setAdd={setClickEdit}
+          />
         </div>
       )}
     </>
@@ -321,21 +329,21 @@ const SwipeActionList: React.FC = () => {
     [items]
   );
 
-  const handleDelete = useCallback((id: number) => {
-    setItems((prevItems) => prevItems.filter((item) => item.id !== id));
-  }, []);
+  const handleDelete = async (id: number) => {
+    const res = await instance.get("/user");
+    const deleteRes = await instance.delete(
+      `/todolist/delete/${id}?userId=${res.data.userId}`
+    );
+    getData();
+  };
 
   const handleDelay = useCallback(() => {
     setModal(true);
   }, []);
 
-  const handleSelect = useCallback(
-    (id: number) => {
-      console.log("handleSelect called with id:", id);
-      handleEdit(id);
-    },
-    [handleEdit]
-  );
+  const handleSelect = (id: number) => {
+    handleEdit(id);
+  };
 
   const handleShowFullAdd = useCallback(() => {
     setSimpleAdd(false);
@@ -360,6 +368,7 @@ const SwipeActionList: React.FC = () => {
 
     setSimpleAdd(false);
     setAdd(false);
+    getData();
   };
 
   useEffect(() => {
@@ -372,7 +381,7 @@ const SwipeActionList: React.FC = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [ref]); // No need to include selectedDays here
+  }, [ref, selectedDate]); // selectedDate를 의존성 배열에 추가
 
   return (
     <>
@@ -453,7 +462,12 @@ const SwipeActionList: React.FC = () => {
       )}
 
       {add && (
-        <TodoAdd setAdd={setAdd} initialData={selectedItem} val={inputValue} />
+        <TodoAdd
+          setAdd={setAdd}
+          initialData={selectedItem}
+          val={inputValue}
+          getData={getData}
+        />
       )}
 
       <div className="w-[380px] mx-auto p-4 rounded-lg shadow-lg">
@@ -469,6 +483,7 @@ const SwipeActionList: React.FC = () => {
                 onDelete={handleDelete}
                 onDelay={handleDelay}
                 onSelect={handleSelect}
+                getData={getData}
               />
             </div>
           ))}

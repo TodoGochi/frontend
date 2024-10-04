@@ -26,15 +26,20 @@ interface TodoAddProps {
   initialData: TodoItem | null;
   tutorial?: boolean;
   val?: string;
+  edit?: boolean;
+  id?: number;
+  getData: () => void;
 }
 
 const TodoAdd: React.FC<TodoAddProps> = ({
   setAdd,
   initialData,
   tutorial,
+  edit,
   val,
+  getData,
+  id,
 }) => {
-  const [timeState, timeActions] = useTimePicker();
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const [selectedColor, setSelectedColor] = useState("bg-[#ff9b99]");
   const [inputValue, setInputValue] = useState("");
@@ -64,7 +69,7 @@ const TodoAdd: React.FC<TodoAddProps> = ({
     "bg-[#f7e583]": "YELLOW",
     "bg-[#a6e091]": "GREEN",
     "bg-[#78c1f6]": "BLUE",
-    "bg-[#ba9edd]": "PURPLE",
+    "bg-[#ba9edd]": "INDIGO",
     "bg-[#d7d7d7]": "GRAY",
   };
 
@@ -80,43 +85,42 @@ const TodoAdd: React.FC<TodoAddProps> = ({
 
   const initialDataRef = useRef(initialData);
 
+  const [timeState, timeActions] = useTimePicker();
+
   useEffect(() => {
-    if (initialDataRef.current) {
-      const { days, color, text, time } = initialDataRef.current;
-      setTodoState({
-        selectedDays: days,
-        selectedColor: `bg-[#${color}]`,
-        inputValue: text,
-      });
+    if (initialData) {
+      const { days, color, text, time } = initialData;
+
+      setSelectedDays(days);
+      setSelectedColor(`bg-[#${color}]`);
       setInputValue(text);
 
-      const [h, m, p] = time.split(/:| /);
-      const newHours = parseInt(h);
-      const newMinutes = m;
-      const newAmPm = p as "AM" | "PM";
+      // 시간 상태 업데이트
+      const [h, m] = time.split(":");
+      let newHours = parseInt(h, 10);
+      let newMinutes = m.substring(0, 2);
+      let newAmPm = "AM";
 
-      timeActions.handleHoursChange({
-        target: { value: newHours.toString() },
-      } as React.ChangeEvent<HTMLInputElement>);
-      timeActions.handleMinutesChange({
-        target: { value: newMinutes },
-      } as React.ChangeEvent<HTMLInputElement>);
-
-      if (timeState.amPm !== newAmPm) {
-        timeActions.toggleAmPm();
+      if (newHours >= 12) {
+        newAmPm = "PM";
+        if (newHours > 12) newHours -= 12;
+      }
+      if (newHours === 0) {
+        newHours = 12;
       }
 
-      initialDataRef.current = null;
+      timeActions.setHours(newHours);
+      timeActions.setMinutes(newMinutes);
+      timeActions.setAmPm(newAmPm);
     }
-  }, []); // 초기화에만 의존
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
         ref.current &&
         !ref.current.contains(event.target as Node) &&
-        !tutorial &&
-        selectedDays.length > 0
+        !tutorial
       ) {
         handleSubmit();
       }
@@ -125,24 +129,27 @@ const TodoAdd: React.FC<TodoAddProps> = ({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [tutorial, selectedDays.length]); // 필요한 의존성만 추가
+  }, [
+    tutorial,
+    selectedDays.length,
+    selectedColor,
+    days,
+    timeState,
+    inputValue,
+    timeActions,
+  ]); // 필요한 의존성만 추가
 
   const handleCheckboxChange = useCallback(() => {
     setClick((prev) => !prev);
   }, []);
 
-  const toggleDay = useCallback((day: string) => {
+  const toggleDay = (day: string) => {
     setSelectedDays((prev) =>
       prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
     );
-  }, []);
+  };
 
-  const handleSubmit = useCallback(async () => {
-    if (selectedDays.length === 0) {
-      alert("요일을 하나 이상 설정해주세요!");
-      return;
-    }
-
+  const handleSubmit = async () => {
     const hours =
       timeState.hours === 12
         ? timeState.amPm === "AM"
@@ -154,15 +161,18 @@ const TodoAdd: React.FC<TodoAddProps> = ({
 
     try {
       const res = await instance.get("/user");
+
       const apiTodo: ApiTodoItem = {
         userId: res.data.userId,
-        todoText: todoState.inputValue,
-        colorTag: colorToTag[todoState.selectedColor] || "RED",
+        todoText: inputValue || todoState.inputValue,
+        colorTag: colorToTag[selectedColor] || "RED",
         days: selectedDays.map((day) => dayToFull[day]),
         targetTime: `${hours}:${timeState.minutes}`,
       };
 
-      await instance.post("/todolist/weekly", apiTodo);
+      if (edit) {
+        instance.put(`/todolist/update/${id}`, apiTodo);
+      } else await instance.post("/todolist/weekly", apiTodo);
 
       setTodoState({
         selectedDays: [],
@@ -173,13 +183,8 @@ const TodoAdd: React.FC<TodoAddProps> = ({
     } catch (error) {
       console.error("Error submitting todo:", error);
     }
-  }, [
-    selectedDays,
-    timeState,
-    todoState.inputValue,
-    todoState.selectedColor,
-    setAdd,
-  ]);
+    getData();
+  };
 
   return (
     <div
@@ -267,7 +272,7 @@ const TodoAdd: React.FC<TodoAddProps> = ({
           ))}
         </div>
 
-        <CustomTimePicker />
+        <CustomTimePicker timeState={timeState} timeActions={timeActions} />
 
         <div className="flex space-x-2 mb-4">
           {colors.map((color) => (

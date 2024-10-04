@@ -1,12 +1,30 @@
 /* eslint-disable @next/next/no-img-element */
+// CustomTimePicker.tsx
 import React from "react";
-import { useTimePicker } from "../hooks/timepicker";
 
-const CustomTimePicker = () => {
-  const [
-    { amPm, hours, minutes },
-    { toggleAmPm, handleHoursChange, handleMinutesChange },
-  ] = useTimePicker();
+interface TimePickerState {
+  amPm: string;
+  hours: number;
+  minutes: string;
+}
+
+interface TimePickerActions {
+  toggleAmPm: () => void;
+  handleHoursChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleMinutesChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+interface CustomTimePickerProps {
+  timeState: TimePickerState;
+  timeActions: TimePickerActions;
+}
+
+const CustomTimePicker: React.FC<CustomTimePickerProps> = ({
+  timeState,
+  timeActions,
+}) => {
+  const { amPm, hours, minutes } = timeState;
+  const { toggleAmPm, handleHoursChange, handleMinutesChange } = timeActions;
 
   return (
     <div className="flex items-center p-3 rounded-md ml-[50px] mb-[10px]">

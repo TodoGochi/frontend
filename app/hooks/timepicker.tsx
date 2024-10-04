@@ -1,3 +1,4 @@
+// useTimePicker.ts
 import { useState } from "react";
 
 interface TimePickerState {
@@ -10,6 +11,9 @@ interface TimePickerActions {
   toggleAmPm: () => void;
   handleHoursChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleMinutesChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  setAmPm: React.Dispatch<React.SetStateAction<string>>;
+  setHours: React.Dispatch<React.SetStateAction<number>>;
+  setMinutes: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export function useTimePicker(
@@ -35,6 +39,13 @@ export function useTimePicker(
 
   return [
     { amPm, hours, minutes },
-    { toggleAmPm, handleHoursChange, handleMinutesChange },
+    {
+      toggleAmPm,
+      handleHoursChange,
+      handleMinutesChange,
+      setAmPm,
+      setHours,
+      setMinutes,
+    },
   ];
 }

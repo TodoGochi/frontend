@@ -241,7 +241,7 @@ export default function Page() {
 
   useEffect(() => {
     getStatus();
-    revive(); // 지울 것
+    // revive(); // 지울 것
   }, []);
 
   useEffect(() => {
@@ -561,7 +561,7 @@ export default function Page() {
         </div>
         <div className={`${sized ? "w-full h-[369px]" : ""}`}></div>
       </div>
-      {
+      {modal && (
         <GochiModal
           text={modalText}
           setModal={setModal}
@@ -569,7 +569,7 @@ export default function Page() {
           button={button}
           buttonText={buttonText}
         />
-      }
+      )}
     </>
   );
 }
