@@ -32,6 +32,7 @@ export default function Page() {
   const [month, setMonth] = useState(false);
   const [modal, setModal] = useState(false);
   const [button, setButton] = useState(2);
+  const [totalCoin, setTotalCoin] = useState(0);
   const [sized, setSized] = useState(false);
   const [modalCoin, setModalCoin] = useState(10);
   const [buttonText, setButtonText] = useState("REVIVE");
@@ -40,6 +41,7 @@ export default function Page() {
   const [modalText, setModalText] = useState("");
   const [message, setMessage] = useState("");
   const [timeLeft, setTimeLeft] = useState<any>({ hour: 48, min: 0 });
+  const [todayCoin, setTodayCoin] = useState(0);
 
   const [status, setStatus] = useState<Monster>({
     user_id: 0,
@@ -107,6 +109,13 @@ export default function Page() {
     const resGotchi = await instance.get(
       `/tamagotchi/${res.data.userId}/status`
     );
+    const resTransaction = await instance.get(
+      `/user/${res.data.userId}/coin-transactions`
+    );
+
+    setTotalCoin(res.data.coin);
+
+    processMultipleDates(resTransaction.data.map((el: any) => el.createdAt));
 
     if (resGotchi.data.health_status !== "HEALTHY") {
       setModalText(`다마고치가 아파요. \n 치료 하시겠어요?`);
@@ -251,6 +260,27 @@ export default function Page() {
     }, 4000);
   }, [walking]);
 
+  function trackCoins(createdAtStr: string) {
+    const createdAt = new Date(createdAtStr);
+    const today = new Date();
+
+    const daysDiff = Math.floor(
+      (today.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24)
+    );
+
+    // Define coin tracking logic
+    if (daysDiff === 0) {
+      setTodayCoin(todayCoin + 1);
+    }
+  }
+
+  function processMultipleDates(dates: any) {
+    return dates.map((date: any) => ({
+      date,
+      coins: trackCoins(date),
+    }));
+  }
+
   return (
     <>
       <div className="bg-neutral-700 flex items-center justify-center min-h-screen h-full w-screen max-xs:w-full max-xs:h-full relative flex-col">
@@ -270,7 +300,7 @@ export default function Page() {
               <div className="flex items-center">
                 <img src="/coin.svg" alt="coin" />
                 <span className="font-neodunggeunmo mr-[13px] ml-[3px]">
-                  10
+                  {totalCoin}
                 </span>
                 <span className="font-neodunggeunmo mr-[8px]">Day {day}</span>
                 <HungerMeter hunger={status.hunger} />
@@ -550,7 +580,7 @@ export default function Page() {
             <div className="flex text-[12px] items-center">
               <img src="/coin.svg" alt="coin" />
               <span className="ml-[5px]">Today Coin</span>
-              <span className="ml-[5px]">2</span>
+              <span className="ml-[5px]">{todayCoin}</span>
             </div>
             <div className="flex items-center">
               <img src="list.svg" alt="sort" />

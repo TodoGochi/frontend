@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import CustomTimePicker from "./TimePicker";
 import { useTimePicker } from "../hooks/timepicker";
 import { instance } from "../utils/axios";
+import { useStore } from "../store/date";
 
 interface TodoItem {
   id: number;
@@ -44,6 +45,8 @@ const TodoAdd: React.FC<TodoAddProps> = ({
   const [selectedColor, setSelectedColor] = useState("bg-[#ff9b99]");
   const [inputValue, setInputValue] = useState("");
   const [click, setClick] = useState(false);
+
+  const selectedDate = useStore((state) => state.selectedDate);
 
   const [todoState, setTodoState] = useState({
     selectedDays: [] as string[],
@@ -139,8 +142,39 @@ const TodoAdd: React.FC<TodoAddProps> = ({
     timeActions,
   ]); // 필요한 의존성만 추가
 
-  const handleCheckboxChange = useCallback(() => {
-    setClick((prev) => !prev);
+  const handleCheckboxChange = async () => {
+    setClick(true);
+    const res: any = await instance.get("/user");
+    const postRes: any = instance.post(
+      `todolist/complete/${res.data.userId}/${id}`
+    );
+    getData();
+  };
+
+  const formatDateToYYYYMMDD = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-indexed
+    const day = date.getDate().toString().padStart(2, "0");
+
+    return `${year}${month}${day}`;
+  };
+
+  const getDataClicked = async () => {
+    if (id) {
+      const res = await instance.get("/user");
+      const todoListRes = await instance.get(
+        `/todolist/${res.data.userId}/${parseInt(
+          formatDateToYYYYMMDD(selectedDate as Date)
+        )}`
+      );
+      setClick(
+        !!todoListRes.data.filter((el: any) => el.todoId === id)[0].status
+      );
+    }
+  };
+
+  useEffect(() => {
+    getDataClicked();
   }, []);
 
   const toggleDay = (day: string) => {
@@ -162,17 +196,27 @@ const TodoAdd: React.FC<TodoAddProps> = ({
     try {
       const res = await instance.get("/user");
 
-      const apiTodo: ApiTodoItem = {
-        userId: res.data.userId,
-        todoText: inputValue || todoState.inputValue,
-        colorTag: colorToTag[selectedColor] || "RED",
-        days: selectedDays.map((day) => dayToFull[day]),
-        targetTime: `${hours}:${timeState.minutes}`,
-      };
+      if (selectedDays.length === 0 && !edit) {
+        const postRes: any = await instance.post("/todolist/specific-day", {
+          userId: res.data.userId,
+          todoText: inputValue || todoState.inputValue,
+          colorTag: colorToTag[selectedColor] || "GRAY",
+          targetDate: parseInt(formatDateToYYYYMMDD(selectedDate as Date)),
+          targetTime: `${hours}:${timeState.minutes}`,
+        });
+      } else {
+        const apiTodo: ApiTodoItem = {
+          userId: res.data.userId,
+          todoText: inputValue || todoState.inputValue,
+          colorTag: colorToTag[selectedColor] || "RED",
+          days: selectedDays.map((day) => dayToFull[day]),
+          targetTime: `${hours}:${timeState.minutes}`,
+        };
 
-      if (edit) {
-        instance.put(`/todolist/update/${id}`, apiTodo);
-      } else await instance.post("/todolist/weekly", apiTodo);
+        if (edit) {
+          instance.put(`/todolist/update/${id}`, apiTodo);
+        } else await instance.post("/todolist/weekly", apiTodo);
+      }
 
       setTodoState({
         selectedDays: [],

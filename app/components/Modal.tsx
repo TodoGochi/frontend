@@ -3,14 +3,37 @@
 
 import { useState } from "react";
 import CalendarModal from "./CalendarModal";
+import { instance } from "../utils/axios";
 
 interface PropsType {
   setModal: (args: boolean) => void;
   text: string;
   tutorial?: boolean;
+  items: any;
+  id: number;
 }
 
-export default function Modal({ setModal, text, tutorial }: PropsType) {
+export default function Modal({
+  setModal,
+  text,
+  tutorial,
+  items,
+  id,
+}: PropsType) {
+  const getTomorrow = async () => {
+    const res: any = await instance.get("/user");
+    const item = items.filter((el: any) => el.id === id)[0];
+
+    instance.put(`/todolist/update/${id}`, {
+      userId: res.data.userId,
+      todoText: item.text,
+      colorTag: item.colorTag,
+      targetDate: parseInt(item.date) + 1,
+      targetTime: item.time,
+    });
+    setModal(false);
+  };
+
   const [modal2, setModal2] = useState(false);
   return (
     <div
@@ -48,7 +71,9 @@ export default function Modal({ setModal, text, tutorial }: PropsType) {
           <div className="flex">
             <div
               className="cursor-pointer w-[110px] h-[35px] px-[15px] py-[7px] text-center text-[#3f3f3f] text-xs font-semibold font-['SUIT'] bg-[#f9f9f9] mr-[10px] rounded-lg flex justify-center items-center"
-              onClick={() => {}}
+              onClick={() => {
+                getTomorrow();
+              }}
             >
               다음 날
             </div>
