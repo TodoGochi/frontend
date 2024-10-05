@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { instance } from "../utils/axios";
 
 // Helper function to get the number of days in a month
 const getDaysInMonth = (year: number, month: number) => {
@@ -27,11 +28,9 @@ const getMonthCalendarDates = (year: number, month: number) => {
   return dates;
 };
 
-const CalendarModal = ({ setModal, setModal2 }: any) => {
+const CalendarModal = ({ setModal, setModal2, items, id, getData }: any) => {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState<number | null>(
-    new Date().getDate()
-  );
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const monthNames = [
     "JAN",
     "FEB",
@@ -53,7 +52,6 @@ const CalendarModal = ({ setModal, setModal2 }: any) => {
       newDate.setMonth(newDate.getMonth() - 1);
       return newDate;
     });
-    setSelectedDate(null);
   };
 
   const handleNextMonth = () => {
@@ -62,17 +60,44 @@ const CalendarModal = ({ setModal, setModal2 }: any) => {
       newDate.setMonth(newDate.getMonth() + 1);
       return newDate;
     });
-    setSelectedDate(null);
   };
 
   const handleDateClick = (date: number | null) => {
     if (date) {
-      setSelectedDate(date);
+      const newSelectedDate = new Date(currentDate);
+      newSelectedDate.setDate(date);
+      setSelectedDate(newSelectedDate);
     }
   };
 
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
+
+  const formatDateToYYYYMMDD = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const day = date.getDate().toString().padStart(2, "0");
+    return `${year}${month}${day}`;
+  };
+
+  const selectDay = async () => {
+    if (!selectedDate) return;
+
+    const res: any = await instance.get("/user");
+    const item = items.filter((el: any) => el.id === id)[0];
+
+    console.log(formatDateToYYYYMMDD(selectedDate));
+
+    instance.put(`/todolist/update/${id}`, {
+      userId: res.data.userId,
+      todoText: item.text,
+      colorTag: item.colorTag,
+      targetDate: parseInt(formatDateToYYYYMMDD(selectedDate)),
+      targetTime: item.time,
+    });
+    setModal(false);
+    getData();
+  };
 
   return (
     <div
@@ -142,9 +167,10 @@ const CalendarModal = ({ setModal, setModal2 }: any) => {
             ({ date }, index) => (
               <div
                 key={index}
-                className={`rounded-full w-8 h-8 flex items-center justify-center cursor-pointer ${
+                className={`w-8 h-8 flex items-center justify-center cursor-pointer ${
                   date
-                    ? date === selectedDate
+                    ? date === selectedDate?.getDate() &&
+                      currentMonth === selectedDate?.getMonth()
                       ? "bg-black text-white"
                       : "text-black hover:bg-gray-200"
                     : "text-transparent"
@@ -156,7 +182,10 @@ const CalendarModal = ({ setModal, setModal2 }: any) => {
             )
           )}
         </div>
-        <div className="pt-[30px] w-full h-[65px] bg-[#EDEDED] flex justify-center items-center mx-auto rounded-b-lg pb-[30px]">
+        <div
+          className="pt-[30px] w-full h-[65px] bg-[#EDEDED] flex justify-center items-center mx-auto rounded-b-lg pb-[30px]"
+          onClick={selectDay}
+        >
           <div className="cursor-pointer w-[290px] h-[35px] bg-[#FAFAFA] flex justify-center items-center rounded-lg">
             날짜 선택
           </div>

@@ -250,6 +250,9 @@ export default function Page() {
 
           {isClient && currentStep === 20 && modal && (
             <Modal
+              id={0}
+              items={[]}
+              getData={() => {}}
               tutorial={true}
               setModal={setModal}
               text={`할 일을 전부 완료했어요!

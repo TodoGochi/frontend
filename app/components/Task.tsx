@@ -36,6 +36,7 @@ interface ListItemProps {
   onSelect: (id: number) => void;
   item: any;
   getData: () => void;
+  setModal3: (args: boolean) => void;
 }
 
 const ListItem: React.FC<ListItemProps> = ({
@@ -48,6 +49,7 @@ const ListItem: React.FC<ListItemProps> = ({
   onSelect,
   item,
   getData,
+  setModal3,
 }) => {
   const [translation, setTranslation] = useState(0);
   const [click, setClick] = useState(false);
@@ -160,7 +162,13 @@ const ListItem: React.FC<ListItemProps> = ({
   const handleCheckboxChange = async () => {
     setClick(true);
     const res: any = await instance.get("/user");
-    instance.post(`todolist/complete/${res.data.userId}/${id}`);
+    const postRes: any = await instance.post(
+      `todolist/complete/${res.data.userId}/${id}`
+    );
+    if (postRes.data.rewardCoin === 3) {
+      setModal3 && setModal3(true);
+    }
+    getData();
   };
 
   useEffect(() => {
@@ -280,6 +288,7 @@ const SwipeActionList: React.FC = () => {
   const [click, setClick] = useState(false);
   const [items, setItems] = useState<TodoItem[]>([]);
   const [modalId, setModalId] = useState(0);
+  const [modal3, setModal3] = useState(false);
 
   const selectedDate = useStore((state) => state.selectedDate);
 
@@ -477,6 +486,7 @@ const SwipeActionList: React.FC = () => {
           initialData={selectedItem}
           val={inputValue}
           getData={getData}
+          setModal3={setModal3}
         />
       )}
 
@@ -485,6 +495,7 @@ const SwipeActionList: React.FC = () => {
           {items.map((item) => (
             <div key={item.id}>
               <ListItem
+                setModal3={setModal3}
                 item={item}
                 id={item.id}
                 text={item.text}
@@ -500,7 +511,24 @@ const SwipeActionList: React.FC = () => {
         </ul>
       </div>
       {modal && (
-        <Modal setModal={setModal} text="" items={items} id={modalId} />
+        <Modal
+          setModal={setModal}
+          text=""
+          items={items}
+          id={modalId}
+          getData={getData}
+        />
+      )}
+      {modal3 && (
+        <Modal
+          id={0}
+          items={[]}
+          getData={() => {}}
+          tutorial={true}
+          setModal={setModal}
+          text={`할 일을 전부 완료했어요!
+보너스 코인을 드릴게요.`}
+        />
       )}
     </>
   );

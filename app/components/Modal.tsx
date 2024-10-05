@@ -11,6 +11,7 @@ interface PropsType {
   tutorial?: boolean;
   items: any;
   id: number;
+  getData: () => void;
 }
 
 export default function Modal({
@@ -19,6 +20,7 @@ export default function Modal({
   tutorial,
   items,
   id,
+  getData,
 }: PropsType) {
   const getTomorrow = async () => {
     const res: any = await instance.get("/user");
@@ -32,6 +34,7 @@ export default function Modal({
       targetTime: item.time,
     });
     setModal(false);
+    getData();
   };
 
   const [modal2, setModal2] = useState(false);
@@ -92,7 +95,16 @@ export default function Modal({
           </div>
         </div>
       </div>
-      {modal2 && <CalendarModal setModal2={setModal2} setModal={setModal} />}
+      {modal2 && (
+        <CalendarModal
+          setModal2={setModal2}
+          setModal={setModal}
+          text=""
+          items={items}
+          id={id}
+          getData={getData}
+        />
+      )}
     </div>
   );
 }

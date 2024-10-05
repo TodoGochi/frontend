@@ -121,14 +121,14 @@ export default function Page() {
       setModalText(`다마고치가 아파요. \n 치료 하시겠어요?`);
     }
 
-    console.log(resGotchi.data);
-
     const resTime = await instance.get(
-      `/tamagotchi/${res.data.userId}/level-progress`
+      `/tamagotchi/${resGotchi.data.id}/level-progress`
     );
+
     setStatus(resGotchi.data);
     setDay(calculateDaysSinceCreation(resGotchi.data));
     setTimeLeft({ hour: resTime.data.hour, min: resTime.data.min });
+
     if (resGotchi.data.level === "egg") {
       eggSay();
     } else if (resGotchi.data.level === "adult") {
@@ -139,11 +139,18 @@ export default function Page() {
   };
 
   const feed = async () => {
-    const res = await instance.get("/user");
     try {
-      const resGotchi = await instance.post(`tamagotchi/feed`, {
-        userId: res.data.userId,
-      });
+      const res = await instance.get("/user");
+      const resGotchi = await instance.get(
+        `/tamagotchi/${res.data.userId}/status`
+      );
+
+      const resGotchiFeed = await instance.post(
+        `tamagotchi/${resGotchi.data.id}/feed`,
+        {
+          userId: res.data.userId,
+        }
+      );
     } catch (e: any) {
       if (e.status === 403) {
         alert("아픈 친구에게는 먹이를 줄 수 없어요");
@@ -155,11 +162,17 @@ export default function Page() {
 
   const pet = async () => {
     const res = await instance.get("/user");
+    const resGotchi = await instance.get(
+      `/tamagotchi/${res.data.userId}/status`
+    );
 
     try {
-      const resGotchi = await instance.post(`tamagotchi/pet`, {
-        userId: res.data.userId,
-      });
+      const resGotchiPet = await instance.post(
+        `tamagotchi/${resGotchi.data.id}/pet`,
+        {
+          userId: res.data.userId,
+        }
+      );
     } catch (e: any) {
       console.log(e);
     }
@@ -168,10 +181,17 @@ export default function Page() {
 
   const walk = async () => {
     const res = await instance.get("/user");
+    const resGotchi = await instance.get(
+      `/tamagotchi/${res.data.userId}/status`
+    );
+
     try {
-      const resGotchi = await instance.post(`tamagotchi/play`, {
-        userId: res.data.userId,
-      });
+      const resGotchiWalk = await instance.post(
+        `tamagotchi/${resGotchi.data.id}/play`,
+        {
+          userId: res.data.userId,
+        }
+      );
       setWalking(true);
     } catch (e: any) {
       if (e.status === 403) {
@@ -185,10 +205,17 @@ export default function Page() {
 
   const cure = async () => {
     const res = await instance.get("/user");
+    const resGotchi = await instance.get(
+      `/tamagotchi/${res.data.userId}/status`
+    );
+
     try {
-      const resGotchi = await instance.post(`/tamagotchi/cure`, {
-        userId: res.data.userId,
-      });
+      const resGotchiCure = await instance.post(
+        `/tamagotchi/${resGotchi.data.id}/cure`,
+        {
+          userId: res.data.userId,
+        }
+      );
     } catch (e: any) {
       console.log(e);
     }

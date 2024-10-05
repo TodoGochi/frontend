@@ -30,6 +30,7 @@ interface TodoAddProps {
   edit?: boolean;
   id?: number;
   getData: () => void;
+  setModal3?: (args: boolean) => void;
 }
 
 const TodoAdd: React.FC<TodoAddProps> = ({
@@ -40,6 +41,7 @@ const TodoAdd: React.FC<TodoAddProps> = ({
   val,
   getData,
   id,
+  setModal3,
 }) => {
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const [selectedColor, setSelectedColor] = useState("bg-[#ff9b99]");
@@ -145,9 +147,12 @@ const TodoAdd: React.FC<TodoAddProps> = ({
   const handleCheckboxChange = async () => {
     setClick(true);
     const res: any = await instance.get("/user");
-    const postRes: any = instance.post(
+    const postRes: any = await instance.post(
       `todolist/complete/${res.data.userId}/${id}`
     );
+    if (postRes.data.rewardCoin === 3) {
+      setModal3 && setModal3(true);
+    }
     getData();
   };
 
