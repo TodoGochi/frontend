@@ -2,7 +2,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useStore } from "../store/date";
 import { instance } from "../utils/axios";
 
@@ -63,6 +63,8 @@ const WeekCalendar = ({
   const selectedDate = useStore((state) => state.selectedDate);
   const setSelectedDate = useStore((state) => state.setSelectedDate);
 
+  const weekDates = useMemo(() => getWeekDates(currentDate), [currentDate]);
+
   const handlePrevWeek = useCallback(() => {
     setCurrentDate((prevDate) => {
       const newDate = new Date(prevDate);
@@ -82,13 +84,13 @@ const WeekCalendar = ({
   const handleDateClick = useCallback(
     (date: Date) => {
       setSelectedDate(date);
-    },
-    [setSelectedDate]
-  );
 
-  const weekDates = React.useMemo(
-    () => getWeekDates(currentDate),
-    [currentDate]
+      // 선택된 날짜의 월이 현재 표시된 주의 첫 날짜와 다른 경우
+      if (date.getMonth() !== weekDates[0].getMonth()) {
+        setCurrentDate(new Date(date)); // 현재 날짜를 선택된 날짜로 업데이트
+      }
+    },
+    [setSelectedDate, weekDates, setCurrentDate]
   );
 
   // Fetch user ID once
@@ -133,22 +135,12 @@ const WeekCalendar = ({
     fetchTodoItems();
   }, [userId, weekDates]);
 
-  const formatDateForHeader = (dates: Date[]) => {
-    const startDate = dates[0];
-    const endDate = dates[6];
-    const startMonth = monthNames[startDate.getMonth()];
-    const endMonth = monthNames[endDate.getMonth()];
-    const startYear = startDate.getFullYear();
-    const endYear = endDate.getFullYear();
-
-    if (startMonth === endMonth && startYear === endYear) {
-      return `${startMonth} ${startYear}`;
-    } else if (startYear === endYear) {
-      return `${startMonth}-${endMonth} ${startYear}`;
-    } else {
-      return `${startMonth} ${startYear} - ${endMonth} ${endYear}`;
-    }
-  };
+  const calendarHeader = useMemo(() => {
+    const dateToUse = selectedDate || currentDate;
+    const month = monthNames[dateToUse.getMonth()];
+    const year = dateToUse.getFullYear();
+    return `${month} ${year}`;
+  }, [selectedDate, currentDate]);
 
   const isDateSelected = useCallback(
     (date: Date) =>
@@ -207,9 +199,7 @@ const WeekCalendar = ({
             </g>
           </svg>
         </button>
-        <div className="font-bold min-w-[82px]">
-          {formatDateForHeader(weekDates)}
-        </div>
+        <div className="font-bold min-w-[82px]">{calendarHeader}</div>
         <button
           onClick={handleNextWeek}
           className="text-gray-600 hover:text-gray-900 ml-[20px] mr-[90px]"
