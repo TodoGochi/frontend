@@ -236,103 +236,108 @@ const TodoAdd: React.FC<TodoAddProps> = ({
   };
 
   return (
-    <div
-      ref={ref}
-      className="w-[348px] mx-auto rounded-lg bg-[#FFFFFF] mt-[10px]"
-    >
-      <div className="p-4">
-        <div className="flex mb-[20px] mt-[5px]">
-          <div className="relative w-[10px]">
+    <div>
+      <div
+        ref={ref}
+        className="w-[358px]  rounded-lg bg-[#FFFFFF] mt-[10px] flex"
+      >
+        <div
+          className={`min-w-[5px] h-[221px] ${selectedColor} rounded-tl-[5px] rounded-bl-[5px]`}
+        ></div>
+        <div className="p-4">
+          <div className="flex mb-[20px] mt-[5px]">
+            <div className="relative w-[10px]">
+              <input
+                type="checkbox"
+                className="absolute z-[1] mr-3 opacity-0"
+                onChange={handleCheckboxChange}
+              />
+              {click ? (
+                <svg
+                  className="absolute z-[0] bottom-[13px] cursor-pointer"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                >
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M14.4 0H1.6V0.8H0.8V1.6H0V14.4H0.8V15.2H1.6V16H14.4V15.2H15.2V14.4H16V1.6H15.2V0.8H14.4V0ZM15.2 1.6H14.4V0.8H1.6V1.6H0.8V14.4H1.6V15.2H14.4V14.4H15.2V1.6Z"
+                    fill="#3F3F3F"
+                  />
+                  <path
+                    d="M12.8004 3.19984V2.39984H3.20039V3.19984H2.40039V12.7998H3.20039V13.5998H12.8004V12.7998H13.6004V3.19984H12.8004Z"
+                    fill="#3F3F3F"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  className="absolute z-[0] bottom-[13px] cursor-pointer"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                >
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M14.4 0H1.6V0.8H0.8V1.6H0V14.4H0.8V15.2H1.6V16H14.4V15.2H15.2V14.4H16V1.6H15.2V0.8H14.4V0ZM15.2 1.6H14.4V0.8H1.6V1.6H0.8V14.4H1.6V15.2H14.4V14.4H15.2V1.6Z"
+                    fill="#3F3F3F"
+                  />
+                </svg>
+              )}
+            </div>
             <input
-              type="checkbox"
-              className="absolute z-[1] mr-3 opacity-0"
-              onChange={handleCheckboxChange}
+              className="border-b border-[#a5a5a5] w-[250px] mr-[8px] focus:outline-none ml-[20px]"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
             />
-            {click ? (
-              <svg
-                className="absolute z-[0] bottom-[13px] cursor-pointer"
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                fill="none"
-              >
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M14.4 0H1.6V0.8H0.8V1.6H0V14.4H0.8V15.2H1.6V16H14.4V15.2H15.2V14.4H16V1.6H15.2V0.8H14.4V0ZM15.2 1.6H14.4V0.8H1.6V1.6H0.8V14.4H1.6V15.2H14.4V14.4H15.2V1.6Z"
-                  fill="#3F3F3F"
-                />
-                <path
-                  d="M12.8004 3.19984V2.39984H3.20039V3.19984H2.40039V12.7998H3.20039V13.5998H12.8004V12.7998H13.6004V3.19984H12.8004Z"
-                  fill="#3F3F3F"
-                />
-              </svg>
-            ) : (
-              <svg
-                className="absolute z-[0] bottom-[13px] cursor-pointer"
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                fill="none"
-              >
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M14.4 0H1.6V0.8H0.8V1.6H0V14.4H0.8V15.2H1.6V16H14.4V15.2H15.2V14.4H16V1.6H15.2V0.8H14.4V0ZM15.2 1.6H14.4V0.8H1.6V1.6H0.8V14.4H1.6V15.2H14.4V14.4H15.2V1.6Z"
-                  fill="#3F3F3F"
-                />
-              </svg>
-            )}
-          </div>
-          <input
-            className="border-b border-[#a5a5a5] w-[269px] mr-[8px] focus:outline-none ml-[20px]"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-          />
-          <svg
-            className="cursor-pointer"
-            onClick={!tutorial ? () => setAdd(false) : () => {}}
-            xmlns="http://www.w3.org/2000/svg"
-            width="30"
-            height="30"
-            viewBox="0 0 30 30"
-            fill="none"
-          >
-            <g id="todo_btn_minus">
-              <path id="Union" d="M8 14H22V15H8V14Z" fill="#3F3F3F" />
-            </g>
-          </svg>
-        </div>
-        <div className="flex mb-4 gap-[10px]">
-          {days.map((day) => (
-            <button
-              key={day}
-              className={`text-[10px] max-w-[35px] px-[7px] py-[5px] rounded ${
-                selectedDays.includes(day)
-                  ? "bg-gray-800 text-white"
-                  : "text-gray-800"
-              }`}
-              onClick={() => toggleDay(day)}
+            <svg
+              className="cursor-pointer"
+              onClick={!tutorial ? () => setAdd(false) : () => {}}
+              xmlns="http://www.w3.org/2000/svg"
+              width="30"
+              height="30"
+              viewBox="0 0 30 30"
+              fill="none"
             >
-              {day}
-            </button>
-          ))}
-        </div>
+              <g id="todo_btn_minus">
+                <path id="Union" d="M8 14H22V15H8V14Z" fill="#3F3F3F" />
+              </g>
+            </svg>
+          </div>
+          <div className="flex mb-4 gap-[10px]">
+            {days.map((day) => (
+              <button
+                key={day}
+                className={`text-[10px] max-w-[35px] px-[7px] py-[5px] rounded ${
+                  selectedDays.includes(day)
+                    ? "bg-gray-800 text-white"
+                    : "text-gray-800"
+                }`}
+                onClick={() => toggleDay(day)}
+              >
+                {day}
+              </button>
+            ))}
+          </div>
 
-        <CustomTimePicker timeState={timeState} timeActions={timeActions} />
+          <CustomTimePicker timeState={timeState} timeActions={timeActions} />
 
-        <div className="flex space-x-2 mb-4">
-          {colors.map((color) => (
-            <button
-              key={color}
-              className={`w-10 h-5 rounded-[5px] border-2 
+          <div className="flex gap-[3px] mb-4">
+            {colors.map((color) => (
+              <button
+                key={color}
+                className={`w-10 h-5 rounded-[5px] border-2 
         ${color}
         ${selectedColor === color ? "border-gray-800" : "border-transparent"}`}
-              onClick={() => setSelectedColor(color)}
-            />
-          ))}
+                onClick={() => setSelectedColor(color)}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>

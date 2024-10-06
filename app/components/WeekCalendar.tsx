@@ -135,9 +135,19 @@ const WeekCalendar = ({
 
   const formatDateForHeader = (dates: Date[]) => {
     const startDate = dates[0];
+    const endDate = dates[6];
     const startMonth = monthNames[startDate.getMonth()];
+    const endMonth = monthNames[endDate.getMonth()];
     const startYear = startDate.getFullYear();
-    return `${startMonth} ${startYear}`;
+    const endYear = endDate.getFullYear();
+
+    if (startMonth === endMonth && startYear === endYear) {
+      return `${startMonth} ${startYear}`;
+    } else if (startYear === endYear) {
+      return `${startMonth}-${endMonth} ${startYear}`;
+    } else {
+      return `${startMonth} ${startYear} - ${endMonth} ${endYear}`;
+    }
   };
 
   const isDateSelected = useCallback(

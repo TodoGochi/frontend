@@ -43,6 +43,7 @@ export default function Page() {
   const [message, setMessage] = useState("");
   const [timeLeft, setTimeLeft] = useState<any>({ hour: 48, min: 0 });
   const [todayCoin, setTodayCoin] = useState(0);
+  const [which, setWhich] = useState("");
 
   const [status, setStatus] = useState<Monster>({
     user_id: 0,
@@ -121,10 +122,6 @@ export default function Page() {
     );
 
     setStatus(resGotchi.data);
-    setStatus((prev) => {
-      return { ...prev, level: "adult" };
-    });
-    //TODO
 
     if (resGotchi.data.happiness <= 5) {
       setCharacter(
@@ -200,24 +197,26 @@ export default function Page() {
     const resGotchi = await instance.get(
       `/tamagotchi/${res.data.userId}/status`
     );
-    setMessage("");
-    try {
-      //   const resGotchiWalk: any = await instance.post(
-      //     `tamagotchi/${resGotchi.data.id}/play`,
-      //     {
-      //       userId: res.data.userId,
-      //     }
-      //   );
 
-      //TODO
-      const coin = 3;
+    try {
+      const resGotchiWalk: any = await instance.post(
+        `tamagotchi/${resGotchi.data.id}/play`,
+        {
+          userId: res.data.userId,
+        }
+      );
+
+      setMessage("");
+
+      const coin = resGotchiWalk.data.coin;
 
       if (coin) {
         setTimeout(() => {
           if (status.level === "baby") setCharacter("/babyCoin.gif");
           else setCharacter("/adultCoin.gif");
           setModal(true);
-          setModalText(`ㅇㅇ이가 찾아온 코인을 
+          setButton(1);
+          setModalText(`${resGotchi.data.nickname}이가 찾아온 코인을 
             지급합니다.`);
           setModalCoin(coin);
         }, 6100);
@@ -250,27 +249,25 @@ export default function Page() {
     } catch (e: any) {
       console.log(e);
     }
-    setModal(true);
-    setModalText(`타마고치가 아파요. \n 치료 하시겠어요?`);
     getStatus();
   };
 
-  const reviveModal = () => {
-    setModalText(`정말 부활시킬 건가요?`);
-    setButtonText("revive");
+  const cureModal = () => {
+    setModal(true);
+    setModalText(`타마고치가 아파요. \n 치료 하시겠어요?`);
+    setModalCoin(-3);
+    setWhich("cure");
   };
 
-  const restartModal = () => {
-    setModalText(`ㅇㅇ이와의 추억을 보내고
-새로 시작하시겠어요?`);
-    setButtonText("restart");
-  };
-
-  const walkModal = () => {
+  const walkModal = async () => {
+    const res = await instance.get("/user");
+    const resGotchi = await instance.get(
+      `/tamagotchi/${res.data.userId}/status`
+    );
     setModal(true);
     setButton(1);
     setModalCoin(0);
-    setModalText("ㅇㅇ이가 산책을 갑니다.");
+    setModalText(`${resGotchi.data.nickname}이가 산책을 갑니다.`);
     walk();
   };
 
@@ -360,17 +357,28 @@ export default function Page() {
     const resGotchi = await instance.get(
       `/tamagotchi/${res.data.userId}/status`
     );
-    if (resGotchi.data.health_status === "DEAD") {
+
+    if (resGotchi.data.happiness <= 5) {
+      setModal(true);
+      setModalText(`${resGotchi.data.nickname}이가 투두고치님의
+손길을 기다리고 있어요.`);
+      setButton(1);
+    }
+
+    if (resGotchi.data.health_status === "death") {
       setModal(true);
       setCharacter(
         status.level === "baby" ? "/step1_death.gif" : "/step2_death.gif"
       );
-      setModalText(`ㅇㅇ이가 다마고치별로 갔어요.
+      setModalText(`${resGotchi.data.nickname}이가 타마고치별로 갔어요.
 어떻게 하시겠어요?`);
-    } else if (resGotchi.data.health_status !== "HEALTHY") {
+      setButton(2);
+    } else if (resGotchi.data.health_status === "sick") {
       setModal(true);
       setModalText(`타마고치가 아파요. \n 치료 하시겠어요?`);
       setModalCoin(-3);
+      setWhich("cure");
+      setButton(1);
     }
   };
 
@@ -710,7 +718,7 @@ export default function Page() {
                 className={`relative ${
                   status.health_status === "sick" ? "cursor-pointer" : ""
                 } `}
-                onClick={status.health_status !== "sick" ? () => {} : cure}
+                onClick={status.health_status !== "sick" ? () => {} : cureModal}
               >
                 {status.health_status === "sick" ? (
                   <img src="/button.png" alt="button" />
@@ -764,7 +772,11 @@ export default function Page() {
           setModal={setModal}
           coin={modalCoin}
           button={button}
+          revive={revive}
+          restart={restart}
+          cure={cure}
           buttonText={buttonText}
+          which={which}
         />
       )}
     </>

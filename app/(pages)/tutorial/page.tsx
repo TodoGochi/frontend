@@ -167,10 +167,10 @@ export default function Page() {
         userId: res.data.userId,
         nickname,
       });
-      router.push("/main");
     } catch (e) {
       console.log(e);
     }
+    setCurrentStep(currentStep + 1);
   };
 
   const getWhoAreYou = async () => {
@@ -301,6 +301,36 @@ export default function Page() {
               </div>
               <div
                 onClick={() => makeGochi()}
+                className="cursor-pointer absolute z-[131] top-[56%] left-[11%] bg-[#3F3F3F] text-[#FAFAFA] w-[280px] h-[35px] rounded-lg flex justify-center items-center"
+              >
+                완료
+              </div>
+            </div>
+          )}
+          {isClient && currentStep === 24 && (
+            <div className="absolute z-[130] w-[360px] h-full bg-[#00000080]/50 rounded-2xl left-0">
+              <div className="absolute z-[131] w-[330px] h-[160px] left-[4%] top-[20%]">
+                <img
+                  className="z-[131] w-[330px] h-[160px]"
+                  src="/popup.png"
+                  alt="popup"
+                />
+              </div>
+              <div className="absolute z-[131] top-[28%] left-[40%] font-neodunggeunmo">
+                반가워요!
+              </div>
+              <div className="absolute z-[131] top-[35%] left-[30%] font-neodunggeunmo">
+                웰컴 리워드를 드릴게요.
+              </div>
+              <div className="absolute z-[131] top-[41%] left-[11%]  w-[280px] h-[35px] flex justify-center items-center gap-[4px]">
+                <div className="font-neodunggeunmo text-[12px] text-[#737373]">
+                  웰컴 리워드
+                </div>
+                <img src="/coin.svg" alt="coin" />
+                <div className="font-neodunggeunmo text-[#737373]">10</div>
+              </div>
+              <div
+                onClick={() => router.push("/main")}
                 className="cursor-pointer absolute z-[131] top-[56%] left-[11%] bg-[#3F3F3F] text-[#FAFAFA] w-[280px] h-[35px] rounded-lg flex justify-center items-center"
               >
                 완료

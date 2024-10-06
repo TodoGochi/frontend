@@ -2,6 +2,7 @@
 "use client";
 
 import { useState } from "react";
+import { instance } from "../utils/axios";
 
 export default function GochiModal({
   text,
@@ -9,8 +10,21 @@ export default function GochiModal({
   coin,
   button,
   buttonText,
+  revive,
+  restart,
+  cure,
+  which,
 }: any) {
   const [clicked, setClicked] = useState(false);
+  const [whichClicked, setWhichClicked] = useState("");
+  const [modalText, setModalText] = useState("");
+
+  const restartModal = async () => {
+    const res = await instance.get("/user");
+    const resGotchi = await instance.get(
+      `/tamagotchi/${res.data.userId}/status`
+    );
+  };
 
   return (
     <div
@@ -60,7 +74,9 @@ export default function GochiModal({
             } `}
           >
             {buttonText === "REVIVE" && (
-              <div className="mr-[5px]">부활하기</div>
+              <div className="mr-[5px]">
+                {which === "cure" ? "치료하기" : "부활하기"}
+              </div>
             )}
             <img src="coin.svg" alt="coin" />
             <div className="ml-[5px]">{coin}</div>
@@ -88,13 +104,19 @@ export default function GochiModal({
                 fill="#3F3F3F"
               />
             </svg>
-            {buttonText === "YES" && (
-              <div className="absolute z-[2] flex justify-center items-center text-white bottom-[10px] left-[46px]">
+            {whichClicked !== "" && (
+              <div
+                className="absolute z-[2] flex justify-center items-center text-white bottom-[10px] left-[46px]"
+                onClick={() => setWhichClicked("")}
+              >
                 아니야!
               </div>
             )}
-            {buttonText === "REVIVE" && (
-              <div className="absolute z-[2] flex justify-center items-center text-white bottom-[10px] left-[46px]">
+            {whichClicked === "" && buttonText === "REVIVE" && (
+              <div
+                className="absolute z-[2] flex justify-center items-center text-white bottom-[10px] left-[46px]"
+                onClick={() => setWhichClicked("revive")}
+              >
                 부활하기
               </div>
             )}
@@ -113,20 +135,26 @@ export default function GochiModal({
                 fill="#3F3F3F"
               />
             </svg>
-            {buttonText === "YES" && (
-              <div className="absolute flex z-[2] justify-center items-center text-white bottom-[10px] left-[60px]">
+            {whichClicked !== "" && (
+              <div
+                className="absolute flex z-[2] justify-center items-center text-white bottom-[10px] left-[60px]"
+                onClick={whichClicked === "revive" ? revive : restart}
+              >
                 네!
               </div>
             )}
             {buttonText === "REVIVE" && (
-              <div className="absolute z-[2] flex justify-center items-center text-white bottom-[10px] left-[46px]">
+              <div
+                className="absolute z-[2] flex justify-center items-center text-white bottom-[10px] left-[46px]"
+                onClick={() => setWhichClicked("restart")}
+              >
                 새로 시작
               </div>
             )}
           </div>
         </div>
       ) : (
-        <>
+        <div onClick={which == "cure" ? cure : () => {}}>
           <svg
             className="absolute left-[50%] top-[50%] transform -translate-x-[50%] translate-y-[40%] cursor-pointer"
             xmlns="http://www.w3.org/2000/svg"
@@ -140,8 +168,10 @@ export default function GochiModal({
               fill="#3F3F3F"
             />
           </svg>
-          <div className="absolute left-[49%] top-[52.5%] text-white">확인</div>
-        </>
+          <div className="absolute left-[49%] top-[52.5%] text-white">
+            {which === "cure" ? "치료하기" : "확인"}
+          </div>
+        </div>
       )}
     </div>
   );

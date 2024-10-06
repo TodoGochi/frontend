@@ -72,30 +72,59 @@ export default function Modal({
           )}
 
           <div className="flex">
-            <div
-              className="cursor-pointer w-[110px] h-[35px] px-[15px] py-[7px] text-center text-[#3f3f3f] text-xs font-semibold font-['SUIT'] bg-[#f9f9f9] mr-[10px] rounded-lg flex justify-center items-center"
-              onClick={
-                !tutorial
-                  ? () => {
-                      getTomorrow();
-                    }
-                  : () => setModal(false)
-              }
-            >
-              다음 날
-            </div>
-            <div
-              className="cursor-pointer w-[110px] h-[35px] px-[15px] py-[7px]   text-center text-[#3f3f3f] text-xs font-semibold font-['SUIT'] bg-[#f9f9f9] rounded-lg flex justify-center items-center"
-              onClick={
-                !tutorial
-                  ? () => {
-                      setModal2(true);
-                    }
-                  : () => setModal(false)
-              }
-            >
-              날짜 선택
-            </div>
+            {tutorial ? (
+              <div
+                className="relative cursor-pointer"
+                onClick={() => {
+                  setModal(false);
+                  location.reload();
+                }}
+              >
+                <svg
+                  className="absolute left-[-140px] top-[20px]"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="290"
+                  height="35"
+                  viewBox="0 0 290 35"
+                  fill="none"
+                >
+                  <path
+                    d="M286 0H4V1H2V2H1V4H0V31H1V33H2V34H4V35H286V34H288V33H289V31H290V4H289V2H288V1H286V0Z"
+                    fill="#3F3F3F"
+                  />
+                </svg>
+                <div className="absolute min-w-[30px] left-[-20px] top-[30px] text-white">
+                  확인
+                </div>
+              </div>
+            ) : (
+              <div>
+                <div
+                  className="cursor-pointer w-[110px] h-[35px] px-[15px] py-[7px] text-center text-[#3f3f3f] text-xs font-semibold font-['SUIT'] bg-[#f9f9f9] mr-[10px] rounded-lg flex justify-center items-center"
+                  onClick={
+                    !tutorial
+                      ? () => {
+                          getTomorrow();
+                        }
+                      : () => setModal(false)
+                  }
+                >
+                  다음 날
+                </div>
+                <div
+                  className="cursor-pointer w-[110px] h-[35px] px-[15px] py-[7px]   text-center text-[#3f3f3f] text-xs font-semibold font-['SUIT'] bg-[#f9f9f9] rounded-lg flex justify-center items-center"
+                  onClick={
+                    !tutorial
+                      ? () => {
+                          setModal2(true);
+                        }
+                      : () => setModal(false)
+                  }
+                >
+                  날짜 선택
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

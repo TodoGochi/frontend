@@ -501,7 +501,7 @@ const SwipeActionList: React.FC = () => {
         />
       )}
 
-      <div className="w-[380px] mx-auto p-4 rounded-lg shadow-lg">
+      <div className="w-[380px]  p-4 rounded-lg shadow-lg">
         <ul className="bg-gray-100 rounded-lg overflow-hidden">
           {items.map((item) => (
             <div key={item.id}>
@@ -536,7 +536,7 @@ const SwipeActionList: React.FC = () => {
           items={[]}
           getData={() => {}}
           tutorial={true}
-          setModal={setModal}
+          setModal={setModal3}
           text={`할 일을 전부 완료했어요!
 보너스 코인을 드릴게요.`}
         />

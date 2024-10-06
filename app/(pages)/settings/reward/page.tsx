@@ -16,7 +16,7 @@ export default function Page() {
     const coinRes = await instance.get(
       `/user/${res.data.userId}/coin-transactions`
     );
-    console.log(coinRes.data);
+
     setTotalCoin(res.data.coin);
     setCoinList(coinRes.data);
   };
