@@ -17,7 +17,7 @@ export default function GochiModal({
       className="fixed inset-0 bg-black/50 z-[190] flex justify-center items-center"
       onClick={() => setModal(false)}
     >
-      <div className="relative">
+      <div className="relative" onClick={(e) => e.stopPropagation()}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           xmlnsXlink="http://www.w3.org/1999/xlink"
@@ -53,7 +53,7 @@ export default function GochiModal({
         >
           {text}
         </div>
-        {coin > 0 && (
+        {coin !== 0 && (
           <div
             className={`flex absolute top-[60px] ${
               buttonText === "REVIVE" ? "left-[120px]" : "left-[150px]"
@@ -126,19 +126,22 @@ export default function GochiModal({
           </div>
         </div>
       ) : (
-        <svg
-          className="absolute left-[50%] top-[50%] transform -translate-x-[50%] translate-y-[40%] cursor-pointer"
-          xmlns="http://www.w3.org/2000/svg"
-          width="280"
-          height="35"
-          viewBox="0 0 280 35"
-          fill="none"
-        >
-          <path
-            d="M276 0H4V1H2V2H1V4H0V31H1V33H2V34H4V35H276V34H278V33H279V31H280V4H279V2H278V1H276V0Z"
-            fill="#3F3F3F"
-          />
-        </svg>
+        <>
+          <svg
+            className="absolute left-[50%] top-[50%] transform -translate-x-[50%] translate-y-[40%] cursor-pointer"
+            xmlns="http://www.w3.org/2000/svg"
+            width="280"
+            height="35"
+            viewBox="0 0 280 35"
+            fill="none"
+          >
+            <path
+              d="M276 0H4V1H2V2H1V4H0V31H1V33H2V34H4V35H276V34H278V33H279V31H280V4H279V2H278V1H276V0Z"
+              fill="#3F3F3F"
+            />
+          </svg>
+          <div className="absolute left-[49%] top-[52.5%] text-white">확인</div>
+        </>
       )}
     </div>
   );

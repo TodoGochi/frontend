@@ -96,16 +96,6 @@ const ListItem: React.FC<ListItemProps> = ({
     }
   }, [translation]);
 
-  const handleClick = useCallback(
-    (e: React.MouseEvent) => {
-      if (!isDragging && !isButtonAreaRef.current) {
-        onSelect(id);
-        setClickEdit(!clickEdit);
-      }
-    },
-    [id, isDragging, onSelect]
-  );
-
   const handleTouchStart = (e: React.TouchEvent) => {
     if (isButtonAreaRef.current) return;
     handleDragStart(e.touches[0].clientX);
@@ -190,7 +180,6 @@ const ListItem: React.FC<ListItemProps> = ({
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseLeave}
-            onClick={handleClick}
           >
             <div
               className="flex items-center p-4 transition-transform duration-300 ease-out"

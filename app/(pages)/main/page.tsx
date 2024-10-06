@@ -30,6 +30,7 @@ interface Monster {
 
 export default function Page() {
   const [month, setMonth] = useState(false);
+  const [character, setCharacter] = useState("");
   const [modal, setModal] = useState(false);
   const [button, setButton] = useState(2);
   const [totalCoin, setTotalCoin] = useState(0);
@@ -115,15 +116,28 @@ export default function Page() {
 
     setTotalCoin(res.data.coin);
 
-    if (resGotchi.data.health_status !== "HEALTHY") {
-      setModalText(`다마고치가 아파요. \n 치료 하시겠어요?`);
-    }
-
     const resTime = await instance.get(
       `/tamagotchi/${resGotchi.data.id}/level-progress`
     );
 
     setStatus(resGotchi.data);
+    setStatus((prev) => {
+      return { ...prev, level: "adult" };
+    });
+    //TODO
+
+    if (resGotchi.data.happiness <= 5) {
+      setCharacter(
+        status.level === "baby" ? "/step1_sad.gif" : "/step2_sad.gif"
+      );
+    }
+
+    if (resGotchi.data.hunger <= 5) {
+      setCharacter(
+        status.level === "baby" ? "/step1_sad.gif" : "/step2_sad.gif"
+      );
+    }
+
     setDay(calculateDaysSinceCreation(resGotchi.data));
     setTimeLeft({ hour: resTime.data.hour, min: resTime.data.min });
 
@@ -149,10 +163,11 @@ export default function Page() {
           userId: res.data.userId,
         }
       );
+
+      setCharacter(
+        status.level === "baby" ? "/step1_happy.gif" : "/step2_happy.gif"
+      );
     } catch (e: any) {
-      if (e.status === 403) {
-        alert("아픈 친구에게는 먹이를 줄 수 없어요");
-      }
       console.log(e);
     }
     getStatus();
@@ -171,6 +186,9 @@ export default function Page() {
           userId: res.data.userId,
         }
       );
+      setCharacter(
+        status.level === "baby" ? "/step1_happy.gif" : "/step2_happy.gif"
+      );
     } catch (e: any) {
       console.log(e);
     }
@@ -182,19 +200,31 @@ export default function Page() {
     const resGotchi = await instance.get(
       `/tamagotchi/${res.data.userId}/status`
     );
-
+    setMessage("");
     try {
-      const resGotchiWalk = await instance.post(
-        `tamagotchi/${resGotchi.data.id}/play`,
-        {
-          userId: res.data.userId,
-        }
-      );
+      //   const resGotchiWalk: any = await instance.post(
+      //     `tamagotchi/${resGotchi.data.id}/play`,
+      //     {
+      //       userId: res.data.userId,
+      //     }
+      //   );
+
+      //TODO
+      const coin = 3;
+
+      if (coin) {
+        setTimeout(() => {
+          if (status.level === "baby") setCharacter("/babyCoin.gif");
+          else setCharacter("/adultCoin.gif");
+          setModal(true);
+          setModalText(`ㅇㅇ이가 찾아온 코인을 
+            지급합니다.`);
+          setModalCoin(coin);
+        }, 6100);
+      }
+
       setWalking(true);
     } catch (e: any) {
-      if (e.status === 403) {
-        alert("아픈 친구와 산책할 수 없어요");
-      }
       setWalking(false);
       console.log(e);
     }
@@ -214,18 +244,57 @@ export default function Page() {
           userId: res.data.userId,
         }
       );
+      setCharacter(
+        status.level === "baby" ? "/step1_happy.gif" : "/step2_happy.gif"
+      );
     } catch (e: any) {
       console.log(e);
     }
     setModal(true);
-    setModalText(`다마고치가 아파요. \n 치료 하시겠어요?`);
+    setModalText(`타마고치가 아파요. \n 치료 하시겠어요?`);
     getStatus();
+  };
+
+  const reviveModal = () => {
+    setModalText(`정말 부활시킬 건가요?`);
+    setButtonText("revive");
+  };
+
+  const restartModal = () => {
+    setModalText(`ㅇㅇ이와의 추억을 보내고
+새로 시작하시겠어요?`);
+    setButtonText("restart");
+  };
+
+  const walkModal = () => {
+    setModal(true);
+    setButton(1);
+    setModalCoin(0);
+    setModalText("ㅇㅇ이가 산책을 갑니다.");
+    walk();
   };
 
   const revive = async () => {
     try {
-      // const res = await instance.post("");
-      setModalText(`정말 부활시킬 건가요?`);
+      const res = await instance.get("/user");
+      const resGotchi = await instance.get(
+        `/tamagotchi/${res.data.userId}/status`
+      );
+
+      instance.post(`/tamagotchi/${resGotchi.data.id}/resurrect`);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const restart = async () => {
+    try {
+      const res = await instance.get("/user");
+      const resGotchi = await instance.get(
+        `/tamagotchi/${res.data.userId}/status`
+      );
+
+      instance.post(`/tamagotchi/${resGotchi.data.id}/restart`);
     } catch (e) {
       console.log(e);
     }
@@ -286,18 +355,70 @@ export default function Page() {
     );
   };
 
+  const getInfoFirst = async () => {
+    const res = await instance.get("/user");
+    const resGotchi = await instance.get(
+      `/tamagotchi/${res.data.userId}/status`
+    );
+    if (resGotchi.data.health_status === "DEAD") {
+      setModal(true);
+      setCharacter(
+        status.level === "baby" ? "/step1_death.gif" : "/step2_death.gif"
+      );
+      setModalText(`ㅇㅇ이가 다마고치별로 갔어요.
+어떻게 하시겠어요?`);
+    } else if (resGotchi.data.health_status !== "HEALTHY") {
+      setModal(true);
+      setModalText(`타마고치가 아파요. \n 치료 하시겠어요?`);
+      setModalCoin(-3);
+    }
+  };
+
   useEffect(() => {
     getStatus();
     getTodayCoin();
-    // revive(); // 지울 것
+    getInfoFirst();
   }, []);
+
+  const walkingA = async () => {
+    setTimeout(() => {
+      setCharacter(
+        status.level === "baby" ? "/babyWalk2.gif" : "/adultWalk.gif"
+      );
+    }, 2000);
+  };
+
+  const walkingB = async () => {
+    setCharacter("1");
+  };
+
+  const walkingAB = async () => {
+    await walkingA();
+    await walkingB();
+    setCharacter(status.level === "baby" ? "/babyWalk.gif" : "/adultWalk2.gif");
+  };
 
   useEffect(() => {
     if (!walking) return;
+    walkingAB();
     setTimeout(() => {
       setWalking(false);
-    }, 4000);
+      setCharacter("");
+    }, 6000);
   }, [walking]);
+
+  useEffect(() => {
+    if (
+      character !== "/babyCoin.gif" &&
+      character !== "/adultCoin.gif" &&
+      character !== "/step1_happy.gif" &&
+      character !== "/step2_happy.gif"
+    )
+      return;
+    setTimeout(() => {
+      setCharacter("");
+    }, 2500);
+  }, [character]);
 
   function trackCoins(createdAtStr: string, changeAmount: number) {
     const createdAt = new Date(createdAtStr);
@@ -486,11 +607,12 @@ export default function Page() {
                   </div>
                 </div>
               )}
+
               <img
                 onClick={babySay}
-                src="/step2_default.gif"
-                alt="adult"
-                className="cursor-pointer"
+                src={character !== "" ? character : "/step1_default.gif"}
+                alt="baby"
+                className="cursor-pointer absolute z-[103] bottom-[70px] left-[120px]"
               />
             </div>
           )}
@@ -528,9 +650,9 @@ export default function Page() {
               )}
               <img
                 onClick={adultSay}
-                src="/step1_default.gif"
-                alt="baby"
-                className="cursor-pointer"
+                src={character !== "" ? character : "/step2_default.gif"}
+                alt="adult"
+                className="cursor-pointer absolute z-[103] bottom-[70px] left-[120px]"
               />
             </div>
           )}
@@ -574,7 +696,7 @@ export default function Page() {
                   />
                 </div>
               ) : (
-                <div className="relative cursor-pointer" onClick={walk}>
+                <div className="relative cursor-pointer" onClick={walkModal}>
                   <img src="/button.png" alt="button" />
                   <img
                     className="absolute z-[2] top-[2px] left-[21px]"
