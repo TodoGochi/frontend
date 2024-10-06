@@ -1,9 +1,21 @@
 "use client";
 
+interface TodoItem {
+  colorTag: string;
+  status: number;
+  targetDate: number;
+  targetTime: string;
+  todoId: number;
+  todoText: string;
+  userId: number;
+  weeklyScheduleId: number;
+}
+
 import { useRouter } from "next/navigation";
 /* eslint-disable @next/next/no-img-element */
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useStore } from "../store/date";
+import { instance } from "../utils/axios";
 
 // Helper function to get the number of days in a month
 const getDaysInMonth = (year: number, month: number) => {
@@ -14,72 +26,172 @@ const getDaysInMonth = (year: number, month: number) => {
 const getMonthCalendarDates = (year: number, month: number) => {
   const dates = [];
   const firstDayOfMonth = new Date(year, month, 1);
+  const lastDayOfMonth = new Date(year, month + 1, 0);
   const firstDayWeekday = firstDayOfMonth.getDay();
+  const lastDateOfMonth = lastDayOfMonth.getDate();
+
+  // Adjust for Monday as the first day of the week
   const adjustedFirstDayWeekday =
     firstDayWeekday === 0 ? 6 : firstDayWeekday - 1;
 
-  for (let i = 0; i < adjustedFirstDayWeekday; i++) {
-    dates.push({ date: null, currentMonth: false });
+  // Add days from the previous month
+  const prevMonth = month === 0 ? 11 : month - 1;
+  const prevMonthYear = month === 0 ? year - 1 : year;
+  const prevMonthLastDate = new Date(prevMonthYear, prevMonth + 1, 0).getDate();
+  for (
+    let i = prevMonthLastDate - adjustedFirstDayWeekday + 1;
+    i <= prevMonthLastDate;
+    i++
+  ) {
+    dates.push({ date: i, month: prevMonth, year: prevMonthYear });
   }
 
-  for (let i = 1; i <= getDaysInMonth(year, month); i++) {
-    dates.push({
-      date: i,
-      currentMonth: true,
-    });
+  // Add days from the current month
+  for (let i = 1; i <= lastDateOfMonth; i++) {
+    dates.push({ date: i, month: month, year: year });
+  }
+
+  // Add days from the next month
+  const nextMonth = month === 11 ? 0 : month + 1;
+  const nextMonthYear = month === 11 ? year + 1 : year;
+  let nextMonthDay = 1;
+  while (dates.length < 42) {
+    // 6 rows * 7 days
+    dates.push({ date: nextMonthDay, month: nextMonth, year: nextMonthYear });
+    nextMonthDay++;
   }
 
   return dates;
 };
 
-const MonthCalendar = ({ setMonth, month }: any) => {
+const monthNames = [
+  "JAN",
+  "FEB",
+  "MAR",
+  "APR",
+  "MAY",
+  "JUN",
+  "JUL",
+  "AUG",
+  "SEP",
+  "OCT",
+  "NOV",
+  "DEC",
+];
+
+const MonthCalendar = ({
+  setMonth,
+  month,
+}: {
+  setMonth: (value: boolean) => void;
+  month: boolean;
+}) => {
   const router = useRouter();
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [todoItems, setTodoItems] = useState<TodoItem[]>([]);
+  const [userId, setUserId] = useState<number | null>(null);
 
   const selectedDate = useStore((state) => state.selectedDate);
   const setSelectedDate = useStore((state) => state.setSelectedDate);
 
-  const monthNames = [
-    "JAN",
-    "FEB",
-    "MAR",
-    "APR",
-    "MAY",
-    "JUN",
-    "JUL",
-    "AUG",
-    "SEP",
-    "OCT",
-    "NOV",
-    "DEC",
-  ];
-
-  const handlePrevMonth = () => {
+  const handlePrevMonth = useCallback(() => {
     setCurrentDate((prevDate) => {
       const newDate = new Date(prevDate);
       newDate.setMonth(newDate.getMonth() - 1);
       return newDate;
     });
-    // Optionally reset selectedDate when changing months
-    // setSelectedDate(null);
-  };
+  }, []);
 
-  const handleNextMonth = () => {
+  const handleNextMonth = useCallback(() => {
     setCurrentDate((prevDate) => {
       const newDate = new Date(prevDate);
       newDate.setMonth(newDate.getMonth() + 1);
       return newDate;
     });
-    // Optionally reset selectedDate when changing months
-    // setSelectedDate(null);
-  };
+  }, []);
 
-  const handleDateClick = (day: number | null) => {
-    if (day) {
-      const newSelectedDate = new Date(currentYear, currentMonth, day);
+  const handleDateClick = useCallback(
+    (day: number, month: number, year: number) => {
+      const newSelectedDate = new Date(year, month, day);
       setSelectedDate(newSelectedDate);
-    }
-  };
+    },
+    [setSelectedDate]
+  );
+
+  const getTodoStatusColor = useCallback(
+    (date: Date) => {
+      // 날짜를 YYYYMMDD 형식의 문자열로 변환 (현지 시간 기준)
+      const dateString = `${date.getFullYear()}${String(
+        date.getMonth() + 1
+      ).padStart(2, "0")}${String(date.getDate()).padStart(2, "0")}`;
+
+      // 오늘 날짜도 동일한 방식으로 생성
+      const today = new Date();
+      const todayString = `${today.getFullYear()}${String(
+        today.getMonth() + 1
+      ).padStart(2, "0")}${String(today.getDate()).padStart(2, "0")}`;
+
+      const todosForDate = todoItems.filter(
+        (item) => item.targetDate.toString() === dateString
+      );
+
+      if (todosForDate.length === 0) return "";
+
+      if (dateString > todayString) {
+        return "bg-gray-500"; // Future todo
+      }
+
+      const hasCompletedTodo = todosForDate.some((item) => item.status === 1);
+      const hasInProgressTodo = todosForDate.some((item) => item.status === 0);
+
+      if (hasCompletedTodo && !hasInProgressTodo) {
+        return "bg-green-500"; // All todos completed
+      } else if (hasInProgressTodo) {
+        return "bg-pink-500"; // At least one todo in progress
+      }
+
+      return "";
+    },
+    [todoItems]
+  );
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const res = await instance("/user");
+        setUserId(res.data.userId);
+      } catch (error) {
+        console.error("Error fetching user ID:", error);
+      }
+    };
+
+    fetchUserId();
+  }, []);
+
+  useEffect(() => {
+    const fetchTodoItems = async () => {
+      if (!userId) return;
+
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth() + 1;
+      const startDate = `${year}${month.toString().padStart(2, "0")}01`;
+      const endDate = `${year}${month
+        .toString()
+        .padStart(2, "0")}${getDaysInMonth(year, month - 1)}`;
+
+      try {
+        const response = await instance.get(
+          `/todolist/period?userId=${userId}&startDate=${startDate}&endDate=${endDate}`
+        );
+        const data = response.data;
+        setTodoItems(data);
+      } catch (error) {
+        console.error("Error fetching todo items:", error);
+      }
+    };
+
+    fetchTodoItems();
+  }, [userId, currentDate]);
 
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
@@ -152,27 +264,34 @@ const MonthCalendar = ({ setMonth, month }: any) => {
       </div>
       <div className="grid grid-cols-7 gap-2 p-2 rounded-b-lg">
         {getMonthCalendarDates(currentYear, currentMonth).map(
-          ({ date }, index) => {
+          ({ date, month, year }, index) => {
+            const isCurrentMonth = month === currentMonth;
             const isSelected =
-              date &&
               selectedDate &&
-              selectedDate.getFullYear() === currentYear &&
-              selectedDate.getMonth() === currentMonth &&
+              selectedDate.getFullYear() === year &&
+              selectedDate.getMonth() === month &&
               selectedDate.getDate() === date;
+
+            const statusColor = getTodoStatusColor(new Date(year, month, date));
 
             return (
               <div
                 key={index}
-                className={`rounded-full w-8 h-8 flex items-center justify-center cursor-pointer ${
-                  date
+                className={`relative rounded-full w-8 h-8 flex flex-col items-center justify-center cursor-pointer ${
+                  isCurrentMonth
                     ? isSelected
                       ? "bg-black text-white"
                       : "text-black hover:bg-gray-200"
-                    : "text-transparent"
+                    : "text-gray-400"
                 }`}
-                onClick={() => handleDateClick(date)}
+                onClick={() => handleDateClick(date, month, year)}
               >
-                {date || ""}
+                {date}
+                {statusColor && (
+                  <div
+                    className={`absolute bottom-[-5px] w-1 h-1 rounded-full ${statusColor}`}
+                  ></div>
+                )}
               </div>
             );
           }

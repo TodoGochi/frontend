@@ -21,11 +21,16 @@ export default function Page() {
     setCoinList(coinRes.data);
   };
 
-  const formatDate = (dateString: any) => {
+  const formatDate = (dateString: string) => {
+    // UTC 시간으로 Date 객체 생성
     const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1; // getMonth()는 0부터 시작하므로 1을 더합니다.
-    const day = date.getDate();
+
+    // 한국 시간대로 변환
+    const koreaTime = new Date(date.getTime() + 9 * 60 * 60 * 1000);
+
+    const year = koreaTime.getUTCFullYear();
+    const month = koreaTime.getUTCMonth() + 1;
+    const day = koreaTime.getUTCDate();
 
     return `${year}년 ${month}월 ${day}일`;
   };
@@ -35,8 +40,8 @@ export default function Page() {
   }, []);
 
   return (
-    <div className="bg-[#EDEDED] flex items-center justify-center min-h-screen h-full  max-xs:w-full max-xs:h-full relative flex-col">
-      <div className="relative w-[390px] mt-[112px] h-[844px] px-[25px]">
+    <div className="bg-[#EDEDED] flex items-center justify-center min-h-screen h-full  w-full max-xs:w-full max-xs:h-full relative flex-col">
+      <div className="relative w-[390px] mt-[112px] h-full px-[25px]">
         <div className="flex justify-between mb-[40px]">
           <div className="flex items-center">
             <svg
@@ -92,31 +97,33 @@ export default function Page() {
             acc[formattedDate].push(el);
             return acc;
           }, {})
-        ).map(([date, items]: any) => (
-          <div
-            key={date}
-            className="mt-[12px] flex flex-col bg-[#FAFAFA] w-[350px] px-[20px] rounded-[5px] mb-[10px] min-h-[100px]"
-          >
-            <div className="font-semibold p-[20px]">{date}</div>
-            {items.map((el: any) => (
-              <div key={el.id} className="flex flex-col">
-                <div className="">
-                  <div className="flex items-center justify-between mt-[15px]">
-                    <div className="text-[#3F3F3F] ml-[10px]">
-                      {el.description}
+        )
+          .reverse()
+          .map(([date, items]: any) => (
+            <div
+              key={date}
+              className="mt-[12px] flex flex-col bg-[#FAFAFA] w-[350px] px-[20px] rounded-[5px] mb-[10px] min-h-[100px]"
+            >
+              <div className="font-semibold p-[20px]">{date}</div>
+              {items.map((el: any) => (
+                <div key={el.id} className="flex flex-col bg-[#FAFAFA]">
+                  <div className="">
+                    <div className="flex items-center justify-between mt-[15px]">
+                      <div className="text-[#3F3F3F] ml-[10px]">
+                        {el.description}
+                      </div>
+                      <div className="text-[#A6A6A6] mr-[10px]">
+                        {el.changeAmount > 0
+                          ? "+" + el.changeAmount
+                          : el.changeAmount}
+                      </div>
                     </div>
-                    <div className="text-[#A6A6A6] mr-[10px]">
-                      {el.changeAmount > 0
-                        ? "+" + el.changeAmount
-                        : el.changeAmount}
-                    </div>
+                    <div className="mx-[5px] h-[1px] w-[300px] bg-[#D8D8D8] mt-[15px] mb-[15px]"></div>
                   </div>
-                  <div className="mx-[5px] h-[1px] w-[300px] bg-[#D8D8D8] mt-[15px] mb-[15px]"></div>
                 </div>
-              </div>
-            ))}
-          </div>
-        ))}
+              ))}
+            </div>
+          ))}
       </div>
     </div>
   );

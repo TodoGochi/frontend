@@ -13,19 +13,23 @@ import { useState } from "react";
 const tutorialSteps = [
   {
     title: "Step 1",
-    content:
-      "안녕, 나는 너와 함께할 다마고치야.\n 지금부터 투두고치를 설명해 줄게.",
+    content: `안녕, 나는 너와 함께할 투두고치야
+지금부터 투두고치를 설명해 줄게`,
   },
-  { title: "Step 2", content: "우리는 총 세 단계로 성장해." },
+  {
+    title: "Step 2",
+    content: `우리는 총 3단계로 성장해
+점점 더 귀여워질 거야, 기대해!`,
+  },
   {
     title: "Step3",
-    content:
-      "얘는 쓰다듬기만 할 수 있어. \n 그러다보면 어느 순간 알에서 깨어나.",
+    content: `알은 쓰다듬기만 할 수 있어
+어느 순간, 뚜둥! 알에서 깨어나지.`,
   },
   {
     title: "Step 4",
-    content:
-      "알에서 깨어나면 아기 강아지 상태가 돼. \n 열심히 밥주고 쓰다듬고 산책시켜주면,",
+    content: `알에서 깨어나면 아기 강아지,
+열심히 밥 주고 쓰다듬고 산책시켜주면...`,
   },
   {
     title: "Step 4",
@@ -33,31 +37,30 @@ const tutorialSteps = [
   },
   {
     title: "Step 4",
-    content: "그리고 나머지 다마고치 기능들을 설명해줄게.",
+    content: `나머지 투두고치 기능들을 설명해 줄게`,
   },
   {
     title: "Step 4",
-    content:
-      "왼쪽부터 순서대로 코인, 함께한 일 수, \n 배고픔 게이지, 행복도 게이지야.",
+    content: `왼쪽부터 코인, 함께한 날짜,
+배고픔 게이지, 행복도 게이지야`,
   },
   {
     title: "Step 4",
-    content:
-      "코인은 투두를 완료하면 얻을 수 있어. \n 산책에서 가끔씩 발견할 수 있으니까 참고해.",
+    content: `코인은 투두를 완료하면 얻을 수 있어
+산책에서도 가끔 발견할 수 있지, 럭키!`,
   },
   {
     title: "Step 4",
-    content:
-      "함께한 일 수는 다마고치가 태어난 날\n 이후부터 카운팅 시작이야. 잘 키워 보라고~",
+    content: `함께한 날짜는 투두고치가 태어난 날부터 \n시작이야. 잘 키워 보라고-`,
   },
   {
     title: "Step 4",
-    content:
-      "배고픔 게이지는 먹이주기, 행복도 게이지는 \n 쓰다듬기랑 산책으로 채울 수 있어.",
+    content: `배고픔 게이지는 먹이주기,
+행복도 게이지는 쓰다듬기랑 산책으로!`,
   },
   {
     title: "Step 4",
-    content: "이제 하단 버튼들을 설명해 줄게. ",
+    content: `이제 하단 버튼을 설명해 줄게.`,
   },
   {
     title: "Step 4",
@@ -65,31 +68,32 @@ const tutorialSteps = [
   },
   {
     title: "Step 4",
-    content:
-      "먹이주기와 산책하기는 1코인을 사용해야하고\n,  쓰다듬기는 꽁짜야!ㅎㅎ 많이많이 해줘.",
+    content: `먹이주기와 산책하기는 1코인,
+쓰다듬기는 꽁짜야!  많이많이 해줘!`,
   },
   {
     title: "Step 4",
-    content:
-      "치료하기는 다마고치가 아플 때만 가능해. \n 밥 안주면 아프니까 되도록 쓸 일 없도록 해.",
+    content: `치료하기는 다마고치가 아플 때만 가능해.
+밥을 안 주면 많이 아파...`,
   },
   {
     title: "Step 4",
-    content: "투두리스트도 간단히 설명해줄게.",
+    content: `투두리스트도 간단히 설명해 줄게`,
   },
   {
     title: "Step 4",
-    content:
-      "‘할 일 추가'를 누르면 작성 할 수 있어. \n 오른쪽 ‘+’버튼을 누르면 상세설정이 가능해.",
+    content: ` '할 일 추가'를 누르면 작성할 수 있어
+오른쪽'+'버튼을 누르면 상세 설정이 가능해`,
   },
   {
     title: "Step 4",
-    content:
-      "‘할 일 추가'를 누르면 작성 할 수 있어. \n 오른쪽 ‘+’버튼을 누르면 상세설정이 가능해.",
+    content: ` '할 일 추가'를 누르면 작성할 수 있어
+오른쪽'+'버튼을 누르면 상세 설정이 가능해`,
   },
   {
     title: "Step 4",
-    content: "컬러태그를 설정하고, 요일 별 반복도 \n설정할 수   있어. ",
+    content: `컬러 태그, 요일 별 반복도 설정할 수 있어.
+컬러로 카테고리를 나눠봐!`,
   },
 
   {
@@ -100,17 +104,22 @@ const tutorialSteps = [
 
   {
     title: "Step 4",
-    content: "각 컬러태그의 할 일을 모두 완수해야 1코인을 \n받을 수 있고,",
+    content: `작성한 투두는 스와이프 하면 수정, 미루기,  \n 삭제 가능해`,
+  },
+
+  {
+    title: "Step 4",
+    content: `각 컬러 태그의 할 일을 모두 완료하면 1코인,`,
   },
   {
     title: "Step 4",
-    content:
-      "모든 컬러태그를 완료 시에는 2개의 보너스 \n코인을 지급하니까 꼭 모두 완수해 봐..",
+    content: `모든 컬러 태그 완료 시에는 보너스 코인을
+지급하니까 꼭 받도록!`,
   },
   {
     title: "Step 4",
-    content:
-      "나머지는 눌러 봐... 말을 너무 많이했더니 \n 배고파. 이제 새친구를 줄테니까 이름 지어줘.",
+    content: `나머지는 눌러 봐... 말을 너무 많이 했더니
+배고파. 이제 새 친구를 줄 테니 이름 지어줘.`,
   },
 ];
 
@@ -164,6 +173,16 @@ export default function Page() {
     }
   };
 
+  const getWhoAreYou = async () => {
+    const res = await instance.get("/user");
+    const gotchiRes = await instance(`/tamagotchi/${res.data.userId}/status`);
+    if (gotchiRes.data.id) router.push("/main");
+  };
+
+  useEffect(() => {
+    getWhoAreYou();
+  }, []);
+
   return (
     <div className="flex flex-col justify-center items-center py-auto">
       <div className="bg-neutral-700 flex items-center justify-center min-h-screen h-full w-screen max-xs:w-full max-xs:h-full relative flex-col">
@@ -172,7 +191,7 @@ export default function Page() {
             sized ? "z-[129]" : ""
           }`}
         >
-          {isClient && currentStep <= 21 && (
+          {isClient && currentStep <= 22 && (
             <div
               className={`absolute  ${
                 currentStep === 6 ? "z-[129]" : "z-[130]"
@@ -248,7 +267,7 @@ export default function Page() {
             </div>
           )}
 
-          {isClient && currentStep === 20 && modal && (
+          {isClient && currentStep === 21 && modal && (
             <Modal
               id={0}
               items={[]}
@@ -260,7 +279,7 @@ export default function Page() {
             />
           )}
 
-          {isClient && currentStep >= 22 && (
+          {isClient && currentStep >= 23 && (
             <div className="absolute z-[130] w-[360px] h-full bg-[#00000080]/50 rounded-2xl left-0">
               <div className="absolute z-[131] w-[330px] h-[160px] left-[4%] top-[20%]">
                 <img
@@ -269,15 +288,15 @@ export default function Page() {
                   alt="popup"
                 />
               </div>
-              <div className="absolute z-[131] top-[28%] left-[21%] font-neodunggeunmo">
-                다마고치의 이름을 정해보자~
+              <div className="absolute z-[131] top-[28%] left-[10%] font-neodunggeunmo">
+                투두고치의 이름을 정해보자~
               </div>
-              <div className="absolute z-[131] top-[41%] left-[11%]  w-[280px] h-[35px]">
+              <div className="absolute z-[131] top-[41%] left-[11%]  w-[280px] h-[35px] flex justify-center items-center">
                 <input
                   value={nickname}
                   onChange={(e) => setNickname(e.target.value)}
-                  className="w-[280px] h-[35px] pl-[50px] py-[10px] rounded-lg text-[12px] border-[#CCCCCC] border border-solid"
-                  placeholder="참고로 나는 강아지야. 토끼 아니다!"
+                  className="w-[280px] h-[35px]  text-center py-[10px] rounded-lg text-[12px] border-[#CCCCCC] border border-solid flex justify-center items-center"
+                  placeholder="(참고로 나는 강아지야. 토끼 아니다!)"
                 />
               </div>
               <div

@@ -77,6 +77,13 @@ const ListItem = ({ item, currentStep }: any) => {
     if (isDragging) handleDragEnd();
   };
 
+  useEffect(() => {
+    if (currentStep === 19) setIsSwiped(true);
+    else {
+      setIsSwiped(false);
+    }
+  }, [currentStep]);
+
   return (
     <div
       className={`relative flex mb-[10px] ${
@@ -313,6 +320,7 @@ const TutorialTask = ({ currentStep }: any) => {
           }`}
         >
           <TodoAdd
+            getData={() => {}}
             tutorial={true}
             setAdd={setAdd}
             initialData={{
@@ -333,7 +341,15 @@ const TutorialTask = ({ currentStep }: any) => {
           ))}
         </ul>
       </div>
-      {modal && <Modal setModal={setModal} text="" />}
+      {modal && (
+        <Modal
+          items={[]}
+          id={0}
+          getData={() => {}}
+          setModal={setModal}
+          text=""
+        />
+      )}
     </>
   );
 };

@@ -115,8 +115,6 @@ export default function Page() {
 
     setTotalCoin(res.data.coin);
 
-    processMultipleDates(resTransaction.data.map((el: any) => el.createdAt));
-
     if (resGotchi.data.health_status !== "HEALTHY") {
       setModalText(`다마고치가 아파요. \n 치료 하시겠어요?`);
     }
@@ -275,8 +273,22 @@ export default function Page() {
     setMessage(messages[randomIndex]);
   };
 
+  const getTodayCoin = async () => {
+    const res = await instance.get("/user");
+    const resTransaction = await instance.get(
+      `/user/${res.data.userId}/coin-transactions`
+    );
+    processMultipleDates(
+      resTransaction.data.map((el: any) => ({
+        createdAt: el.createdAt,
+        changeAmount: el.changeAmount,
+      }))
+    );
+  };
+
   useEffect(() => {
     getStatus();
+    getTodayCoin();
     // revive(); // 지울 것
   }, []);
 
@@ -287,24 +299,30 @@ export default function Page() {
     }, 4000);
   }, [walking]);
 
-  function trackCoins(createdAtStr: string) {
+  function trackCoins(createdAtStr: string, changeAmount: number) {
     const createdAt = new Date(createdAtStr);
     const today = new Date();
 
+    // 한국 시간대로 변환
+    const createdAtKST = new Date(createdAt.getTime() + 9 * 60 * 60 * 1000);
+    const todayKST = new Date(today.getTime() + 9 * 60 * 60 * 1000);
+
+    // 날짜만 비교하기 위해 시간을 00:00:00으로 설정
+    createdAtKST.setUTCHours(0, 0, 0, 0);
+    todayKST.setUTCHours(0, 0, 0, 0);
+
     const daysDiff = Math.floor(
-      (today.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24)
+      (todayKST.getTime() - createdAtKST.getTime()) / (1000 * 60 * 60 * 24)
     );
 
-    // Define coin tracking logic
     if (daysDiff === 0) {
-      setTodayCoin(todayCoin + 1);
+      setTodayCoin((prev) => prev + changeAmount);
     }
   }
 
-  function processMultipleDates(dates: any) {
-    return dates.map((date: any) => ({
-      date,
-      coins: trackCoins(date),
+  function processMultipleDates(data: any) {
+    data.map((info: any) => ({
+      coins: trackCoins(info.createdAt, info.changeAmount),
     }));
   }
 

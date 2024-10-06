@@ -74,9 +74,13 @@ export default function Modal({
           <div className="flex">
             <div
               className="cursor-pointer w-[110px] h-[35px] px-[15px] py-[7px] text-center text-[#3f3f3f] text-xs font-semibold font-['SUIT'] bg-[#f9f9f9] mr-[10px] rounded-lg flex justify-center items-center"
-              onClick={() => {
-                getTomorrow();
-              }}
+              onClick={
+                !tutorial
+                  ? () => {
+                      getTomorrow();
+                    }
+                  : () => setModal(false)
+              }
             >
               다음 날
             </div>
@@ -87,7 +91,7 @@ export default function Modal({
                   ? () => {
                       setModal2(true);
                     }
-                  : () => {}
+                  : () => setModal(false)
               }
             >
               날짜 선택

@@ -1,16 +1,44 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useRouter } from "next/navigation";
-/* eslint-disable @next/next/no-img-element */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useStore } from "../store/date";
+import { instance } from "../utils/axios";
 
-const getWeekDates = (baseDate: any) => {
+interface TodoItem {
+  colorTag: string;
+  status: number;
+  targetDate: string;
+  targetTime: string;
+  todoId: number;
+  todoText: string;
+  userId: number;
+  weeklyScheduleId: number;
+}
+
+const monthNames = [
+  "JAN",
+  "FEB",
+  "MAR",
+  "APR",
+  "MAY",
+  "JUN",
+  "JUL",
+  "AUG",
+  "SEP",
+  "OCT",
+  "NOV",
+  "DEC",
+];
+const weekdays = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+
+const getWeekDates = (baseDate: Date) => {
   const dates = [];
   const startOfWeek = new Date(baseDate);
   const dayOfWeek = baseDate.getDay();
-  const offsetToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // If Sunday (0), move to last Monday (-6), otherwise move to Monday
-  startOfWeek.setDate(baseDate.getDate() + offsetToMonday); // Adjust to Monday
+  const offsetToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+  startOfWeek.setDate(baseDate.getDate() + offsetToMonday);
 
   for (let i = 0; i < 7; i++) {
     dates.push(new Date(startOfWeek));
@@ -20,68 +48,131 @@ const getWeekDates = (baseDate: any) => {
   return dates;
 };
 
-const WeekCalendar = ({ setMonth, month }: any) => {
+const WeekCalendar = ({
+  setMonth,
+  month,
+}: {
+  setMonth: (value: boolean) => void;
+  month: boolean;
+}) => {
   const router = useRouter();
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [todoItems, setTodoItems] = useState<TodoItem[]>([]);
+  const [userId, setUserId] = useState<number | null>(null);
 
   const selectedDate = useStore((state) => state.selectedDate);
   const setSelectedDate = useStore((state) => state.setSelectedDate);
 
-  const monthNames = [
-    "JAN",
-    "FEB",
-    "MAR",
-    "APR",
-    "MAY",
-    "JUN",
-    "JUL",
-    "AUG",
-    "SEP",
-    "OCT",
-    "NOV",
-    "DEC",
-  ];
-
-  const weekdays = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
-
-  const handlePrevWeek = () => {
+  const handlePrevWeek = useCallback(() => {
     setCurrentDate((prevDate) => {
       const newDate = new Date(prevDate);
       newDate.setDate(newDate.getDate() - 7);
       return newDate;
     });
-  };
+  }, []);
 
-  const handleNextWeek = () => {
+  const handleNextWeek = useCallback(() => {
     setCurrentDate((prevDate) => {
       const newDate = new Date(prevDate);
       newDate.setDate(newDate.getDate() + 7);
       return newDate;
     });
-  };
-
-  const handleDateClick = (date: any) => {
-    setSelectedDate(date);
-  };
-
-  const weekDates = getWeekDates(currentDate);
-
-  // Effect for initialization
-  useEffect(() => {
-    const today = new Date();
-    setSelectedDate(today); // Set today's date initially
   }, []);
 
-  const formatDateForHeader = (dates: any) => {
+  const handleDateClick = useCallback(
+    (date: Date) => {
+      setSelectedDate(date);
+    },
+    [setSelectedDate]
+  );
+
+  const weekDates = React.useMemo(
+    () => getWeekDates(currentDate),
+    [currentDate]
+  );
+
+  // Fetch user ID once
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const res = await instance("/user");
+        setUserId(res.data.userId);
+      } catch (error) {
+        console.error("Error fetching user ID:", error);
+      }
+    };
+
+    fetchUserId();
+  }, []);
+
+  // Fetch todo items when userId or weekDates change
+  useEffect(() => {
+    const fetchTodoItems = async () => {
+      if (!userId) return;
+
+      const startDate = weekDates[0]
+        .toISOString()
+        .split("T")[0]
+        .replace(/-/g, "");
+      const endDate = weekDates[6]
+        .toISOString()
+        .split("T")[0]
+        .replace(/-/g, "");
+
+      try {
+        const response = await instance.get(
+          `/todolist/period?userId=${userId}&startDate=${startDate}&endDate=${endDate}`
+        );
+        const data = response.data;
+        setTodoItems(data);
+      } catch (error) {
+        console.error("Error fetching todo items:", error);
+      }
+    };
+
+    fetchTodoItems();
+  }, [userId, weekDates]);
+
+  const formatDateForHeader = (dates: Date[]) => {
     const startDate = dates[0];
     const startMonth = monthNames[startDate.getMonth()];
     const startYear = startDate.getFullYear();
     return `${startMonth} ${startYear}`;
   };
 
-  // Correct the isDateSelected function
-  const isDateSelected = (date: any) =>
-    selectedDate && date.toDateString() === selectedDate.toDateString();
+  const isDateSelected = useCallback(
+    (date: Date) =>
+      selectedDate && date.toDateString() === selectedDate.toDateString(),
+    [selectedDate]
+  );
+
+  const getTodoStatusColor = useCallback(
+    (date: Date) => {
+      const dateString = date.toISOString().split("T")[0].replace(/-/g, "");
+      const today = new Date().toISOString().split("T")[0].replace(/-/g, "");
+      const todosForDate = todoItems.filter(
+        (item) => item.targetDate.toString() === dateString
+      );
+
+      if (todosForDate.length === 0) return "";
+
+      if (dateString > today) {
+        return "bg-gray-500"; // Future todo
+      }
+
+      const hasCompletedTodo = todosForDate.some((item) => item.status === 1);
+      const hasInProgressTodo = todosForDate.some((item) => item.status === 0);
+
+      if (hasCompletedTodo && !hasInProgressTodo) {
+        return "bg-green-500"; // All todos completed
+      } else if (hasInProgressTodo) {
+        return "bg-pink-500"; // At least one todo in progress
+      }
+
+      return "";
+    },
+    [todoItems]
+  );
 
   return (
     <div className="w-[380px] text-center">
@@ -165,12 +256,18 @@ const WeekCalendar = ({ setMonth, month }: any) => {
             <span
               className={`z-20 relative mt-[8px] ${
                 isDateSelected(date) ? "text-white" : "text-black"
-              } ${
+              } 
+              ${
                 date.getMonth() !== weekDates[0].getMonth() ? "text-black" : ""
               }`}
             >
               {date.getDate()}
             </span>
+            <div
+              className={`absolute bottom-[-10px] w-1 h-1 rounded-full ${getTodoStatusColor(
+                date
+              )}`}
+            ></div>
           </div>
         ))}
       </div>
