@@ -254,7 +254,7 @@ export default function Page() {
 
   const cureModal = () => {
     setModal(true);
-    setModalText(`타마고치가 아파요. \n 치료 하시겠어요?`);
+    setModalText(`투두고치가 아파요. \n 치료 하시겠어요?`);
     setModalCoin(-3);
     setWhich("cure");
   };
@@ -370,12 +370,12 @@ export default function Page() {
       setCharacter(
         status.level === "baby" ? "/step1_death.gif" : "/step2_death.gif"
       );
-      setModalText(`${resGotchi.data.nickname}이가 타마고치별로 갔어요.
+      setModalText(`${resGotchi.data.nickname}이가 투두고치별로 갔어요.
 어떻게 하시겠어요?`);
       setButton(2);
     } else if (resGotchi.data.health_status === "sick") {
       setModal(true);
-      setModalText(`타마고치가 아파요. \n 치료 하시겠어요?`);
+      setModalText(`투두고치가 아파요. \n 치료 하시겠어요?`);
       setModalCoin(-3);
       setWhich("cure");
       setButton(1);

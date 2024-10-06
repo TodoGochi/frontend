@@ -73,7 +73,7 @@ const tutorialSteps = [
   },
   {
     title: "Step 4",
-    content: `치료하기는 다마고치가 아플 때만 가능해.
+    content: `치료하기는 투두고치가 아플 때만 가능해.
 밥을 안 주면 많이 아파...`,
   },
   {
