@@ -239,7 +239,7 @@ const TodoAdd: React.FC<TodoAddProps> = ({
     <div>
       <div
         ref={ref}
-        className="w-[358px]  rounded-lg bg-[#FFFFFF] mt-[10px] flex"
+        className="w-[343px]  rounded-lg bg-[#FFFFFF] mt-[10px] flex"
       >
         <div
           className={`min-w-[5px] h-[221px] ${selectedColor} rounded-tl-[5px] rounded-bl-[5px]`}

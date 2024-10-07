@@ -37,6 +37,12 @@ export default function Page() {
     }
   };
 
+  const logout = () => {
+    sessionStorage.removeItem("accessToken");
+    localStorage.removeItem("accessToken");
+    router.push("/signin");
+  };
+
   return (
     <div className="bg-[#EDEDED] flex items-center justify-center min-h-screen h-full  max-xs:w-full max-xs:h-full relative flex-col">
       <div className="relative w-[390px] mt-[112px] h-[844px] px-[25px]">
@@ -133,6 +139,24 @@ export default function Page() {
               ></div>
             </div>
           </div>
+        </div>
+        <div
+          className="flex justify-between items-center bg-[#FAFAFA] w-[350px] h-[50px] px-[20px] rounded-[5px] mb-[10px] cursor-pointer"
+          onClick={logout}
+        >
+          <div className="">로그아웃</div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="8"
+            height="15"
+            viewBox="0 0 8 15"
+            fill="none"
+          >
+            <path
+              d="M1 1.74846e-07L0 0L-2.62268e-06 15L0.999997 15L0.999998 14L2 14L2 13L3 13L3 12L4 12L4 11L5 11L5 10L6 10L6 9L7 9L7 8L8 8L8 7L7 7L7 6L6 6L6 5L5 5L5 4L4 4L4 3L3 3L3 2L2 2L2 1L1 1L1 1.74846e-07Z"
+              fill="#737373"
+            />
+          </svg>
         </div>
       </div>
     </div>

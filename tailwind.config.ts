@@ -11,6 +11,15 @@ const config: Config = {
       fontFamily: {
         neodunggeunmo: ["NeoDunggeunmo", "sans-serif"],
       },
+      animation: {
+        fade: "fade 3s ease-in-out infinite",
+      },
+      keyframes: {
+        fade: {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0" },
+        },
+      },
     },
     screens: {
       "max-xs": { max: "389px" },

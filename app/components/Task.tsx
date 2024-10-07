@@ -172,7 +172,7 @@ const ListItem: React.FC<ListItemProps> = ({
           <div className={`w-[5px] bg-[#${color}]`}></div>
           <li
             ref={itemRef}
-            className="relative bg-white overflow-hidden cursor-grab active:cursor-grabbing select-none w-[348px]"
+            className="relative bg-white overflow-hidden cursor-grab active:cursor-grabbing select-none w-[348px] rounded-tr-[5px] rounded-br-[5px]"
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
@@ -415,9 +415,9 @@ const SwipeActionList: React.FC = () => {
       {simpleAdd && (
         <div ref={ref} className="flex">
           <div
-            className={`min-w-[5px] mt-2 bg-[#d7d7d7] h-[50px] rounded-tl-lg rounded-bl-lg ml-[5px]`}
+            className={`min-w-[5px] mt-2 bg-[#d7d7d7] h-[50px] rounded-tl-lg rounded-bl-lg `}
           ></div>
-          <div className="w-[348px] h-[50px] p-2 mt-2 bg-[#FFFFFF] text-gray-500 border border-gray-200 rounded-tr-lg  rounded-br-lg text-center shadow-sm flex items-center justify-center">
+          <div className="w-[343px] h-[50px] p-2 mt-2 bg-[#FFFFFF] text-gray-500 border border-gray-200 rounded-tr-lg  rounded-br-lg text-center shadow-sm flex items-center justify-center">
             <div className="flex mb-[20px] ">
               <div className="relative w-[10px]">
                 <input
@@ -464,7 +464,7 @@ const SwipeActionList: React.FC = () => {
                 )}
               </div>
               <input
-                className="border-b border-[#a5a5a5] w-[269px] mr-[8px] focus:outline-none ml-[20px] mt-[10px] pl-[5px]"
+                className="border-b border-[#a5a5a5] w-[249px] mr-[8px] focus:outline-none ml-[20px] mt-[10px] pl-[5px]"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
               />

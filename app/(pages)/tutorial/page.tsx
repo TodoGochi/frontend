@@ -382,8 +382,8 @@ export default function Page() {
 
                 <span
                   className={`${
-                    currentStep === 8 ? "z-[135] text-white p-1" : ""
-                  } font-neodunggeunmo mr-[8px]`}
+                    currentStep === 8 ? "z-[135] text-white " : ""
+                  } font-neodunggeunmo p-1`}
                 >
                   Day 2
                 </span>
@@ -391,7 +391,7 @@ export default function Page() {
                 <img
                   src="/energy.svg"
                   alt="energy"
-                  className={`mr-[8px] ${
+                  className={` ${
                     currentStep === 7 || currentStep === 8
                       ? "relative z-[1] opacity-40"
                       : ""

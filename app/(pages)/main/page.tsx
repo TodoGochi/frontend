@@ -548,7 +548,7 @@ export default function Page() {
                       alt="speech"
                     />
                     <svg
-                      className="absolute bottom-[12px] right-[5%]"
+                      className="absolute bottom-[12px] right-[5%] animate-fade"
                       xmlns="http://www.w3.org/2000/svg"
                       width="15"
                       height="8"
@@ -568,15 +568,13 @@ export default function Page() {
               )}
               {timeLeft.hour === 0 && timeLeft.min === 0 ? (
                 <img
-                  onClick={eggSay}
-                  className="cursor-pointer absolute z-[103] bottom-[70px] left-[120px]"
+                  className="absolute z-[103] bottom-[70px] left-[120px]"
                   src="/egg_cracking.gif"
                   alt="egg"
                 />
               ) : (
                 <img
-                  onClick={eggSay}
-                  className="cursor-pointer absolute z-[103] bottom-[70px] left-[120px]"
+                  className="absolute z-[103] bottom-[70px] left-[120px]"
                   src="/egg_default.gif"
                   alt="egg"
                 />
@@ -597,7 +595,7 @@ export default function Page() {
                       alt="speech"
                     />
                     <svg
-                      className="absolute bottom-[12px] right-[5%]"
+                      className="absolute bottom-[12px] right-[5%] animate-fade"
                       xmlns="http://www.w3.org/2000/svg"
                       width="15"
                       height="8"
@@ -617,10 +615,9 @@ export default function Page() {
               )}
 
               <img
-                onClick={babySay}
                 src={character !== "" ? character : "/step1_default.gif"}
                 alt="baby"
-                className="cursor-pointer absolute z-[103] bottom-[70px] left-[120px]"
+                className="absolute z-[103] bottom-[70px] left-[120px]"
               />
             </div>
           )}
@@ -638,7 +635,7 @@ export default function Page() {
                       alt="speech"
                     />
                     <svg
-                      className="absolute bottom-[12px] right-[5%]"
+                      className="absolute bottom-[12px] right-[5%] animate-fade"
                       xmlns="http://www.w3.org/2000/svg"
                       width="15"
                       height="8"
@@ -657,10 +654,9 @@ export default function Page() {
                 </div>
               )}
               <img
-                onClick={adultSay}
                 src={character !== "" ? character : "/step2_default.gif"}
                 alt="adult"
-                className="cursor-pointer absolute z-[103] bottom-[70px] left-[120px]"
+                className="absolute z-[103] bottom-[70px] left-[120px]"
               />
             </div>
           )}
