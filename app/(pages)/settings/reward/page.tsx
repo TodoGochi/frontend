@@ -41,7 +41,7 @@ export default function Page() {
 
   return (
     <div className="bg-[#EDEDED] flex items-center justify-center min-h-screen h-full relative flex-col">
-      <div className="relative desktop:w-[390px] max-xs:w-full mt-[112px] h-full px-[25px]">
+      <div className="relative desktop:w-[390px] max-xs:w-full mt-[112px] h-full px-[20px]">
         <div className="flex justify-between mb-[40px]">
           <div className="flex items-center">
             <svg
@@ -104,15 +104,23 @@ export default function Page() {
               key={date}
               className="mt-[12px] flex flex-col bg-[#FAFAFA] w-[350px] px-[20px] rounded-[5px] max-xs:w-full mb-[10px] min-h-[100px]"
             >
-              <div className="font-semibold p-[20px]">{date}</div>
+              <div className="font-semibold p-[20px ] font-suit text-[12px] mt-[20px]">
+                {date}
+              </div>
               {items.map((el: any) => (
                 <div key={el.id} className="flex flex-col bg-[#FAFAFA]">
                   <div className="">
                     <div className="flex items-center justify-between mt-[15px]">
-                      <div className="text-[#3F3F3F] ml-[10px]">
+                      <div className="text-[#3F3F3F] ml-[10px] text-[10px] font-suit">
                         {el.description}
                       </div>
-                      <div className="text-[#A6A6A6] mr-[10px]">
+                      <div
+                        className={`font-suit text-[10px] mr-[10px] ${
+                          el.changeAmount < 0
+                            ? "text-red-500"
+                            : "text-[#A6A6A6]"
+                        }`}
+                      >
                         {el.changeAmount > 0
                           ? "+" + el.changeAmount
                           : el.changeAmount}

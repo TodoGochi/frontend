@@ -145,13 +145,16 @@ const TodoAdd: React.FC<TodoAddProps> = ({
   ]); // 필요한 의존성만 추가
 
   const handleCheckboxChange = async () => {
-    setClick(true);
+    setClick(!click);
     const res: any = await instance.get("/user");
-    const postRes: any = await instance.post(
-      `todolist/complete/${res.data.userId}/${id}`
-    );
-    if (postRes.data.rewardCoin === 3) {
-      setModal3 && setModal3(true);
+
+    if (id) {
+      const postRes: any = await instance.post(
+        `todolist/complete/${res.data.userId}/${id}`
+      );
+      if (postRes.data.rewardCoin === 3) {
+        setModal3 && setModal3(true);
+      }
     }
     getData();
   };
@@ -239,7 +242,7 @@ const TodoAdd: React.FC<TodoAddProps> = ({
     <div>
       <div
         ref={ref}
-        className="w-[343px]  rounded-lg bg-[#FFFFFF] mt-[10px] flex"
+        className="w-[350px]  rounded-lg bg-[#FFFFFF] mt-[10px] flex "
       >
         <div
           className={`min-w-[5px] h-[221px] ${selectedColor} rounded-tl-[5px] rounded-bl-[5px]`}
@@ -249,12 +252,12 @@ const TodoAdd: React.FC<TodoAddProps> = ({
             <div className="relative w-[10px]">
               <input
                 type="checkbox"
-                className="absolute z-[1] mr-3 opacity-0"
+                className="absolute z-[1] mr-3 opacity-0 bottom-[0px]"
                 onChange={handleCheckboxChange}
               />
               {click ? (
                 <svg
-                  className="absolute z-[0] bottom-[13px] cursor-pointer"
+                  className="absolute z-[0] bottom-[0px] cursor-pointer"
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
                   height="16"
@@ -274,7 +277,7 @@ const TodoAdd: React.FC<TodoAddProps> = ({
                 </svg>
               ) : (
                 <svg
-                  className="absolute z-[0] bottom-[13px] cursor-pointer"
+                  className="absolute z-[0] bottom-[0px] cursor-pointer"
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
                   height="16"
@@ -291,7 +294,7 @@ const TodoAdd: React.FC<TodoAddProps> = ({
               )}
             </div>
             <input
-              className="border-b border-[#a5a5a5] w-[250px] mr-[8px] focus:outline-none ml-[20px]"
+              className="border-b border-[#a5a5a5] w-[250px] font-suit mr-[3px] focus:outline-none ml-[20px]"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
             />
