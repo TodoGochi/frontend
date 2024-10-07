@@ -177,8 +177,8 @@ const WeekCalendar = ({
   );
 
   return (
-    <div className="w-[380px] text-center">
-      <div className="flex items-center p-4 bg-gray-100 rounded-t-lg">
+    <div className="w-[380px] max-xs:w-full text-center">
+      <div className="flex items-center px-[23px] bg-gray-100 rounded-t-lg">
         <button
           onClick={handlePrevWeek}
           className="text-gray-600 hover:text-gray-900 mr-[20px]"
@@ -234,12 +234,12 @@ const WeekCalendar = ({
         />
       </div>
 
-      <div className="grid grid-cols-7 gap-2 p-2 rounded-b-lg">
+      <div className="grid grid-cols-7 gap-2 p-2 px-[18px] rounded-b-lg">
         {weekDates.map((date, index) => (
           <div
             key={`weekday-${date.toISOString()}`}
             onClick={() => handleDateClick(date)}
-            className={`relative cursor-pointer flex flex-col items-center justify-center p-2 rounded-lg
+            className={`relative w-[30px] h-[50px] cursor-pointer flex flex-col items-center justify-center p-2 rounded-lg
               ${
                 isDateSelected(date)
                   ? "bg-neutral-700 text-white"
@@ -247,7 +247,7 @@ const WeekCalendar = ({
               }`}
           >
             <div
-              className={`text-xs ${
+              className={`text-[8px] ${
                 isDateSelected(date) ? "text-white" : "text-gray-600"
               }`}
             >

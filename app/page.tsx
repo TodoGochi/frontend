@@ -13,7 +13,7 @@ export default function Home() {
   }, [router]);
 
   return (
-    <div className="w-screen h-screen flex flex-col justify-center items-center">
+    <div className="w-full h-screen flex flex-col justify-center items-center">
       <img src="/splash.gif" alt="splash" />
     </div>
   );

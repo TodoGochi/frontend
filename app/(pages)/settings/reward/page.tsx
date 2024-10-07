@@ -40,8 +40,8 @@ export default function Page() {
   }, []);
 
   return (
-    <div className="bg-[#EDEDED] flex items-center justify-center min-h-screen h-full  w-full max-xs:w-full max-xs:h-full relative flex-col">
-      <div className="relative w-[390px] mt-[112px] h-full px-[25px]">
+    <div className="bg-[#EDEDED] flex items-center justify-center min-h-screen h-full relative flex-col">
+      <div className="relative desktop:w-[390px] max-xs:w-full mt-[112px] h-full px-[25px]">
         <div className="flex justify-between mb-[40px]">
           <div className="flex items-center">
             <svg
@@ -102,7 +102,7 @@ export default function Page() {
           .map(([date, items]: any) => (
             <div
               key={date}
-              className="mt-[12px] flex flex-col bg-[#FAFAFA] w-[350px] px-[20px] rounded-[5px] mb-[10px] min-h-[100px]"
+              className="mt-[12px] flex flex-col bg-[#FAFAFA] w-[350px] px-[20px] rounded-[5px] max-xs:w-full mb-[10px] min-h-[100px]"
             >
               <div className="font-semibold p-[20px]">{date}</div>
               {items.map((el: any) => (

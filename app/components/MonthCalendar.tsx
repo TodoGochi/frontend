@@ -197,7 +197,7 @@ const MonthCalendar = ({
   const currentMonth = currentDate.getMonth();
 
   return (
-    <div className="w-[380px] text-center">
+    <div className="w-[380px] max-xs:w-full text-center">
       <div className="flex items-center p-4 bg-gray-100 rounded-t-lg">
         <button
           onClick={handlePrevMonth}
@@ -255,14 +255,14 @@ const MonthCalendar = ({
           onClick={() => router.push("/settings")}
         />
       </div>
-      <div className="grid grid-cols-7 gap-2 text-xs p-2">
+      <div className="grid grid-cols-7 gap-2 text-xs p-2 px-[13px]">
         {["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"].map((day) => (
           <div key={day} className="text-gray-600">
             {day}
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7 gap-2 p-2 rounded-b-lg">
+      <div className="grid grid-cols-7 gap-2 p-2 px-[13px] rounded-b-lg place-items-center">
         {getMonthCalendarDates(currentYear, currentMonth).map(
           ({ date, month, year }, index) => {
             const isCurrentMonth = month === currentMonth;
@@ -277,7 +277,7 @@ const MonthCalendar = ({
             return (
               <div
                 key={index}
-                className={`relative rounded-full w-8 h-8 flex flex-col items-center justify-center cursor-pointer ${
+                className={`relative rounded-[8px] w-[30px] h-[35px] flex flex-col items-center justify-center cursor-pointer text-[12px] ${
                   isCurrentMonth
                     ? isSelected
                       ? "bg-black text-white"
@@ -289,7 +289,7 @@ const MonthCalendar = ({
                 {date}
                 {statusColor && (
                   <div
-                    className={`absolute bottom-[-5px] w-1 h-1 rounded-full ${statusColor}`}
+                    className={`absolute left-[13px] bottom-[5px] w-1 h-1 rounded-full ${statusColor}`}
                   ></div>
                 )}
               </div>

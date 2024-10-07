@@ -31,7 +31,7 @@ const CustomTimePicker: React.FC<CustomTimePickerProps> = ({
       <img src="/clock.svg" alt="clock" className="mr-[10px]" />
       <button
         onClick={toggleAmPm}
-        className="bg-gray-100 px-[10px] text-lg rounded-md shadow-sm hover:bg-gray-200 focus:outline-none text-[12px] mr-[5px]"
+        className="bg-gray-100 px-[10px] w-[45px] h-[24px] rounded-tl-[5px] rounded-bl-[5px] shadow-sm hover:bg-gray-200 focus:outline-none text-[12px] mr-[5px] font-suit"
       >
         {amPm}
       </button>
@@ -39,16 +39,16 @@ const CustomTimePicker: React.FC<CustomTimePickerProps> = ({
         type="number"
         value={hours}
         onChange={handleHoursChange}
-        className="max-w-[55px] text-lg text-center bg-gray-100 outline-none flex justify-center items-center appearance-none no-spinner"
+        className="max-w-[55px] text-[12px] text-center w-[45px] h-[24px] bg-gray-100 outline-none font-suit flex justify-center items-center appearance-none no-spinner"
         min="1"
         max="12"
       />
-      <span className="mx-2 text-lg">:</span>
+      <span className="mx-2 text-lg font-suit">:</span>
       <input
         type="number"
         value={minutes}
         onChange={handleMinutesChange}
-        className="max-w-[55px] text-lg text-center bg-gray-100 outline-none flex justify-center items-center appearance-none no-spinner"
+        className="max-w-[55px] text-[12px] text-center w-[45px] h-[24px] bg-gray-100 outline-none font-suit flex justify-center items-center appearance-none no-spinner rounded-tr-[5px] rounded-br-[5px]"
         min="0"
         max="59"
       />

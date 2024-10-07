@@ -75,7 +75,11 @@ export default function GochiModal({
           >
             {buttonText === "REVIVE" && (
               <div className="mr-[5px]">
-                {which === "cure" ? "치료하기" : "부활하기"}
+                {which === "cure"
+                  ? "치료하기"
+                  : which === "coin"
+                  ? ""
+                  : "부활하기"}
               </div>
             )}
             <img src="coin.svg" alt="coin" />

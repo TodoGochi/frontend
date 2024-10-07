@@ -86,7 +86,7 @@ const ListItem = ({ item, currentStep }: any) => {
 
   return (
     <div
-      className={`relative flex mb-[10px] ${
+      className={`relative flex mb-[10px] rounded-tr-[5px] rounded-br-[5px] ${
         currentStep === 19 || currentStep === 20 ? "z-[180] bg-white" : ""
       }`}
     >
@@ -243,22 +243,34 @@ const TutorialTask = ({ currentStep }: any) => {
     <>
       {!add && !simpleAdd && (
         <button
-          className={`w-[350px] h-[50px] p-2 mt-2 text-gray-500 border border-gray-200 rounded-lg shadow-sm cursor-pointer text-left pl-3 ${
+          className={`flex items-center w-[350px] h-[50px] p-2 mt-2 text-gray-500 border border-gray-200 rounded-lg shadow-sm cursor-pointer  ${
             currentStep === 15 || currentStep === 16 ? "z-[180] bg-white" : ""
           }`}
         >
-          + 할 일 추가
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="30"
+            height="30"
+            viewBox="0 0 30 30"
+            fill="none"
+          >
+            <path d="M15.5 8L15.5 22L14.5 22L14.5 8L15.5 8Z" fill="#3F3F3F" />
+            <path d="M8 14H22V15H8V14Z" fill="#3F3F3F" />
+          </svg>
+          <div>할 일 추가</div>
         </button>
       )}
 
       {simpleAdd && (
         <div
-          className={`relative w-[348px] mx-auto shadow-lg rounded-lg  mt-[10px] ${
+          className={`relative w-[348px] mx-auto shadow-lg rounded-lg  mt-[10px] flex h-[48px] ${
             currentStep === 16 ? "z-[180] bg-white" : "bg-[#FFFFFF]"
           }`}
         >
-          <div className="absolute left-[1px] top-0 w-[3px] h-[55px] bg-[#d7d7d7] rounded-lg"></div>
-          <div className="pl-2">
+          <div
+            className={`min-w-[5px]  bg-[#d7d7d7] h-[48px] rounded-tl-lg rounded-bl-lg `}
+          ></div>
+          <div className="pl-[17px]">
             <div className="flex mb-[20px] mt-[5px]">
               <div className="relative w-[10px]">
                 <input
@@ -334,7 +346,9 @@ const TutorialTask = ({ currentStep }: any) => {
         </div>
       )}
 
-      <div className={`w-[380px] mx-auto p-4 rounded-lg shadow-lg `}>
+      <div
+        className={`w-[380px] max-xs:w-full mx-auto p-4 rounded-lg shadow-lg `}
+      >
         <ul className="bg-gray-100 rounded-lg overflow-hidden">
           {items.map((item: any, index: number) => (
             <ListItem key={index} item={item} currentStep={currentStep} />

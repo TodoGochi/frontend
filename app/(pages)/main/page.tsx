@@ -137,14 +137,6 @@ export default function Page() {
 
     setDay(calculateDaysSinceCreation(resGotchi.data));
     setTimeLeft({ hour: resTime.data.hour, min: resTime.data.min });
-
-    if (resGotchi.data.level === "egg") {
-      eggSay();
-    } else if (resGotchi.data.level === "adult") {
-      adultSay();
-    } else {
-      babySay();
-    }
   };
 
   const feed = async () => {
@@ -216,9 +208,10 @@ export default function Page() {
           else setCharacter("/adultCoin.gif");
           setModal(true);
           setButton(1);
+          setWhich("coin");
           setModalText(`${resGotchi.data.nickname}이가 찾아온 코인을 
             지급합니다.`);
-          setModalCoin(coin);
+          setModalCoin(coin - res.data.coin);
         }, 6100);
       }
 
@@ -365,6 +358,14 @@ export default function Page() {
       setButton(1);
     }
 
+    if (resGotchi.data.level === "egg") {
+      eggSay();
+    } else if (resGotchi.data.level === "adult") {
+      adultSay();
+    } else {
+      babySay();
+    }
+
     if (resGotchi.data.health_status === "death") {
       setModal(true);
       setCharacter(
@@ -459,7 +460,7 @@ export default function Page() {
     <>
       <div className="bg-neutral-700 flex items-center justify-center min-h-screen h-full w-screen max-xs:w-full max-xs:h-full relative flex-col">
         <div
-          className={`relative w-[360px] mt-[30px] h-[300px] ${
+          className={`relative w-[360px] max-xs:w-full mt-[30px] h-[300px] ${
             sized ? "z-[129]" : ""
           }`}
         >
@@ -537,10 +538,7 @@ export default function Page() {
                 </div>
               </div>
               {message !== "" && (
-                <div
-                  onClick={eggSay}
-                  className="cursor-pointer absolute z-[135] top-1/2 -translate-y-[185%] w-[80%] max-w-[300px] translate-x-[11%]"
-                >
+                <div className="absolute z-[135] top-1/2 -translate-y-[185%] w-[80%] max-w-[300px] translate-x-[11%]">
                   <div className="relative">
                     <img
                       src="speech.png"
@@ -568,13 +566,13 @@ export default function Page() {
               )}
               {timeLeft.hour === 0 && timeLeft.min === 0 ? (
                 <img
-                  className="absolute z-[103] bottom-[70px] left-[120px]"
+                  className="absolute z-[103] bottom-[60px] left-[120px]"
                   src="/egg_cracking.gif"
                   alt="egg"
                 />
               ) : (
                 <img
-                  className="absolute z-[103] bottom-[70px] left-[120px]"
+                  className="absolute z-[103] bottom-[60px] left-[120px]"
                   src="/egg_default.gif"
                   alt="egg"
                 />
@@ -584,10 +582,7 @@ export default function Page() {
           {status.level === "baby" && (
             <div>
               {message !== "" && (
-                <div
-                  onClick={babySay}
-                  className="cursor-pointer absolute z-[135] top-1/2 -translate-y-[185%] w-[80%] max-w-[300px] translate-x-[11%]"
-                >
+                <div className=" absolute z-[135] top-1/2 -translate-y-[185%] w-[80%] max-w-[300px] translate-x-[11%]">
                   <div className="relative">
                     <img
                       src="speech.png"
@@ -617,17 +612,14 @@ export default function Page() {
               <img
                 src={character !== "" ? character : "/step1_default.gif"}
                 alt="baby"
-                className="absolute z-[103] bottom-[70px] left-[120px]"
+                className="absolute z-[103] bottom-[60px] left-[120px]"
               />
             </div>
           )}
           {status.level === "adult" && (
             <div>
               {message !== "" && (
-                <div
-                  onClick={adultSay}
-                  className="cursor-pointer absolute z-[135] top-1/2 -translate-y-[185%] w-[80%] max-w-[300px] translate-x-[11%]"
-                >
+                <div className=" absolute z-[135] top-1/2 -translate-y-[185%] w-[80%] max-w-[300px] translate-x-[11%]">
                   <div className="relative">
                     <img
                       src="speech.png"
@@ -656,7 +648,7 @@ export default function Page() {
               <img
                 src={character !== "" ? character : "/step2_default.gif"}
                 alt="adult"
-                className="absolute z-[103] bottom-[70px] left-[120px]"
+                className="absolute z-[103] bottom-[60px] left-[120px]"
               />
             </div>
           )}
@@ -733,7 +725,7 @@ export default function Page() {
         </div>
 
         <div
-          className={`w-[390px]  ${
+          className={`w-[390px]  max-xs:w-full  ${
             sized
               ? "min-h-[749px] absolute top-[50%] translate-y-[-40%] z-[130] overflow-auto"
               : "min-h-[369px]"
@@ -755,7 +747,9 @@ export default function Page() {
             </div>
             <div className="flex items-center">
               <img src="list.svg" alt="sort" />
-              <span className="ml-[5px] text-[12px]">컬러태그 순</span>
+              <span className="ml-[5px] text-[12px] font-suit">
+                컬러태그 순
+              </span>
             </div>
           </div>
           <SwipeActionList />

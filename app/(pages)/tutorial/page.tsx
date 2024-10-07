@@ -187,7 +187,7 @@ export default function Page() {
     <div className="flex flex-col justify-center items-center py-auto">
       <div className="bg-neutral-700 flex items-center justify-center min-h-screen h-full w-screen max-xs:w-full max-xs:h-full relative flex-col">
         <div
-          className={`relative w-[360px] mt-[30px] h-[300px] ${
+          className={`relative w-[360px] max-xs:w-full mt-[30px] h-[300px] ${
             sized ? "z-[129]" : ""
           }`}
         >
@@ -195,7 +195,7 @@ export default function Page() {
             <div
               className={`absolute  ${
                 currentStep === 6 ? "z-[129]" : "z-[130]"
-              } min-w-[360px] h-[300px] ${
+              } min-w-[360px] max-xs:w-full h-[300px] ${
                 currentStep >= 14 ? "" : " bg-[#00000080]/50"
               }  rounded-2xl flex flex-col justify-center items-center`}
             >
@@ -231,7 +231,7 @@ export default function Page() {
               </div>
 
               {currentStep >= 1 && currentStep <= 5 ? (
-                <div className="flex">
+                <div className="flex mt-[54px]">
                   {currentStep === 1 || currentStep === 2 ? (
                     <img src="/egg_default.gif" alt="egg" />
                   ) : (
@@ -355,7 +355,7 @@ export default function Page() {
               currentStep === 8 ||
               currentStep === 9 ? (
                 <div
-                  className="w-[390px] cursor-pointer h-[50px] absolute z-[131]  top-[40px]"
+                  className="w-[390px] max-xs:w-full cursor-pointer h-[50px] absolute z-[131]  top-[40px]"
                   onClick={goToNextStep}
                 ></div>
               ) : (
@@ -466,7 +466,7 @@ export default function Page() {
           </div>
         </div>
         <div
-          className={`w-[390px]  ${
+          className={`w-[390px] max-xs:w-full ${
             sized
               ? "min-h-[749px] absolute top-[50%] translate-y-[-40%]  overflow-auto"
               : "min-h-[369px]"

@@ -313,7 +313,7 @@ const TodoAdd: React.FC<TodoAddProps> = ({
             {days.map((day) => (
               <button
                 key={day}
-                className={`text-[10px] max-w-[35px] px-[7px] py-[5px] rounded ${
+                className={`text-[10px] max-w-[35px] px-[7px] py-[5px] rounded font-suit ${
                   selectedDays.includes(day)
                     ? "bg-gray-800 text-white"
                     : "text-gray-800"
@@ -327,7 +327,7 @@ const TodoAdd: React.FC<TodoAddProps> = ({
 
           <CustomTimePicker timeState={timeState} timeActions={timeActions} />
 
-          <div className="flex gap-[3px] mb-4">
+          <div className="flex gap-[3px]">
             {colors.map((color) => (
               <button
                 key={color}

@@ -7,7 +7,7 @@ export default function Page() {
 
   return (
     <div className="bg-[#EDEDED] flex items-center justify-center min-h-screen h-full  max-xs:w-full max-xs:h-full relative flex-col">
-      <div className="relative w-[390px] mt-[112px] h-[844px] px-[25px]">
+      <div className="relative w-[390px] max-xs:w-full mt-[112px] h-[844px] px-[25px]">
         <div className="flex justify-between mb-[40px]">
           <div className="font-neodunggeunmo text-[25px]">설정</div>
           <svg
@@ -28,7 +28,7 @@ export default function Page() {
           </svg>
         </div>
         <div
-          className="flex justify-between items-center bg-[#FAFAFA] w-[350px] h-[50px] px-[20px] rounded-[5px] mb-[10px] cursor-pointer"
+          className="flex justify-between items-center bg-[#FAFAFA] w-[350px]  max-xs:w-full h-[50px] px-[20px] rounded-[5px] mb-[10px] cursor-pointer"
           onClick={() => router.push("/settings/account")}
         >
           <div className="">계정</div>
@@ -46,7 +46,7 @@ export default function Page() {
           </svg>
         </div>
         <div
-          className="flex justify-between items-center bg-[#FAFAFA] w-[350px] h-[50px] px-[20px] rounded-[5px] mb-[10px] cursor-pointer"
+          className="flex justify-between items-center bg-[#FAFAFA] w-[350px] max-xs:w-full max-xs:w-full h-[50px] px-[20px] rounded-[5px] mb-[10px] cursor-pointer"
           onClick={() => router.push("/settings/reward")}
         >
           <div className="">리워드</div>
@@ -63,7 +63,7 @@ export default function Page() {
             />
           </svg>
         </div>
-        <div className="flex justify-between items-center bg-[#FAFAFA] w-[350px] h-[50px] px-[20px] rounded-[5px] ">
+        <div className="flex justify-between items-center bg-[#FAFAFA] max-xs:w-full w-[350px] max-xs:w-full h-[50px] px-[20px] rounded-[5px] ">
           <div className="">서비스 정보</div>
           <div className="text-[#A6A6A6]">ver 0.1</div>
         </div>

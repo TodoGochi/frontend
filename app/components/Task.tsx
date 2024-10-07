@@ -169,7 +169,9 @@ const ListItem: React.FC<ListItemProps> = ({
     <>
       {!clickEdit ? (
         <div className="flex mb-[10px]">
-          <div className={`w-[5px] bg-[#${color}]`}></div>
+          <div
+            className={`w-[5px] bg-[#${color}] rounded-bl-[5px] rounded-tl-[5px]`}
+          ></div>
           <li
             ref={itemRef}
             className="relative bg-white overflow-hidden cursor-grab active:cursor-grabbing select-none w-[348px] rounded-tr-[5px] rounded-br-[5px]"
@@ -417,7 +419,7 @@ const SwipeActionList: React.FC = () => {
           <div
             className={`min-w-[5px] mt-2 bg-[#d7d7d7] h-[50px] rounded-tl-lg rounded-bl-lg `}
           ></div>
-          <div className="w-[343px] h-[50px] p-2 mt-2 bg-[#FFFFFF] text-gray-500 border border-gray-200 rounded-tr-lg  rounded-br-lg text-center shadow-sm flex items-center justify-center">
+          <div className="w-[343px] max-xs:w-full h-[50px] p-2 mt-2 bg-[#FFFFFF] text-gray-500 border border-gray-200 rounded-tr-lg  rounded-br-lg text-center shadow-sm flex items-center justify-center">
             <div className="flex mb-[20px] ">
               <div className="relative w-[10px]">
                 <input
@@ -501,7 +503,7 @@ const SwipeActionList: React.FC = () => {
         />
       )}
 
-      <div className="w-[380px]  p-4 rounded-lg shadow-lg">
+      <div className="w-[380px] max-xs:w-full  p-4 rounded-lg shadow-lg">
         <ul className="bg-gray-100 rounded-lg overflow-hidden">
           {items.map((item) => (
             <div key={item.id}>

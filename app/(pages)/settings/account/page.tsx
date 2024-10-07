@@ -45,7 +45,7 @@ export default function Page() {
 
   return (
     <div className="bg-[#EDEDED] flex items-center justify-center min-h-screen h-full  max-xs:w-full max-xs:h-full relative flex-col">
-      <div className="relative w-[390px] mt-[112px] h-[844px] px-[25px]">
+      <div className="relative  desktop:w-[390px] max-xs:w-full mt-[112px] h-[844px] px-[25px]">
         <div className="flex justify-between mb-[40px]">
           <div className="flex items-center">
             <svg
@@ -81,7 +81,7 @@ export default function Page() {
             />
           </svg>
         </div>
-        <div className="w-[350px] h-[100px]  bg-[#FAFAFA] rounded-[5px] flex  items-center px-[20px] mb-[10px]">
+        <div className="w-[350px] h-[100px]  bg-[#FAFAFA] max-xs:w-full rounded-[5px] flex  items-center px-[20px] mb-[10px]">
           <div className="flex items-center">
             <img src="/profile.png" alt="profile" className="mr-[20px]" />
             <div>
@@ -90,7 +90,7 @@ export default function Page() {
             </div>
           </div>
         </div>
-        <div className="flex justify-between items-center bg-[#FAFAFA] w-[350px] h-[50px] px-[20px] rounded-[5px] mb-[10px] cursor-pointer">
+        <div className="flex justify-between items-center max-xs:w-full bg-[#FAFAFA] w-[350px] h-[50px] px-[20px] rounded-[5px] mb-[10px] cursor-pointer">
           <div className="">로그인 정보</div>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -105,7 +105,7 @@ export default function Page() {
             />
           </svg>
         </div>
-        <div className="flex justify-between items-center bg-[#FAFAFA] w-[350px] h-[50px] px-[20px] rounded-[5px] mb-[10px] cursor-pointer">
+        <div className="flex justify-between items-center bg-[#FAFAFA] max-xs:w-full w-[350px] h-[50px] px-[20px] rounded-[5px] mb-[10px] cursor-pointer">
           <div className="">계정 관리</div>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -120,7 +120,7 @@ export default function Page() {
             />
           </svg>
         </div>
-        <div className="flex justify-between items-center bg-[#FAFAFA] w-[350px] h-[50px] px-[20px] rounded-[5px] mb-[10px] cursor-pointer">
+        <div className="flex justify-between items-center bg-[#FAFAFA] max-xs:w-full w-[350px] h-[50px] px-[20px] rounded-[5px] mb-[10px] cursor-pointer">
           <div className="">자동 로그인 관리</div>
           <div
             onClick={handleToggle}
@@ -141,7 +141,7 @@ export default function Page() {
           </div>
         </div>
         <div
-          className="flex justify-between items-center bg-[#FAFAFA] w-[350px] h-[50px] px-[20px] rounded-[5px] mb-[10px] cursor-pointer"
+          className="flex justify-between items-center bg-[#FAFAFA] max-xs:w-full w-[350px] h-[50px] px-[20px] rounded-[5px] mb-[10px] cursor-pointer"
           onClick={logout}
         >
           <div className="">로그아웃</div>

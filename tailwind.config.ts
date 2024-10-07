@@ -10,6 +10,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         neodunggeunmo: ["NeoDunggeunmo", "sans-serif"],
+        suit: ["SUIT"],
       },
       animation: {
         fade: "fade 3s ease-in-out infinite",
@@ -22,7 +23,8 @@ const config: Config = {
       },
     },
     screens: {
-      "max-xs": { max: "389px" },
+      "max-xs": { max: "375px" },
+      desktop: "1200px",
     },
   },
   plugins: [],
