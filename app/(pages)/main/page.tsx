@@ -31,7 +31,7 @@ interface Monster {
 export default function Page() {
   const [month, setMonth] = useState(false);
   const [character, setCharacter] = useState("");
-  const [modal, setModal] = useState(true);
+  const [modal, setModal] = useState(false);
   const [button, setButton] = useState(2);
   const [totalCoin, setTotalCoin] = useState(0);
   const [sized, setSized] = useState(false);

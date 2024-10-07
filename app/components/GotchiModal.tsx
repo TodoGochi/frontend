@@ -164,7 +164,13 @@ export default function GochiModal({
         ) : (
           <div
             className="relative flex justify-center items-center h-[35px] cursor-pointer"
-            onClick={which == "cure" ? cure : () => {}}
+            onClick={
+              which == "cure"
+                ? cure
+                : () => {
+                    setModal(false);
+                  }
+            }
           >
             <svg
               className="absolute z-[2] left-[25px] top-[0px] cursor-pointer"
