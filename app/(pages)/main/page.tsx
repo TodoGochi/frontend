@@ -31,11 +31,11 @@ interface Monster {
 export default function Page() {
   const [month, setMonth] = useState(false);
   const [character, setCharacter] = useState("");
-  const [modal, setModal] = useState(false);
+  const [modal, setModal] = useState(true);
   const [button, setButton] = useState(2);
   const [totalCoin, setTotalCoin] = useState(0);
   const [sized, setSized] = useState(false);
-  const [modalCoin, setModalCoin] = useState(10);
+  const [modalCoin, setModalCoin] = useState(0);
   const [buttonText, setButtonText] = useState("REVIVE");
   const [day, setDay] = useState(0);
   const [walking, setWalking] = useState(false);
@@ -209,8 +209,9 @@ export default function Page() {
           setModal(true);
           setButton(1);
           setWhich("coin");
-          setModalText(`${resGotchi.data.nickname}이가 찾아온 코인을 
-            지급합니다.`);
+          setModalText(
+            `${resGotchi.data.nickname}이가 찾아온 코인을 지급합니다.`
+          );
           setModalCoin(coin - res.data.coin);
         }, 6100);
       }
