@@ -177,7 +177,7 @@ const WeekCalendar = ({
   );
 
   return (
-    <div className="w-[380px] max-xs:w-full text-center">
+    <div className="w-[380px] max-xs:w-full text-center mt-[33px]">
       <div className="flex items-center px-[23px] bg-gray-100 rounded-t-lg">
         <button
           onClick={handlePrevWeek}
@@ -202,7 +202,7 @@ const WeekCalendar = ({
         <div className="font-bold min-w-[82px]">{calendarHeader}</div>
         <button
           onClick={handleNextWeek}
-          className="text-gray-600 hover:text-gray-900 ml-[20px] mr-[90px]"
+          className="text-gray-600 hover:text-gray-900 ml-[20px] mr-[80px]"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

@@ -114,7 +114,7 @@ export default function GochiModal({
               </svg>
               {whichClicked !== "" && (
                 <div
-                  className="relative z-[3] flex justify-center items-center text-white h-full font-neodunggeunmo"
+                  className="relative z-[3] flex justify-center items-center text-white h-full font-neodunggeunmo cursor-pointer"
                   onClick={() => setWhichClicked("")}
                 >
                   아니야!
@@ -122,7 +122,7 @@ export default function GochiModal({
               )}
               {whichClicked === "" && buttonText === "REVIVE" && (
                 <div
-                  className="relative z-[3] flex justify-center items-center text-white h-full font-neodunggeunmo"
+                  className="relative z-[3] flex justify-center items-center text-white h-full font-neodunggeunmo cursor-pointer"
                   onClick={() => setWhichClicked("revive")}
                 >
                   부활하기
@@ -145,7 +145,7 @@ export default function GochiModal({
               </svg>
               {whichClicked !== "" && (
                 <div
-                  className="relative flex z-[3] justify-center items-center text-white h-full font-neodunggeunmo"
+                  className="relative flex z-[3] justify-center items-center text-white h-full font-neodunggeunmo cursor-pointer"
                   onClick={whichClicked === "revive" ? revive : restart}
                 >
                   네!
@@ -153,7 +153,7 @@ export default function GochiModal({
               )}
               {buttonText === "REVIVE" && (
                 <div
-                  className="relative z-[3] flex justify-center items-center text-white h-full font-neodunggeunmo"
+                  className="relative z-[3] flex justify-center items-center text-white h-full font-neodunggeunmo cursor-pointer"
                   onClick={() => setWhichClicked("restart")}
                 >
                   새로 시작

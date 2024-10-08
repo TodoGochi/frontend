@@ -113,8 +113,8 @@ export default function Page() {
 
   return (
     <div>
-      <div className="bg-[#ededed] h-screen flex justify-center items-center">
-        <div className="w-[390px] max-xs:w-full max-xs:h-full h-[844px] flex flex-col justify-center mx-auto items-center">
+      <div className="bg-black h-screen flex justify-center items-center">
+        <div className="bg-[#ededed] w-[390px] max-xs:w-full max-xs:h-full h-[844px] flex flex-col justify-center mx-auto items-center">
           <div className="text-[#3f3f3f] w-[350px] text-[25px] font-normal font-neodunggeunmo mb-[50px]">
             잠깐!
             <br />할 일을 적기 전에...

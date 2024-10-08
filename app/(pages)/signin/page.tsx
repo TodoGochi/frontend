@@ -55,8 +55,8 @@ export default function Page() {
   };
 
   return (
-    <div className="bg-[#ededed] h-screen flex justify-center items-center">
-      <div className="w-[390px] max-xs:w-full max-xs:h-full h-[844px] flex flex-col justify-center mx-auto items-center">
+    <div className="bg-black h-screen flex justify-center items-center">
+      <div className="bg-[#ededed] w-[390px] max-xs:w-full max-xs:h-full h-[844px] flex flex-col justify-center mx-auto items-center">
         <div className="flex justify-start pl-[10px] w-full">
           <svg
             className="w-[136px] h-[32px] mb-[13px]"

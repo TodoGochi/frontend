@@ -44,8 +44,8 @@ export default function Page() {
   };
 
   return (
-    <div className="bg-[#EDEDED] flex items-center justify-center min-h-screen h-full  max-xs:w-full max-xs:h-full relative flex-col">
-      <div className="relative  desktop:w-[390px] max-xs:w-full mt-[112px] h-[844px] px-[25px]">
+    <div className="bg-black flex items-center justify-center min-h-screen h-full  max-xs:w-full max-xs:h-full relative flex-col">
+      <div className="relative bg-[#EDEDED] desktop:w-[390px] max-xs:w-full pt-[112px] h-[844px] px-[25px]">
         <div className="flex justify-between mb-[40px]">
           <div className="flex items-center">
             <svg

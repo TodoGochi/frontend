@@ -40,8 +40,8 @@ export default function Page() {
   }, []);
 
   return (
-    <div className="bg-[#EDEDED] flex items-center justify-center min-h-screen h-full relative flex-col">
-      <div className="relative desktop:w-[390px] max-xs:w-full mt-[112px] h-full px-[20px]">
+    <div className="bg-black flex items-center justify-center min-h-screen h-full relative flex-col">
+      <div className="bg-[#EDEDED] relative desktop:w-[390px] max-xs:w-full pt-[112px] h-full px-[20px]">
         <div className="flex justify-between mb-[40px]">
           <div className="flex items-center">
             <svg

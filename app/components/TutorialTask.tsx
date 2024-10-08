@@ -86,14 +86,18 @@ const ListItem = ({ item, currentStep }: any) => {
 
   return (
     <div
-      className={`relative flex mb-[10px] rounded-tr-[5px] rounded-br-[5px] ${
-        currentStep === 19 || currentStep === 20 ? "z-[180] bg-white" : ""
+      className={`relative flex mb-[10px]  ${
+        currentStep === 19 || currentStep === 20
+          ? "z-[180] bg-white  rounded-[5px]"
+          : ""
       }`}
     >
-      <div className={`w-[5px] bg-[#${item.color}]`}></div>
+      <div
+        className={`w-[5px] rounded-tl-[5px] rounded-bl-[5px] bg-[#${item.color}]`}
+      ></div>
       <li
         ref={itemRef}
-        className="relative bg-white overflow-hidden cursor-grab active:cursor-grabbing select-none w-[348px]"
+        className="relative bg-white overflow-hidden cursor-grab active:cursor-grabbing select-none w-[348px] rounded-[5px]"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -103,7 +107,7 @@ const ListItem = ({ item, currentStep }: any) => {
         onMouseLeave={handleMouseLeave}
       >
         <div
-          className="flex items-center p-4 transition-transform duration-300 ease-out"
+          className="flex items-center p-4 transition-transform duration-300 ease-out "
           style={{ transform: `translateX(-${translation}px)` }}
         >
           <div className="relative">
@@ -263,24 +267,24 @@ const TutorialTask = ({ currentStep }: any) => {
 
       {simpleAdd && (
         <div
-          className={`relative w-[348px] mx-auto shadow-lg rounded-lg  mt-[10px] flex h-[48px] ${
+          className={`relative w-[348px] mx-auto shadow-lg rounded-lg  mt-[10px] flex h-[48px] items-center  ${
             currentStep === 16 ? "z-[180] bg-white" : "bg-[#FFFFFF]"
           }`}
         >
           <div
-            className={`min-w-[5px]  bg-[#d7d7d7] h-[48px] rounded-tl-lg rounded-bl-lg `}
+            className={`min-w-[5px] mt-2 bg-[#d7d7d7] h-[50px] rounded-tl-lg rounded-bl-lg `}
           ></div>
-          <div className="pl-[17px]">
-            <div className="flex mb-[20px] mt-[5px]">
+          <div className="w-[343px] max-xs:w-full h-[50px] p-2 mt-2 bg-[#FFFFFF] text-gray-500 border border-gray-200 rounded-tr-lg  rounded-br-lg text-center shadow-sm flex items-center justify-center">
+            <div className="flex mb-[20px] ">
               <div className="relative w-[10px]">
                 <input
                   type="checkbox"
-                  className="absolute z-[1] mr-3 opacity-0 bottom-0"
+                  className="absolute z-[1] top-[15px] opacity-0"
                   onChange={handleCheckboxChange}
                 />
                 {click ? (
                   <svg
-                    className="absolute z-[0] bottom-[0px]"
+                    className="absolute z-[0] top-[15px] cursor-pointer"
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
                     height="16"
@@ -300,7 +304,7 @@ const TutorialTask = ({ currentStep }: any) => {
                   </svg>
                 ) : (
                   <svg
-                    className="absolute z-[0] bottom-[0px]"
+                    className="absolute z-[0] top-[15px] cursor-pointer"
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
                     height="16"
@@ -316,11 +320,23 @@ const TutorialTask = ({ currentStep }: any) => {
                   </svg>
                 )}
               </div>
-              <span className="border-b border-[#a5a5a5] w-[269px] mr-[8px] focus:outline-none ml-[20px] pt-[15px]">
-                강아지 산책
-              </span>
-              <span className="text-[30px] h-[30px]">+</span>
+              <input className="border-b border-[#a5a5a5] w-[249px] mr-[8px] focus:outline-none ml-[20px] mt-[10px] pl-[5px]" />
             </div>
+            <button className="text-2xl font-bold mb-[5px]">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="30"
+                height="30"
+                viewBox="0 0 30 30"
+                fill="none"
+              >
+                <path
+                  d="M15.5 8L15.5 22L14.5 22L14.5 8L15.5 8Z"
+                  fill="#3F3F3F"
+                />
+                <path d="M8 14H22V15H8V14Z" fill="#3F3F3F" />
+              </svg>
+            </button>
           </div>
         </div>
       )}

@@ -8,6 +8,10 @@ const tokenRefresh = async () => {
       { withCredentials: true }
     );
 
+    if (!localStorage.getItem("accessToken")) {
+      return;
+    }
+
     // 새 액세스 토큰을 응답에서 받아 저장
     const newAccessToken = response.data.accessToken; // 실제 응답 구조에 따라 조정 필요
     localStorage.setItem("accessToken", newAccessToken);

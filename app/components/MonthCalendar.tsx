@@ -118,6 +118,51 @@ const MonthCalendar = ({
     [setSelectedDate]
   );
 
+  // Updated helper function to get the dates for the current month
+  const getMonthCalendarDates = (year: number, month: number) => {
+    const dates = [];
+    const firstDayOfMonth = new Date(year, month, 1);
+    const lastDayOfMonth = new Date(year, month + 1, 0);
+    const firstDayWeekday = firstDayOfMonth.getDay();
+    const lastDateOfMonth = lastDayOfMonth.getDate();
+
+    // Adjust for Monday as the first day of the week
+    const adjustedFirstDayWeekday =
+      firstDayWeekday === 0 ? 6 : firstDayWeekday - 1;
+
+    // Add days from the previous month
+    const prevMonth = month === 0 ? 11 : month - 1;
+    const prevMonthYear = month === 0 ? year - 1 : year;
+    const prevMonthLastDate = new Date(
+      prevMonthYear,
+      prevMonth + 1,
+      0
+    ).getDate();
+    for (
+      let i = prevMonthLastDate - adjustedFirstDayWeekday + 1;
+      i <= prevMonthLastDate;
+      i++
+    ) {
+      dates.push({ date: i, month: prevMonth, year: prevMonthYear });
+    }
+
+    // Add days from the current month
+    for (let i = 1; i <= lastDateOfMonth; i++) {
+      dates.push({ date: i, month: month, year: year });
+    }
+
+    // Add days from the next month, but only if they're part of a week that starts in the current month
+    const nextMonth = month === 11 ? 0 : month + 1;
+    const nextMonthYear = month === 11 ? year + 1 : year;
+    let nextMonthDay = 1;
+    while (dates.length % 7 !== 0) {
+      dates.push({ date: nextMonthDay, month: nextMonth, year: nextMonthYear });
+      nextMonthDay++;
+    }
+
+    return dates;
+  };
+
   const getTodoStatusColor = useCallback(
     (date: Date) => {
       // 날짜를 YYYYMMDD 형식의 문자열로 변환 (현지 시간 기준)
@@ -197,8 +242,8 @@ const MonthCalendar = ({
   const currentMonth = currentDate.getMonth();
 
   return (
-    <div className="w-[380px] max-xs:w-full text-center">
-      <div className="flex items-center p-4 bg-gray-100 rounded-t-lg">
+    <div className="w-[380px] max-xs:w-full text-center h-full mt-[33px]">
+      <div className="flex items-center px-[23px] bg-gray-100 rounded-t-lg">
         <button
           onClick={handlePrevMonth}
           className="text-gray-600 hover:text-gray-900 mr-[20px]"

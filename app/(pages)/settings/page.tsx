@@ -6,8 +6,8 @@ export default function Page() {
   const router = useRouter();
 
   return (
-    <div className="bg-[#EDEDED] flex items-center justify-center min-h-screen h-full  max-xs:w-full max-xs:h-full relative flex-col">
-      <div className="relative w-[390px] max-xs:w-full mt-[112px] h-[844px] px-[25px]">
+    <div className=" bg-black flex items-center justify-center min-h-screen h-full  max-xs:w-full max-xs:h-full relative flex-col">
+      <div className="bg-[#EDEDED] relative w-[390px] max-xs:w-full pt-[112px] h-[844px] px-[20px]">
         <div className="flex justify-between mb-[40px]">
           <div className="font-neodunggeunmo text-[25px]">설정</div>
           <svg

@@ -242,22 +242,22 @@ const TodoAdd: React.FC<TodoAddProps> = ({
     <div>
       <div
         ref={ref}
-        className="w-[350px]  rounded-lg bg-[#FFFFFF] mt-[10px] flex "
+        className="w-[350px]  rounded-lg bg-[#FFFFFF] mt-[10px] flex items-center "
       >
         <div
-          className={`min-w-[5px] h-[221px] ${selectedColor} rounded-tl-[5px] rounded-bl-[5px]`}
+          className={`min-w-[5px] h-[200px] ${selectedColor} rounded-tl-[5px] rounded-bl-[5px]`}
         ></div>
-        <div className="p-4">
+        <div className="p-4 pt-[10px] pb-[10px] h-[200px]">
           <div className="flex mb-[20px] mt-[5px]">
             <div className="relative w-[10px]">
               <input
                 type="checkbox"
-                className="absolute z-[1] mr-3 opacity-0 bottom-[0px]"
+                className="absolute z-[1] mr-3 opacity-0 bottom-[5px]"
                 onChange={handleCheckboxChange}
               />
               {click ? (
                 <svg
-                  className="absolute z-[0] bottom-[0px] cursor-pointer"
+                  className="absolute z-[0] bottom-[5px] cursor-pointer"
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
                   height="16"
@@ -277,7 +277,7 @@ const TodoAdd: React.FC<TodoAddProps> = ({
                 </svg>
               ) : (
                 <svg
-                  className="absolute z-[0] bottom-[0px] cursor-pointer"
+                  className="absolute z-[0] bottom-[5px] cursor-pointer"
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
                   height="16"

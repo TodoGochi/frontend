@@ -398,19 +398,9 @@ const SwipeActionList: React.FC = () => {
       {!add && !simpleAdd && (
         <button
           onClick={handleAddTask}
-          className="w-[350px] h-[50px] p-2 mt-2 text-gray-500 border border-gray-200 rounded-lg text-center shadow-sm flex justify-center items-center"
+          className="w-[350px] h-[50px] p-2 mt-2 text-gray-500 border border-gray-200 rounded-lg text-center shadow-sm flex  items-center bg-white text-[12px] pl-[15px]"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="30"
-            height="30"
-            viewBox="0 0 30 30"
-            fill="none"
-          >
-            <path d="M15.5 8L15.5 22L14.5 22L14.5 8L15.5 8Z" fill="#3F3F3F" />
-            <path d="M8 14H22V15H8V14Z" fill="#3F3F3F" />
-          </svg>
-          할 일 추가
+          + 할 일 추가
         </button>
       )}
 

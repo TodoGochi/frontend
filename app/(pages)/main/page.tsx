@@ -198,11 +198,9 @@ export default function Page() {
         }
       );
 
-      setMessage("");
-
       const coin = resGotchiWalk.data.coin;
 
-      if (coin) {
+      if (coin - res.data.coin !== 0) {
         setTimeout(() => {
           if (status.level === "baby") setCharacter("/babyCoin.gif");
           else setCharacter("/adultCoin.gif");
@@ -210,7 +208,7 @@ export default function Page() {
           setButton(1);
           setWhich("coin");
           setModalText(
-            `${resGotchi.data.nickname}이가 찾아온 코인을 지급합니다.`
+            `${resGotchi.data.nickname}(이)가 찾아온 코인을 지급합니다.`
           );
           setModalCoin(coin - res.data.coin);
         }, 6100);
@@ -261,7 +259,7 @@ export default function Page() {
     setModal(true);
     setButton(1);
     setModalCoin(0);
-    setModalText(`${resGotchi.data.nickname}이가 산책을 갑니다.`);
+    setModalText(`${resGotchi.data.nickname}(이)가 산책을 갑니다.`);
     walk();
   };
 
@@ -354,7 +352,7 @@ export default function Page() {
 
     if (resGotchi.data.happiness <= 5) {
       setModal(true);
-      setModalText(`${resGotchi.data.nickname}이가 투두고치님의
+      setModalText(`${resGotchi.data.nickname}(이)가 ${res.data.nickname}님의
 손길을 기다리고 있어요.`);
       setButton(1);
     }
@@ -372,12 +370,13 @@ export default function Page() {
       setCharacter(
         status.level === "baby" ? "/step1_death.gif" : "/step2_death.gif"
       );
-      setModalText(`${resGotchi.data.nickname}이가 투두고치별로 갔어요.
+      setModalText(`${resGotchi.data.nickname}(이)가 투두고치별로 갔어요.
 어떻게 하시겠어요?`);
       setButton(2);
     } else if (resGotchi.data.health_status === "sick") {
       setModal(true);
-      setModalText(`투두고치가 아파요. \n 치료 하시겠어요?`);
+      setModalText(`투두고치가 아파요.
+        치료 하시겠어요?`);
       setModalCoin(-3);
       setWhich("cure");
       setButton(1);
@@ -459,7 +458,7 @@ export default function Page() {
 
   return (
     <>
-      <div className="bg-neutral-700 flex items-center justify-center min-h-screen h-full w-screen max-xs:w-full max-xs:h-full relative flex-col">
+      <div className="bg-black flex items-center justify-center min-h-screen h-full w-screen max-xs:w-full max-xs:h-full relative flex-col">
         <div
           className={`relative w-[360px] max-xs:w-full mt-[30px] h-[300px] ${
             sized ? "z-[129]" : ""
@@ -733,7 +732,7 @@ export default function Page() {
           } bg-[#f4f4f4] rounded-tl-[30px] rounded-tr-[30px] flex flex-col justify-start items-center pt-[10px] mt-[20px]`}
         >
           <img
-            className="cursor-pointer"
+            className="cursor-pointer "
             src="/union.png"
             alt="union"
             onClick={() => setSized(!sized)}

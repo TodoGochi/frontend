@@ -57,7 +57,7 @@ export default function Modal({
           }`}
         >
           <div
-            className={`w-[165px]  text-center text-[#3f3f3f] text-[15px] font-bold font-['SUIT'] mb-[16px] ${
+            className={`w-[165px]  text-center text-[#3f3f3f]  whitespace-pre-wrap text-[15px] font-bold font-['SUIT'] mb-[16px] ${
               tutorial ? "mt-[15px] mb-[15px]" : "mt-[21px]"
             }`}
           >
@@ -98,7 +98,7 @@ export default function Modal({
                 </div>
               </div>
             ) : (
-              <div>
+              <div className="flex">
                 <div
                   className="cursor-pointer w-[110px] h-[35px] px-[15px] py-[7px] text-center text-[#3f3f3f] text-xs font-semibold font-['SUIT'] bg-[#f9f9f9] mr-[10px] rounded-lg flex justify-center items-center"
                   onClick={

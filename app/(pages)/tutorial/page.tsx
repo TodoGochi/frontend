@@ -185,7 +185,7 @@ export default function Page() {
 
   return (
     <div className="flex flex-col justify-center items-center py-auto">
-      <div className="bg-neutral-700 flex items-center justify-center min-h-screen h-full w-screen max-xs:w-full max-xs:h-full relative flex-col">
+      <div className="bg-black flex items-center justify-center min-h-screen h-full w-screen max-xs:w-full max-xs:h-full relative flex-col">
         <div
           className={`relative w-[360px] max-xs:w-full mt-[30px] h-[300px] ${
             sized ? "z-[129]" : ""
@@ -479,11 +479,13 @@ export default function Page() {
             
             ${
               currentStep === 17 || currentStep === 18
-                ? "h-[595px]"
-                : "h-[422px]"
+                ? "h-[556px]"
+                : "h-[383px]"
             } bottom-[0px] rounded-tl-[30px] rounded-tr-[30px]   ${
               currentStep === 16 ? "h-[428px]" : ""
-            } ${currentStep === 19 || currentStep === 20 ? "h-[423px] " : ""}`}
+            } ${
+              currentStep === 19 || currentStep === 20 ? "h-[24.1rem] " : ""
+            }`}
           ></div>
           <img className="cursor-pointer" src="/union.png" alt="union" />
 
