@@ -32,7 +32,7 @@ export default function GochiModal({
       onClick={() => setModal(false)}
     >
       <div
-        className="absolute left-[50%] top-[50%] transform -translate-x-[50%] w-[330px] h-[160px] -translate-y-[50%]  flex flex-col"
+        className="absolute left-[50%] top-[50%] transform -translate-x-[50%] w-[330px] h-[160px] -translate-y-[50%]  flex flex-col p-[20px]"
         onClick={(e) => e.stopPropagation()}
       >
         <svg
@@ -66,14 +66,14 @@ export default function GochiModal({
           </defs>
         </svg>
         <div
-          className=" font-neodunggeunmo relative z-[101] flex justify-center items-center mt-[20px] mb-[25px]"
+          className=" font-neodunggeunmo relative z-[101] flex justify-center items-center mb-[15px] "
           style={{ whiteSpace: "pre-wrap" }}
         >
-          {text}
+          <span className="leading-5">{text}</span>
         </div>
         {coin !== 0 ? (
           <div
-            className={`flex relative justify-center items-center z-[101] mb-[25px] font-neodunggeunmo`}
+            className={`flex relative justify-center items-center z-[101] mb-[15px] font-neodunggeunmo`}
           >
             {buttonText === "REVIVE" && (
               <div className="mr-[5px]">
@@ -88,7 +88,7 @@ export default function GochiModal({
             <div className="ml-[5px]">{coin}</div>
           </div>
         ) : (
-          <div className="mb-[25px]"></div>
+          <div className="mb-[15px]"></div>
         )}
 
         {button > 1 ? (
@@ -173,7 +173,7 @@ export default function GochiModal({
             }
           >
             <svg
-              className="absolute z-[2] left-[25px] top-[0px] cursor-pointer"
+              className="absolute z-[2] left-[8px] top-[20px] cursor-pointer"
               xmlns="http://www.w3.org/2000/svg"
               width="280"
               height="35"
@@ -185,7 +185,7 @@ export default function GochiModal({
                 fill="#3F3F3F"
               />
             </svg>
-            <div className="relative z-[3] h-full text-white font-neodunggeunmo flex justify-center items-center">
+            <div className="relative z-[3] h-full text-white font-neodunggeunmo flex justify-center items-center mt-[40px]">
               {which === "cure" ? "치료하기" : "확인"}
             </div>
           </div>

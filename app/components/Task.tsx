@@ -271,7 +271,7 @@ const ListItem: React.FC<ListItemProps> = ({
   );
 };
 
-const SwipeActionList: React.FC = () => {
+const SwipeActionList: React.FC<any> = ({ sized }: any) => {
   const [add, setAdd] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [simpleAdd, setSimpleAdd] = useState(false);
@@ -493,7 +493,11 @@ const SwipeActionList: React.FC = () => {
         />
       )}
 
-      <div className="w-[380px] max-xs:w-full  p-4 rounded-lg shadow-lg">
+      <div
+        className={`w-[380px] max-xs:w-full  p-4 rounded-lg shadow-lg overflow-auto ${
+          sized ? "h-[464px]" : "h-[185px]"
+        }`}
+      >
         <ul className="bg-gray-100 rounded-lg overflow-hidden">
           {items.map((item) => (
             <div key={item.id}>

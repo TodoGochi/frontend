@@ -44,21 +44,21 @@ export default function Modal({
       onClick={() => setModal(false)}
     >
       <div
-        className={`w-[330px]  ${
+        className={`w-[330px]   ${
           tutorial ? "h-[160px]" : "h-[120px]"
         } relative ${modal2 ? "opacity-0" : ""}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div
-          className={`w-[330px]  bg-[#ededed] rounded-[15px] shadow flex-col flex  ${
+          className={`w-[330px] px-[20px] py-[20px] bg-[#ededed] rounded-[15px] shadow flex-col flex  ${
             tutorial
               ? "h-[160px]  items-center"
               : "h-[120px] justify-center items-center"
           }`}
         >
           <div
-            className={`w-[165px]  text-center text-[#3f3f3f]  whitespace-pre-wrap text-[15px] font-bold font-['SUIT'] mb-[16px] ${
-              tutorial ? "mt-[15px] mb-[15px]" : "mt-[21px]"
+            className={`w-[165px] min-h-[30px] text-center text-[#3f3f3f]  whitespace-pre-wrap text-[15px] font-bold font-suit mb-[16px] leading-[20px] ${
+              tutorial ? "" : "mt-[11px] mb-[25px]"
             }`}
           >
             {text !== "" ? text : "할 일을 미루시겠어요?"}
@@ -77,11 +77,10 @@ export default function Modal({
                 className="relative cursor-pointer"
                 onClick={() => {
                   setModal(false);
-                  location.reload();
                 }}
               >
                 <svg
-                  className="absolute left-[-140px] top-[20px]"
+                  className="absolute left-[-140px] top-[-3px]"
                   xmlns="http://www.w3.org/2000/svg"
                   width="290"
                   height="35"
@@ -93,14 +92,14 @@ export default function Modal({
                     fill="#3F3F3F"
                   />
                 </svg>
-                <div className="absolute min-w-[30px] left-[-20px] top-[30px] text-white">
+                <div className="absolute min-w-[30px] left-[-12px] top-[4px] text-white">
                   확인
                 </div>
               </div>
             ) : (
               <div className="flex">
                 <div
-                  className="cursor-pointer w-[110px] h-[35px] px-[15px] py-[7px] text-center text-[#3f3f3f] text-xs font-semibold font-['SUIT'] bg-[#f9f9f9] mr-[10px] rounded-lg flex justify-center items-center"
+                  className="cursor-pointer w-[140px] h-[35px] px-[15px] py-[7px] text-center text-white text-xs font-semibold font-suit bg-black mr-[10px] rounded-lg flex justify-center items-center"
                   onClick={
                     !tutorial
                       ? () => {
@@ -112,7 +111,7 @@ export default function Modal({
                   다음 날
                 </div>
                 <div
-                  className="cursor-pointer w-[110px] h-[35px] px-[15px] py-[7px]   text-center text-[#3f3f3f] text-xs font-semibold font-['SUIT'] bg-[#f9f9f9] rounded-lg flex justify-center items-center"
+                  className="cursor-pointer w-[140px] h-[35px] px-[15px] py-[7px]   text-center text-white text-xs font-semibold font-suit bg-black rounded-lg flex justify-center items-center"
                   onClick={
                     !tutorial
                       ? () => {

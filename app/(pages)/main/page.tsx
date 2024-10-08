@@ -125,13 +125,13 @@ export default function Page() {
 
     if (resGotchi.data.happiness <= 5) {
       setCharacter(
-        status.level === "baby" ? "/step1_sad.gif" : "/step2_sad.gif"
+        resGotchi.data.level === "baby" ? "/step1_sad.gif" : "/step2_sad.gif"
       );
     }
 
     if (resGotchi.data.hunger <= 5) {
       setCharacter(
-        status.level === "baby" ? "/step1_sad.gif" : "/step2_sad.gif"
+        resGotchi.data.level === "baby" ? "/step1_sad.gif" : "/step2_sad.gif"
       );
     }
 
@@ -398,7 +398,7 @@ export default function Page() {
   };
 
   const walkingB = async () => {
-    setCharacter("1");
+    setTimeout(() => {}, 500);
   };
 
   const walkingAB = async () => {
@@ -458,317 +458,321 @@ export default function Page() {
 
   return (
     <>
-      <div className="bg-black flex items-center justify-center min-h-screen h-full w-screen max-xs:w-full max-xs:h-full relative flex-col">
-        <div
-          className={`relative w-[360px] max-xs:w-full mt-[30px] h-[300px] ${
-            sized ? "z-[129]" : ""
-          }`}
-        >
-          {walking ? (
-            <img src="/back.gif" className="absolute z-1" alt="room" />
-          ) : (
-            <img src="/room.png" className="absolute z-1" alt="room" />
-          )}
+      <div className="bg-black flex items-center  min-h-screen h-full max-xs:w-full max-xs:h-full relative flex-col">
+        <div className="bg-[#3f3f3f] flex justify-center flex-col items-center">
+          <div
+            className={`relative min-w-[360px] max-xs:w-full mt-[30px] h-[300px] ${
+              sized ? "z-[129]" : ""
+            }`}
+          >
+            {walking ? (
+              <img src="/back.gif" className="absolute z-1" alt="room" />
+            ) : (
+              <img src="/room.png" className="absolute z-1" alt="room" />
+            )}
 
-          <div className=" inset-0 flex items-start justify-center absolute z-[101] top-[10px] ">
-            <div className="relative  flex flex-col justify-center items-center">
-              <div className="flex items-center">
-                <img src="/coin.svg" alt="coin" />
-                <span className="font-neodunggeunmo mr-[13px] ml-[3px]">
-                  {totalCoin}
-                </span>
-                <span className="font-neodunggeunmo mr-[8px]">Day {day}</span>
-                <HungerMeter hunger={status.hunger} />
+            <div className=" inset-0 flex items-start justify-center absolute z-[101] top-[10px] ">
+              <div className="relative  flex flex-col justify-center items-center">
+                <div className="flex items-center">
+                  <img src="/coin.svg" alt="coin" />
+                  <span className="font-neodunggeunmo mr-[13px] ml-[3px]">
+                    {totalCoin}
+                  </span>
+                  <span className="font-neodunggeunmo mr-[8px]">Day {day}</span>
+                  <HungerMeter hunger={status.hunger} />
 
-                {Array.from(
-                  { length: Math.floor(status.happiness / 2) },
-                  (_, index) => (
+                  {Array.from(
+                    { length: Math.floor(status.happiness / 2) },
+                    (_, index) => (
+                      <img
+                        key={index}
+                        src="/heart.png"
+                        alt={`Repeated image ${index + 1}`}
+                      />
+                    )
+                  )}
+                  {Array.from({ length: status.happiness % 2 }, (_, index) => (
                     <img
                       key={index}
-                      src="/heart.png"
+                      src="/heartHalf.png"
                       alt={`Repeated image ${index + 1}`}
                     />
-                  )
+                  ))}
+                  {Array.from(
+                    {
+                      length:
+                        5 -
+                        (Math.floor(status.happiness / 2) +
+                          (status.happiness % 2)),
+                    },
+                    (_, index) => (
+                      <img
+                        key={index}
+                        src="/emptyHeart.png"
+                        alt={`Repeated image ${index + 1}`}
+                      />
+                    )
+                  )}
+                </div>
+              </div>
+            </div>
+            {status.level === "egg" && (
+              <div>
+                <div className="absolute z-[101] top-[110px] left-[130px]">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="100"
+                    height="35"
+                    viewBox="0 0 100 35"
+                    fill="none"
+                  >
+                    <path
+                      d="M96 0H4V1H2V2H1V4H0V31H1V33H2V34H4V35H96V34H98V33H99V31H100V4H99V2H98V1H96V0Z"
+                      fill="#FAFAFA"
+                    />
+                    <rect x="6" y="2" width="88" height="1" fill="#D8D8D8" />
+                    <rect x="6" y="32" width="88" height="1" fill="#D8D8D8" />
+                  </svg>
+                  <div className="font-neodunggeunmo absolute z-[130] top-[12px] left-[30px] flex justify-center items-center">
+                    {timeLeft.hour && String(timeLeft.hour).padStart(2, "0")}:
+                    {String(timeLeft.min).padStart(2, "0")}
+                  </div>
+                </div>
+                {message !== "" && (
+                  <div className="absolute z-[135] top-1/2 -translate-y-[185%] w-[80%] max-w-[300px] translate-x-[11%]">
+                    <div className="relative">
+                      <img
+                        src="speech.png"
+                        className="w-full h-auto"
+                        alt="speech"
+                      />
+                      <svg
+                        className="absolute bottom-[12px] right-[5%] animate-fade"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="15"
+                        height="8"
+                        viewBox="0 0 15 8"
+                        fill="none"
+                      >
+                        <path
+                          d="M15 1L15 0L0 -6.55671e-07L-4.37114e-08 0.999999L1 0.999999L1 2L2 2L2 3L3 3L3 4L4 4L4 5L5 5L5 6L6 6L6 7L7 7L7 8L8 8L8 7L9 7L9 6L10 6L10 5L11 5L11 4L12 4L12 3L13 3L13 2L14 2L14 1L15 1Z"
+                          fill="#737373"
+                        />
+                      </svg>
+                      <div className="font-neodunggeunmo text-[12px] absolute top-[50%] left-[20px] transform -translate-y-1/2 w-[calc(100%-40px)]">
+                        {message}
+                      </div>
+                    </div>
+                  </div>
                 )}
-                {Array.from({ length: status.happiness % 2 }, (_, index) => (
+                {timeLeft.hour === 0 && timeLeft.min === 0 ? (
                   <img
-                    key={index}
-                    src="/heartHalf.png"
-                    alt={`Repeated image ${index + 1}`}
+                    className="absolute z-[103] bottom-[60px] left-[120px]"
+                    src="/egg_cracking.gif"
+                    alt="egg"
                   />
-                ))}
-                {Array.from(
-                  {
-                    length:
-                      5 -
-                      (Math.floor(status.happiness / 2) +
-                        (status.happiness % 2)),
-                  },
-                  (_, index) => (
-                    <img
-                      key={index}
-                      src="/emptyHeart.png"
-                      alt={`Repeated image ${index + 1}`}
-                    />
-                  )
-                )}
-              </div>
-            </div>
-          </div>
-          {status.level === "egg" && (
-            <div>
-              <div className="absolute z-[101] top-[110px] left-[130px]">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="100"
-                  height="35"
-                  viewBox="0 0 100 35"
-                  fill="none"
-                >
-                  <path
-                    d="M96 0H4V1H2V2H1V4H0V31H1V33H2V34H4V35H96V34H98V33H99V31H100V4H99V2H98V1H96V0Z"
-                    fill="#FAFAFA"
-                  />
-                  <rect x="6" y="2" width="88" height="1" fill="#D8D8D8" />
-                  <rect x="6" y="32" width="88" height="1" fill="#D8D8D8" />
-                </svg>
-                <div className="font-neodunggeunmo absolute z-[130] top-[12px] left-[30px] flex justify-center items-center">
-                  {timeLeft.hour && String(timeLeft.hour).padStart(2, "0")}:
-                  {String(timeLeft.min).padStart(2, "0")}
-                </div>
-              </div>
-              {message !== "" && (
-                <div className="absolute z-[135] top-1/2 -translate-y-[185%] w-[80%] max-w-[300px] translate-x-[11%]">
-                  <div className="relative">
-                    <img
-                      src="speech.png"
-                      className="w-full h-auto"
-                      alt="speech"
-                    />
-                    <svg
-                      className="absolute bottom-[12px] right-[5%] animate-fade"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="15"
-                      height="8"
-                      viewBox="0 0 15 8"
-                      fill="none"
-                    >
-                      <path
-                        d="M15 1L15 0L0 -6.55671e-07L-4.37114e-08 0.999999L1 0.999999L1 2L2 2L2 3L3 3L3 4L4 4L4 5L5 5L5 6L6 6L6 7L7 7L7 8L8 8L8 7L9 7L9 6L10 6L10 5L11 5L11 4L12 4L12 3L13 3L13 2L14 2L14 1L15 1Z"
-                        fill="#737373"
-                      />
-                    </svg>
-                    <div className="font-neodunggeunmo text-[12px] absolute top-[50%] left-[20px] transform -translate-y-1/2 w-[calc(100%-40px)]">
-                      {message}
-                    </div>
-                  </div>
-                </div>
-              )}
-              {timeLeft.hour === 0 && timeLeft.min === 0 ? (
-                <img
-                  className="absolute z-[103] bottom-[60px] left-[120px]"
-                  src="/egg_cracking.gif"
-                  alt="egg"
-                />
-              ) : (
-                <img
-                  className="absolute z-[103] bottom-[60px] left-[120px]"
-                  src="/egg_default.gif"
-                  alt="egg"
-                />
-              )}
-            </div>
-          )}
-          {status.level === "baby" && (
-            <div>
-              {message !== "" && (
-                <div className=" absolute z-[135] top-1/2 -translate-y-[185%] w-[80%] max-w-[300px] translate-x-[11%]">
-                  <div className="relative">
-                    <img
-                      src="speech.png"
-                      className="w-full h-auto"
-                      alt="speech"
-                    />
-                    <svg
-                      className="absolute bottom-[12px] right-[5%] animate-fade"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="15"
-                      height="8"
-                      viewBox="0 0 15 8"
-                      fill="none"
-                    >
-                      <path
-                        d="M15 1L15 0L0 -6.55671e-07L-4.37114e-08 0.999999L1 0.999999L1 2L2 2L2 3L3 3L3 4L4 4L4 5L5 5L5 6L6 6L6 7L7 7L7 8L8 8L8 7L9 7L9 6L10 6L10 5L11 5L11 4L12 4L12 3L13 3L13 2L14 2L14 1L15 1Z"
-                        fill="#737373"
-                      />
-                    </svg>
-                    <div className="font-neodunggeunmo text-[12px] absolute top-[50%] left-[20px] transform -translate-y-1/2 w-[calc(100%-40px)]">
-                      {message}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              <img
-                src={character !== "" ? character : "/step1_default.gif"}
-                alt="baby"
-                className="absolute z-[103] bottom-[60px] left-[120px]"
-              />
-            </div>
-          )}
-          {status.level === "adult" && (
-            <div>
-              {message !== "" && (
-                <div className=" absolute z-[135] top-1/2 -translate-y-[185%] w-[80%] max-w-[300px] translate-x-[11%]">
-                  <div className="relative">
-                    <img
-                      src="speech.png"
-                      className="w-full h-auto"
-                      alt="speech"
-                    />
-                    <svg
-                      className="absolute bottom-[12px] right-[5%] animate-fade"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="15"
-                      height="8"
-                      viewBox="0 0 15 8"
-                      fill="none"
-                    >
-                      <path
-                        d="M15 1L15 0L0 -6.55671e-07L-4.37114e-08 0.999999L1 0.999999L1 2L2 2L2 3L3 3L3 4L4 4L4 5L5 5L5 6L6 6L6 7L7 7L7 8L8 8L8 7L9 7L9 6L10 6L10 5L11 5L11 4L12 4L12 3L13 3L13 2L14 2L14 1L15 1Z"
-                        fill="#737373"
-                      />
-                    </svg>
-                    <div className="font-neodunggeunmo text-[12px] absolute top-[50%] left-[20px] transform -translate-y-1/2 w-[calc(100%-40px)]">
-                      {message}
-                    </div>
-                  </div>
-                </div>
-              )}
-              <img
-                src={character !== "" ? character : "/step2_default.gif"}
-                alt="adult"
-                className="absolute z-[103] bottom-[60px] left-[120px]"
-              />
-            </div>
-          )}
-
-          <div className="absolute flex justify-center items-center left-[7px] bottom-[10px] z-[102]">
-            <div className="flex space-x-[8px]">
-              {status.level === "egg" ? (
-                <div className="relative ">
-                  <img src="/disableButton.png" alt="button" />
-                  <img
-                    className="absolute z-[2] top-[2px] left-[21px]"
-                    src="/food.png"
-                    alt="button"
-                  />
-                </div>
-              ) : (
-                <div className="relative cursor-pointer" onClick={feed}>
-                  <img src="/button.png" alt="button" />
-                  <img
-                    className="absolute z-[2] top-[2px] left-[21px]"
-                    src="/food.png"
-                    alt="button"
-                  />
-                </div>
-              )}
-              <div className="relative cursor-pointer" onClick={pet}>
-                <img src="/button.png" alt="button" />
-                <img
-                  className="absolute z-[2] top-[2px] left-[21px]"
-                  src="/cute.png"
-                  alt="button"
-                />
-              </div>
-              {status.level === "egg" ? (
-                <div className="relative ">
-                  <img src="/disableButton.png" alt="button" />
-                  <img
-                    className="absolute z-[2] top-[2px] left-[21px]"
-                    src="/go.png"
-                    alt="disableButton"
-                  />
-                </div>
-              ) : (
-                <div className="relative cursor-pointer" onClick={walkModal}>
-                  <img src="/button.png" alt="button" />
-                  <img
-                    className="absolute z-[2] top-[2px] left-[21px]"
-                    src="/go.png"
-                    alt="button"
-                  />
-                </div>
-              )}
-
-              <div
-                className={`relative ${
-                  status.health_status === "sick" ? "cursor-pointer" : ""
-                } `}
-                onClick={status.health_status !== "sick" ? () => {} : cureModal}
-              >
-                {status.health_status === "sick" ? (
-                  <img src="/button.png" alt="button" />
                 ) : (
-                  <img src="/disableButton.png" alt="button" />
+                  <img
+                    className="absolute z-[103] bottom-[60px] left-[120px]"
+                    src="/egg_default.gif"
+                    alt="egg"
+                  />
+                )}
+              </div>
+            )}
+            {status.level === "baby" && (
+              <div>
+                {message !== "" && (
+                  <div className=" absolute z-[135] top-1/2 -translate-y-[185%] w-[80%] max-w-[300px] translate-x-[11%]">
+                    <div className="relative">
+                      <img
+                        src="speech.png"
+                        className="w-full h-auto"
+                        alt="speech"
+                      />
+                      <svg
+                        className="absolute bottom-[12px] right-[5%] animate-fade"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="15"
+                        height="8"
+                        viewBox="0 0 15 8"
+                        fill="none"
+                      >
+                        <path
+                          d="M15 1L15 0L0 -6.55671e-07L-4.37114e-08 0.999999L1 0.999999L1 2L2 2L2 3L3 3L3 4L4 4L4 5L5 5L5 6L6 6L6 7L7 7L7 8L8 8L8 7L9 7L9 6L10 6L10 5L11 5L11 4L12 4L12 3L13 3L13 2L14 2L14 1L15 1Z"
+                          fill="#737373"
+                        />
+                      </svg>
+                      <div className="font-neodunggeunmo text-[12px] absolute top-[50%] left-[20px] transform -translate-y-1/2 w-[calc(100%-40px)]">
+                        {message}
+                      </div>
+                    </div>
+                  </div>
                 )}
 
                 <img
-                  className="absolute z-[2] top-[2px] left-[21px]"
-                  src="/fix.png"
-                  alt="button"
+                  src={character !== "" ? character : "/step1_default.gif"}
+                  alt="baby"
+                  className="absolute z-[103] bottom-[60px] left-[120px]"
                 />
+              </div>
+            )}
+            {status.level === "adult" && (
+              <div>
+                {message !== "" && (
+                  <div className=" absolute z-[135] top-1/2 -translate-y-[185%] w-[80%] max-w-[300px] translate-x-[11%]">
+                    <div className="relative">
+                      <img
+                        src="speech.png"
+                        className="w-full h-auto"
+                        alt="speech"
+                      />
+                      <svg
+                        className="absolute bottom-[12px] right-[5%] animate-fade"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="15"
+                        height="8"
+                        viewBox="0 0 15 8"
+                        fill="none"
+                      >
+                        <path
+                          d="M15 1L15 0L0 -6.55671e-07L-4.37114e-08 0.999999L1 0.999999L1 2L2 2L2 3L3 3L3 4L4 4L4 5L5 5L5 6L6 6L6 7L7 7L7 8L8 8L8 7L9 7L9 6L10 6L10 5L11 5L11 4L12 4L12 3L13 3L13 2L14 2L14 1L15 1Z"
+                          fill="#737373"
+                        />
+                      </svg>
+                      <div className="font-neodunggeunmo text-[12px] absolute top-[50%] left-[20px] transform -translate-y-1/2 w-[calc(100%-40px)]">
+                        {message}
+                      </div>
+                    </div>
+                  </div>
+                )}
+                <img
+                  src={character !== "" ? character : "/step2_default.gif"}
+                  alt="adult"
+                  className="absolute z-[103] bottom-[60px] left-[120px]"
+                />
+              </div>
+            )}
+
+            <div className="absolute flex justify-center items-center left-[7px] bottom-[10px] z-[102]">
+              <div className="flex space-x-[8px]">
+                {status.level === "egg" ? (
+                  <div className="relative ">
+                    <img src="/disableButton.png" alt="button" />
+                    <img
+                      className="absolute z-[2] top-[2px] left-[21px]"
+                      src="/food.png"
+                      alt="button"
+                    />
+                  </div>
+                ) : (
+                  <div className="relative cursor-pointer" onClick={feed}>
+                    <img src="/button.png" alt="button" />
+                    <img
+                      className="absolute z-[2] top-[2px] left-[21px]"
+                      src="/food.png"
+                      alt="button"
+                    />
+                  </div>
+                )}
+                <div className="relative cursor-pointer" onClick={pet}>
+                  <img src="/button.png" alt="button" />
+                  <img
+                    className="absolute z-[2] top-[2px] left-[21px]"
+                    src="/cute.png"
+                    alt="button"
+                  />
+                </div>
+                {status.level === "egg" ? (
+                  <div className="relative ">
+                    <img src="/disableButton.png" alt="button" />
+                    <img
+                      className="absolute z-[2] top-[2px] left-[21px]"
+                      src="/go.png"
+                      alt="disableButton"
+                    />
+                  </div>
+                ) : (
+                  <div className="relative cursor-pointer" onClick={walkModal}>
+                    <img src="/button.png" alt="button" />
+                    <img
+                      className="absolute z-[2] top-[2px] left-[21px]"
+                      src="/go.png"
+                      alt="button"
+                    />
+                  </div>
+                )}
+
+                <div
+                  className={`relative ${
+                    status.health_status === "sick" ? "cursor-pointer" : ""
+                  } `}
+                  onClick={
+                    status.health_status !== "sick" ? () => {} : cureModal
+                  }
+                >
+                  {status.health_status === "sick" ? (
+                    <img src="/button.png" alt="button" />
+                  ) : (
+                    <img src="/disableButton.png" alt="button" />
+                  )}
+
+                  <img
+                    className="absolute z-[2] top-[2px] left-[21px]"
+                    src="/fix.png"
+                    alt="button"
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div
-          className={`w-[390px]  max-xs:w-full  ${
-            sized
-              ? "min-h-[749px] absolute top-[50%] translate-y-[-40%] z-[130] overflow-auto"
-              : "min-h-[369px]"
-          } bg-[#f4f4f4] rounded-tl-[30px] rounded-tr-[30px] flex flex-col justify-start items-center pt-[10px] mt-[20px]`}
-        >
-          <img
-            className="cursor-pointer "
-            src="/union.png"
-            alt="union"
-            onClick={() => setSized(!sized)}
-          />
-          {!month && <WeekCalendar month={month} setMonth={setMonth} />}
-          {month && <MonthCalendar month={month} setMonth={setMonth} />}
-          <div className="w-full px-[30px] flex justify-between font-neodunggeunmo items-center mb-[15px] mt-[30px]">
-            <div className="flex text-[12px] items-center">
-              <img src="/coin.svg" alt="coin" />
-              <span className="ml-[5px]">Today Coin</span>
-              <span className="ml-[5px]">{todayCoin}</span>
+          <div
+            className={`w-[390px]  max-xs:w-full  ${
+              sized
+                ? "max-h-[749px] absolute top-[50px] t z-[130] overflow-auto"
+                : "min-h-[369px]"
+            } bg-[#f4f4f4] rounded-tl-[30px] rounded-tr-[30px] flex flex-col justify-start items-center pt-[10px] mt-[20px]`}
+          >
+            <img
+              className="cursor-pointer "
+              src="/union.png"
+              alt="union"
+              onClick={() => setSized(!sized)}
+            />
+            {!month && <WeekCalendar month={month} setMonth={setMonth} />}
+            {month && <MonthCalendar month={month} setMonth={setMonth} />}
+            <div className="w-full px-[30px] flex justify-between font-neodunggeunmo items-center mb-[15px] mt-[30px]">
+              <div className="flex text-[12px] items-center">
+                <img src="/coin.svg" alt="coin" />
+                <span className="ml-[5px]">Today Coin</span>
+                <span className="ml-[5px]">{todayCoin}</span>
+              </div>
+              <div className="flex items-center">
+                <img src="list.svg" alt="sort" />
+                <span className="ml-[5px] text-[12px] font-suit">
+                  컬러태그 순
+                </span>
+              </div>
             </div>
-            <div className="flex items-center">
-              <img src="list.svg" alt="sort" />
-              <span className="ml-[5px] text-[12px] font-suit">
-                컬러태그 순
-              </span>
-            </div>
+            <SwipeActionList sized={sized} />
           </div>
-          <SwipeActionList />
+          <div className={`${sized ? "w-full h-[369px]" : ""}`}></div>
         </div>
-        <div className={`${sized ? "w-full h-[369px]" : ""}`}></div>
+        {modal && (
+          <GochiModal
+            text={modalText}
+            setModal={setModal}
+            coin={modalCoin}
+            button={button}
+            revive={revive}
+            restart={restart}
+            cure={cure}
+            buttonText={buttonText}
+            which={which}
+          />
+        )}
       </div>
-      {modal && (
-        <GochiModal
-          text={modalText}
-          setModal={setModal}
-          coin={modalCoin}
-          button={button}
-          revive={revive}
-          restart={restart}
-          cure={cure}
-          buttonText={buttonText}
-          which={which}
-        />
-      )}
     </>
   );
 }

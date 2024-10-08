@@ -279,7 +279,7 @@ export default function Page() {
             />
           )}
 
-          {isClient && currentStep >= 23 && (
+          {isClient && currentStep >= 22 && (
             <div className="absolute z-[130] w-[360px] h-full bg-[#00000080]/50 rounded-2xl left-0">
               <div className="absolute z-[131] w-[330px] h-[160px] left-[4%] top-[20%]">
                 <img
@@ -288,14 +288,14 @@ export default function Page() {
                   alt="popup"
                 />
               </div>
-              <div className="absolute z-[131] top-[28%] left-[10%] font-neodunggeunmo">
+              <div className="absolute z-[131] top-[28%] left-[21%] font-neodunggeunmo">
                 투두고치의 이름을 정해보자~
               </div>
               <div className="absolute z-[131] top-[41%] left-[11%]  w-[280px] h-[35px] flex justify-center items-center">
                 <input
                   value={nickname}
                   onChange={(e) => setNickname(e.target.value)}
-                  className="w-[280px] h-[35px]  text-center py-[10px] rounded-lg text-[12px] border-[#CCCCCC] border border-solid flex justify-center items-center"
+                  className="w-[280px] h-[35px]  text-center font-neodunggeunmo py-[10px] rounded-lg text-[12px] border-[#CCCCCC] border border-solid flex justify-center items-center"
                   placeholder="(참고로 나는 강아지야. 토끼 아니다!)"
                 />
               </div>
@@ -307,7 +307,7 @@ export default function Page() {
               </div>
             </div>
           )}
-          {isClient && currentStep === 24 && (
+          {isClient && currentStep === 23 && (
             <div className="absolute z-[130] w-[360px] h-full bg-[#00000080]/50 rounded-2xl left-0">
               <div className="absolute z-[131] w-[330px] h-[160px] left-[4%] top-[20%]">
                 <img
@@ -479,13 +479,11 @@ export default function Page() {
             
             ${
               currentStep === 17 || currentStep === 18
-                ? "h-[556px]"
-                : "h-[383px]"
+                ? "h-[568px]"
+                : "h-[416px]"
             } bottom-[0px] rounded-tl-[30px] rounded-tr-[30px]   ${
               currentStep === 16 ? "h-[428px]" : ""
-            } ${
-              currentStep === 19 || currentStep === 20 ? "h-[24.1rem] " : ""
-            }`}
+            } ${currentStep === 19 || currentStep === 20 ? "h-[27rem] " : ""}`}
           ></div>
           <img className="cursor-pointer" src="/union.png" alt="union" />
 

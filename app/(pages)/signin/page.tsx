@@ -12,22 +12,9 @@ export default function Page() {
 
   const router = useRouter();
 
-  const getToken = async () => {
-    try {
-      const res: any = axios.post(
-        "https://todogochi.store/auth/refresh",
-        {},
-        { withCredentials: true }
-      );
-      localStorage.setItem("accessToken", res.data.accessToken);
-    } catch (e: any) {
-      console.log(e);
-    }
-  };
-
   useEffect(() => {
-    if (!localStorage.getItem("accessToken")) getToken();
-    else {
+    const accessToken = localStorage.getItem("accessToken");
+    if (accessToken !== null && accessToken !== "") {
       router.push("/tutorial");
     }
   }, [router]);
