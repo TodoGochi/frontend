@@ -146,6 +146,20 @@ export default function Page() {
         `/tamagotchi/${res.data.userId}/status`
       );
 
+      if (resGotchi.data.hunger === 10) {
+        setMessage("더는 못 먹겠어! 배가 이미 빵빵해.");
+        setTimeout(() => {
+          if (status.level === "egg") {
+            eggSay();
+          } else if (status.level === "baby") {
+            babySay();
+          } else {
+            adultSay();
+          }
+        }, 2000);
+        return;
+      }
+
       const resGotchiFeed = await instance.post(
         `tamagotchi/${resGotchi.data.id}/feed`,
         {
@@ -167,6 +181,20 @@ export default function Page() {
     const resGotchi = await instance.get(
       `/tamagotchi/${res.data.userId}/status`
     );
+
+    if (resGotchi.data.happiness === 10) {
+      setMessage("사랑이 너무 많아서 나도 이제 감당할 수 없어!");
+      setTimeout(() => {
+        if (status.level === "egg") {
+          eggSay();
+        } else if (status.level === "baby") {
+          babySay();
+        } else {
+          adultSay();
+        }
+      }, 2000);
+      return;
+    }
 
     try {
       const resGotchiPet = await instance.post(
