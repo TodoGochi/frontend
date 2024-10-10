@@ -247,14 +247,14 @@ const WeekCalendar = ({
               }`}
           >
             <div
-              className={`text-[8px] ${
+              className={`text-[12px] ${
                 isDateSelected(date) ? "text-white" : "text-gray-600"
               }`}
             >
               {weekdays[index]}
             </div>
             <span
-              className={`z-20 relative mt-[8px] ${
+              className={`z-20 relative mt-[8px] text-[12px] ${
                 isDateSelected(date) ? "text-white" : "text-black"
               } 
               ${

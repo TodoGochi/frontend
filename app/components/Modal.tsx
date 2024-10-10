@@ -50,22 +50,20 @@ export default function Modal({
         onClick={(e) => e.stopPropagation()}
       >
         <div
-          className={`w-[330px] px-[20px] py-[20px] bg-[#ededed] rounded-[15px] shadow flex-col flex  ${
-            tutorial
-              ? "h-[160px]  items-center"
-              : "h-[120px] justify-center items-center"
+          className={`w-[330px] px-[20px] py-[20px] bg-[#ededed] rounded-[15px] shadow   ${
+            tutorial ? "h-[160px]  " : "h-[130px] justify-center "
           }`}
         >
           <div
-            className={`w-[165px] min-h-[30px] text-center text-[#3f3f3f]  whitespace-pre-wrap text-[15px] font-bold font-suit mb-[16px] leading-[20px] ${
-              tutorial ? "" : "mt-[11px] mb-[25px]"
+            className={`w-full min-h-[30px] text-center text-[#3f3f3f]  whitespace-pre-wrap text-[15px] font-bold font-suit mb-[16px] leading-[20px] ${
+              tutorial ? "" : " mb-[25px]"
             }`}
           >
             {text !== "" ? text : "할 일을 미루시겠어요?"}
           </div>
 
           {tutorial && (
-            <div className="flex mb-[15px]">
+            <div className="flex mb-[15px] justify-center">
               <img src="/coin.svg" alt="coin" />
               <span className="ml-[4px] ">2</span>
             </div>
@@ -80,7 +78,7 @@ export default function Modal({
                 }}
               >
                 <svg
-                  className="absolute left-[-140px] top-[-3px]"
+                  className="absolute left-[0px] top-[0px]"
                   xmlns="http://www.w3.org/2000/svg"
                   width="290"
                   height="35"
@@ -92,14 +90,14 @@ export default function Modal({
                     fill="#3F3F3F"
                   />
                 </svg>
-                <div className="absolute min-w-[30px] left-[-12px] top-[4px] text-white">
+                <div className="absolute min-w-[30px] left-[125px] top-[9px] text-white">
                   확인
                 </div>
               </div>
             ) : (
-              <div className="flex">
+              <div className="flex pb-[20px]">
                 <div
-                  className="cursor-pointer w-[140px] h-[35px] px-[15px] py-[7px] text-center text-white text-xs font-semibold font-suit bg-black mr-[10px] rounded-lg flex justify-center items-center"
+                  className="cursor-pointer w-[140px] h-[35px] px-[15px]  text-center text-white text-xs font-semibold font-suit bg-black mr-[10px] rounded-lg flex justify-center items-center"
                   onClick={
                     !tutorial
                       ? () => {
@@ -111,7 +109,7 @@ export default function Modal({
                   다음 날
                 </div>
                 <div
-                  className="cursor-pointer w-[140px] h-[35px] px-[15px] py-[7px]   text-center text-white text-xs font-semibold font-suit bg-black rounded-lg flex justify-center items-center"
+                  className="cursor-pointer w-[140px] h-[35px] px-[15px]  text-center text-white text-xs font-semibold font-suit bg-black rounded-lg flex justify-center items-center"
                   onClick={
                     !tutorial
                       ? () => {

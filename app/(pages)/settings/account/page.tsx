@@ -45,7 +45,7 @@ export default function Page() {
 
   return (
     <div className="bg-black flex items-center justify-center min-h-screen h-full  max-xs:w-full max-xs:h-full relative flex-col">
-      <div className="relative bg-[#EDEDED] desktop:w-[390px] max-xs:w-full pt-[112px] h-[844px] px-[25px]">
+      <div className="relative bg-[#EDEDED] desktop:w-[390px] max-xs:w-full pt-[112px] h-[844px] px-[20px]">
         <div className="flex justify-between mb-[40px]">
           <div className="flex items-center">
             <svg
@@ -85,13 +85,15 @@ export default function Page() {
           <div className="flex items-center">
             <img src="/profile.png" alt="profile" className="mr-[20px]" />
             <div>
-              <div className="text-[18px] font-semibold mb-[6px]">투두고치</div>
-              <div className="text-[12px]"> dldyddlwl1@naver.com</div>
+              <div className="text-[18px] font-semibold mb-[6px] font-suit">
+                투두고치
+              </div>
+              <div className="text-[12px] font-suit"> dldyddlwl1@naver.com</div>
             </div>
           </div>
         </div>
         <div className="flex justify-between items-center max-xs:w-full bg-[#FAFAFA] w-[350px] h-[50px] px-[20px] rounded-[5px] mb-[10px] cursor-pointer">
-          <div className="">로그인 정보</div>
+          <div className="font-suit text-[12px]">로그인 정보</div>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="8"
@@ -106,7 +108,7 @@ export default function Page() {
           </svg>
         </div>
         <div className="flex justify-between items-center bg-[#FAFAFA] max-xs:w-full w-[350px] h-[50px] px-[20px] rounded-[5px] mb-[10px] cursor-pointer">
-          <div className="">계정 관리</div>
+          <div className="font-suit text-[12px]">계정 관리</div>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="8"
@@ -121,7 +123,7 @@ export default function Page() {
           </svg>
         </div>
         <div className="flex justify-between items-center bg-[#FAFAFA] max-xs:w-full w-[350px] h-[50px] px-[20px] rounded-[5px] mb-[10px] cursor-pointer">
-          <div className="">자동 로그인 관리</div>
+          <div className="font-suit text-[12px]">자동 로그인 관리</div>
           <div
             onClick={handleToggle}
             className="rounded-lg flex items-center justify-center"
@@ -144,7 +146,7 @@ export default function Page() {
           className="flex justify-between items-center bg-[#FAFAFA] max-xs:w-full w-[350px] h-[50px] px-[20px] rounded-[5px] mb-[10px] cursor-pointer"
           onClick={logout}
         >
-          <div className="">로그아웃</div>
+          <div className="font-suit text-[12px]">로그아웃</div>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="8"

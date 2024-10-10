@@ -44,6 +44,7 @@ export default function Page() {
   const [timeLeft, setTimeLeft] = useState<any>({ hour: 48, min: 0 });
   const [todayCoin, setTodayCoin] = useState(0);
   const [which, setWhich] = useState("");
+  const [characterModal, setCharacterModal] = useState(false);
 
   const [status, setStatus] = useState<Monster>({
     user_id: 0,
@@ -77,6 +78,9 @@ export default function Page() {
 
         return { hour: newHour, min: newMin };
       });
+      getStatus();
+      getTodayCoin();
+      getInfoFirst();
     }, 60000); // 1분(60000ms)마다 업데이트
 
     return () => clearInterval(timer);
@@ -148,15 +152,7 @@ export default function Page() {
 
       if (resGotchi.data.hunger === 10) {
         setMessage("더는 못 먹겠어! 배가 이미 빵빵해.");
-        setTimeout(() => {
-          if (status.level === "egg") {
-            eggSay();
-          } else if (status.level === "baby") {
-            babySay();
-          } else {
-            adultSay();
-          }
-        }, 2000);
+
         return;
       }
 
@@ -184,15 +180,7 @@ export default function Page() {
 
     if (resGotchi.data.happiness === 10) {
       setMessage("사랑이 너무 많아서 나도 이제 감당할 수 없어!");
-      setTimeout(() => {
-        if (status.level === "egg") {
-          eggSay();
-        } else if (status.level === "baby") {
-          babySay();
-        } else {
-          adultSay();
-        }
-      }, 2000);
+      setTimeout(() => {}, 2000);
       return;
     }
 
@@ -232,7 +220,7 @@ export default function Page() {
         setTimeout(() => {
           if (status.level === "baby") setCharacter("/babyCoin.gif");
           else setCharacter("/adultCoin.gif");
-          setModal(true);
+          setCharacterModal(true);
           setButton(1);
           setWhich("coin");
           setModalText(
@@ -273,7 +261,7 @@ export default function Page() {
   };
 
   const cureModal = () => {
-    setModal(true);
+    setCharacterModal(true);
     setModalText(`투두고치가 아파요. \n 치료 하시겠어요?`);
     setModalCoin(-3);
     setWhich("cure");
@@ -284,7 +272,7 @@ export default function Page() {
     const resGotchi = await instance.get(
       `/tamagotchi/${res.data.userId}/status`
     );
-    setModal(true);
+    setCharacterModal(true);
     setButton(1);
     setModalCoin(0);
     setModalText(`${resGotchi.data.nickname}(이)가 산책을 갑니다.`);
@@ -379,8 +367,8 @@ export default function Page() {
     );
 
     if (resGotchi.data.happiness <= 5) {
-      setModal(true);
-      setModalText(`${resGotchi.data.nickname}(이)가 ${res.data.nickname}님의
+      setCharacterModal(true);
+      setModalText(`${resGotchi.data.nickname}(이)가 ${res.data.nickName}님의
 손길을 기다리고 있어요.`);
       setButton(1);
     }
@@ -393,8 +381,11 @@ export default function Page() {
       babySay();
     }
 
-    if (resGotchi.data.health_status === "death") {
-      setModal(true);
+    if (
+      resGotchi.data.health_status !== "healthy" &&
+      resGotchi.data.health_status !== "sick"
+    ) {
+      setCharacterModal(true);
       setCharacter(
         status.level === "baby" ? "/step1_death.gif" : "/step2_death.gif"
       );
@@ -402,7 +393,7 @@ export default function Page() {
 어떻게 하시겠어요?`);
       setButton(2);
     } else if (resGotchi.data.health_status === "sick") {
-      setModal(true);
+      setCharacterModal(true);
       setModalText(`투두고치가 아파요.
         치료 하시겠어요?`);
       setModalCoin(-3);
@@ -483,6 +474,14 @@ export default function Page() {
       coins: trackCoins(info.createdAt, info.changeAmount),
     }));
   }
+
+  useEffect(() => {
+    if (message !== "") {
+      setTimeout(() => {
+        setMessage("");
+      }, 3000);
+    }
+  }, [message]);
 
   return (
     <>
@@ -753,6 +752,19 @@ export default function Page() {
                 </div>
               </div>
             </div>
+            {characterModal && (
+              <GochiModal
+                text={modalText}
+                setModal={setCharacterModal}
+                coin={modalCoin}
+                button={button}
+                revive={revive}
+                restart={restart}
+                cure={cure}
+                buttonText={buttonText}
+                which={which}
+              />
+            )}
           </div>
 
           <div

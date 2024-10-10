@@ -2,7 +2,6 @@
 "use client";
 
 import { useState } from "react";
-import { instance } from "../utils/axios";
 
 export default function GochiModal({
   text,
@@ -17,18 +16,10 @@ export default function GochiModal({
 }: any) {
   const [clicked, setClicked] = useState(false);
   const [whichClicked, setWhichClicked] = useState("");
-  const [modalText, setModalText] = useState("");
-
-  const restartModal = async () => {
-    const res = await instance.get("/user");
-    const resGotchi = await instance.get(
-      `/tamagotchi/${res.data.userId}/status`
-    );
-  };
 
   return (
     <div
-      className="fixed inset-0 bg-black/50 z-[190] flex justify-center items-center"
+      className="bg-black/50 z-[255] flex justify-center items-center w-full h-full relative"
       onClick={() => setModal(false)}
     >
       <div

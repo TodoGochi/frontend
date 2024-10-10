@@ -142,16 +142,16 @@ const CalendarModal = ({ setModal, setModal2, items, id, getData }: any) => {
 
   return (
     <div
-      className="fixed h-screen inset-0 bg-black/50 z-[110] flex justify-center items-center"
+      className="fixed h-screen inset-0 bg-black/50 z-[110] flex justify-center items-center "
       onClick={() => {
         setModal2(false);
       }}
     >
       <div
-        className="w-[330px] h-[390px] text-center"
+        className="w-[330px] h-[400px] text-center"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center p-4 bg-[#EDEDED] rounded-t-lg">
+        <div className="flex items-center px-[20px] py-[25px] bg-[#EDEDED] rounded-t-lg justify-center">
           <button
             onClick={handlePrevMonth}
             className="text-gray-600 hover:text-gray-900 mr-[20px]"
@@ -172,14 +172,14 @@ const CalendarModal = ({ setModal, setModal2, items, id, getData }: any) => {
               </g>
             </svg>
           </button>
-          <div className="font-bold min-w-[82px]">
+          <div className="font-bold min-w-[82px] font-suit text-[#3F3F3F] text-[15px]">
             {`${
               monthNames[currentDate.getMonth()]
             } ${currentDate.getFullYear()}`}
           </div>
           <button
             onClick={handleNextMonth}
-            className="text-gray-600 hover:text-gray-900 ml-[20px] mr-[90px]"
+            className="text-gray-600 hover:text-gray-900 ml-[20px] "
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -198,29 +198,29 @@ const CalendarModal = ({ setModal, setModal2, items, id, getData }: any) => {
             </svg>
           </button>
         </div>
-        <div className="grid grid-cols-7 gap-2 text-xs p-2 bg-[#EDEDED]">
+        <div className="grid grid-cols-7 gap-2 text-xs p-2 bg-[#EDEDED] font-suit ">
           {["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"].map((day) => (
-            <div key={day} className="text-gray-600">
+            <div key={day} className="text-[#737373] text-[8px]">
               {day}
             </div>
           ))}
         </div>
-        <div className="grid grid-cols-7 gap-2 p-2 bg-[#EDEDED]">
+        <div className="grid grid-cols-7 gap-[14px] p-2 bg-[#EDEDED] pb-[25px]">
           {getMonthCalendarDates(
             currentDate.getFullYear(),
             currentDate.getMonth()
           ).map(({ date }, index) => (
             <div
               key={index}
-              className={`w-8 h-8 flex items-center justify-center cursor-pointer ${
+              className={`w-8 h-8 flex items-center justify-center cursor-pointer font-suit text-[12px] ${
                 date
                   ? date === selectedDate?.getDate() &&
                     currentDate.getMonth() === selectedDate?.getMonth() &&
                     currentDate.getFullYear() === selectedDate?.getFullYear()
                     ? "bg-black text-white"
                     : isDateDisabled(date)
-                    ? "text-gray-400 cursor-not-allowed"
-                    : "text-black hover:bg-gray-200"
+                    ? "text-gray-300 cursor-not-allowed "
+                    : "text-[#3F3F3F] hover:bg-gray-200"
                   : "text-transparent"
               }`}
               onClick={() => !isDateDisabled(date!) && handleDateClick(date)}
@@ -230,10 +230,10 @@ const CalendarModal = ({ setModal, setModal2, items, id, getData }: any) => {
           ))}
         </div>
         <div
-          className="pt-[30px] w-full h-[65px] bg-[#EDEDED] flex justify-center items-center mx-auto rounded-b-lg pb-[30px]"
+          className="w-full h-[65px] bg-[#EDEDED] flex justify-center items-center mx-auto rounded-b-lg pb-[20px]"
           onClick={selectDay}
         >
-          <div className="cursor-pointer w-[290px] h-[35px] bg-[#FAFAFA] flex justify-center items-center rounded-lg">
+          <div className="cursor-pointer w-[290px] h-[35px] bg-black flex justify-center items-center rounded-lg font-suit text-white text-[12px]">
             날짜 선택
           </div>
         </div>

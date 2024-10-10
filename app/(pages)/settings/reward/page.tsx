@@ -61,7 +61,7 @@ export default function Page() {
             <div className="font-neodunggeunmo text-[25px] mr-[14px]">
               리워드
             </div>
-            <div className="text-[10px] text-[#A6A6A6]">
+            <div className="text-[10px] text-[#A6A6A6] font-suit">
               최근 7일간 기록이 보관됩니다.
             </div>
           </div>
@@ -84,8 +84,10 @@ export default function Page() {
         </div>
         <div className="flex">
           <img src="/coin.svg" alt="coin" />
-          <div className="text-[12px] ml-[5px] mr-[10px]">Total Coin</div>
-          <div className="text-[12px]">{totalCoin}</div>{" "}
+          <div className="text-[12px] ml-[5px] mr-[10px] font-neodunggeunmo">
+            Total Coin
+          </div>
+          <div className="text-[12px] font-neodunggeunmo">{totalCoin}</div>{" "}
         </div>
 
         {Object.entries(
@@ -104,7 +106,7 @@ export default function Page() {
               key={date}
               className="mt-[12px] flex flex-col bg-[#FAFAFA] w-[350px] px-[20px] rounded-[5px] max-xs:w-full mb-[10px] min-h-[100px]"
             >
-              <div className="font-semibold p-[20px ] font-suit text-[12px] mt-[20px]">
+              <div className="font-semibold p-[20px ] font-suit text-[12px] mt-[20px] ">
                 {date}
               </div>
               {items.map((el: any) => (

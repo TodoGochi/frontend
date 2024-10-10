@@ -31,7 +31,7 @@ export default function Page() {
           className="flex justify-between items-center bg-[#FAFAFA] w-[350px]  max-xs:w-full h-[50px] px-[20px] rounded-[5px] mb-[10px] cursor-pointer"
           onClick={() => router.push("/settings/account")}
         >
-          <div className="">계정</div>
+          <div className="font-suit text-[12px]">계정</div>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="8"
@@ -46,10 +46,10 @@ export default function Page() {
           </svg>
         </div>
         <div
-          className="flex justify-between items-center bg-[#FAFAFA] w-[350px] max-xs:w-full max-xs:w-full h-[50px] px-[20px] rounded-[5px] mb-[10px] cursor-pointer"
+          className="flex justify-between items-center bg-[#FAFAFA] w-[350px]  max-xs:w-full h-[50px] px-[20px] rounded-[5px] mb-[10px] cursor-pointer"
           onClick={() => router.push("/settings/reward")}
         >
-          <div className="">리워드</div>
+          <div className="font-suit text-[12px]">리워드</div>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="8"
@@ -63,9 +63,9 @@ export default function Page() {
             />
           </svg>
         </div>
-        <div className="flex justify-between items-center bg-[#FAFAFA] max-xs:w-full w-[350px] max-xs:w-full h-[50px] px-[20px] rounded-[5px] ">
-          <div className="">서비스 정보</div>
-          <div className="text-[#A6A6A6]">ver 0.1</div>
+        <div className="flex justify-between items-center bg-[#FAFAFA] w-[350px] max-xs:w-full h-[50px] px-[20px] rounded-[5px] ">
+          <div className="font-suit text-[12px]">서비스 정보</div>
+          <div className="text-[#A6A6A6] font-suit text-[12px]">ver 0.1</div>
         </div>
       </div>
     </div>
