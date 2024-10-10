@@ -168,13 +168,13 @@ const ListItem: React.FC<ListItemProps> = ({
   return (
     <>
       {!clickEdit ? (
-        <div className="flex mb-[10px]">
+        <div className="mb-[10px] flex flex-shrink-0 flex-grow-0 ">
           <div
-            className={`w-[5px] bg-[#${color}] rounded-bl-[5px] rounded-tl-[5px]`}
+            className={`min-w-[5px] bg-[#${color}] rounded-bl-[5px] rounded-tl-[5px]`}
           ></div>
           <li
             ref={itemRef}
-            className="relative bg-white overflow-hidden cursor-grab active:cursor-grabbing select-none w-[348px] rounded-tr-[5px] rounded-br-[5px]"
+            className="relative bg-white overflow-hidden cursor-grab active:cursor-grabbing select-none min-w-[345px]  isolate rounded-tr-[5px] rounded-br-[5px]"
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
@@ -184,7 +184,7 @@ const ListItem: React.FC<ListItemProps> = ({
             onMouseLeave={handleMouseLeave}
           >
             <div
-              className="flex items-center p-4 transition-transform duration-300 ease-out"
+              className="flex items-center p-4 transition-transform duration-300 ease-out "
               style={{ transform: `translateX(-${translation}px)` }}
             >
               <div className="relative">
@@ -235,7 +235,7 @@ const ListItem: React.FC<ListItemProps> = ({
               {text}
             </div>
             <div
-              className="absolute top-0 right-0 h-full flex transition-transform duration-300 ease-out z-10"
+              className="absolute top-0 right-0 h-full flex transition-transform duration-300 ease-out z-10 "
               style={{
                 transform: isSwiped ? "translateX(0)" : "translateX(150%)",
               }}
@@ -250,7 +250,10 @@ const ListItem: React.FC<ListItemProps> = ({
               <button onClick={handleDelayClick}>
                 <img src="/delay.svg" alt="delay" />
               </button>
-              <button onClick={handleDeleteClick}>
+              <button
+                onClick={handleDeleteClick}
+                className=" rounded-tr-[5px] rounded-br-[5px]"
+              >
                 <img src="/delete.svg" alt="delete" />
               </button>
             </div>
@@ -280,6 +283,11 @@ const SwipeActionList: React.FC<any> = ({ sized }: any) => {
   const [items, setItems] = useState<TodoItem[]>([]);
   const [modalId, setModalId] = useState(0);
   const [modal3, setModal3] = useState(false);
+
+  const [scrollbarOpacity, setScrollbarOpacity] = useState<number>(0);
+  const scrollTimerRef = useRef<number | null>(null);
+  const fadeAnimationRef = useRef<number | null>(null);
+  const listRef = useRef<HTMLDivElement>(null);
 
   const selectedDate = useStore((state) => state.selectedDate);
 
@@ -365,6 +373,18 @@ const SwipeActionList: React.FC<any> = ({ sized }: any) => {
     setClick((prev) => !prev);
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        handleSubmit();
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [ref, selectedDate, inputValue]); // selectedDate를 의존성 배열에 추가
+
   const handleSubmit = async () => {
     const res = await instance.get("/user");
 
@@ -381,17 +401,49 @@ const SwipeActionList: React.FC<any> = ({ sized }: any) => {
     getData();
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (ref.current && !ref.current.contains(event.target as Node)) {
-        handleSubmit();
+  const fadeOutScrollbar = useCallback(() => {
+    let opacity = 0.3;
+    const fadeOut = () => {
+      opacity -= 0.01;
+      setScrollbarOpacity(opacity);
+      if (opacity > 0) {
+        fadeAnimationRef.current = requestAnimationFrame(fadeOut);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
+    fadeAnimationRef.current = requestAnimationFrame(fadeOut);
+  }, []);
+
+  const handleScroll = useCallback(() => {
+    setScrollbarOpacity(0.3);
+    if (scrollTimerRef.current !== null) {
+      clearTimeout(scrollTimerRef.current);
+    }
+    if (fadeAnimationRef.current !== null) {
+      cancelAnimationFrame(fadeAnimationRef.current);
+    }
+    scrollTimerRef.current = window.setTimeout(() => {
+      fadeOutScrollbar();
+    }, 1000);
+  }, [fadeOutScrollbar]);
+
+  useEffect(() => {
+    const listElement = listRef.current;
+    if (listElement) {
+      listElement.addEventListener("scroll", handleScroll);
+    }
+
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      if (listElement) {
+        listElement.removeEventListener("scroll", handleScroll);
+      }
+      if (scrollTimerRef.current !== null) {
+        clearTimeout(scrollTimerRef.current);
+      }
+      if (fadeAnimationRef.current !== null) {
+        cancelAnimationFrame(fadeAnimationRef.current);
+      }
     };
-  }, [ref, selectedDate, inputValue]); // selectedDate를 의존성 배열에 추가
+  }, [handleScroll]);
 
   return (
     <>
@@ -494,11 +546,32 @@ const SwipeActionList: React.FC<any> = ({ sized }: any) => {
       )}
 
       <div
-        className={`w-[380px] max-xs:w-full  p-4 rounded-lg shadow-lg overflow-auto ${
+        ref={listRef}
+        className={`w-[380px] max-xs:w-full p-4 rounded-lg shadow-lg overflow-y-auto overflow-x-hidden scroll-container ${
           sized ? "h-[464px]" : "h-[185px]"
         }`}
       >
-        <ul className="bg-gray-100 rounded-lg overflow-hidden">
+        <style jsx>{`
+          .scroll-container::-webkit-scrollbar {
+            width: 10px;
+          }
+          .scroll-container::-webkit-scrollbar-track {
+            background: transparent;
+          }
+          .scroll-container::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, ${scrollbarOpacity});
+            border-radius: 20px;
+            border: 3px solid transparent;
+            background-clip: content-box;
+          }
+          .scrollbar {
+            width: 200px;
+            height: 200px;
+            overflow: overlay;
+            border: 1px solid #ddd;
+          }
+        `}</style>
+        <ul className="bg-gray-100 rounded-lg overflow-hidden min-w-[350px] ">
           {items.map((item) => (
             <div key={item.id}>
               <ListItem
@@ -517,6 +590,7 @@ const SwipeActionList: React.FC<any> = ({ sized }: any) => {
           ))}
         </ul>
       </div>
+
       {modal && (
         <Modal
           setModal={setModal}

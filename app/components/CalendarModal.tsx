@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { instance } from "../utils/axios";
+import { useStore } from "../store/date";
 
 // Helper function to get the number of days in a month
 const getDaysInMonth = (year: number, month: number) => {
@@ -30,7 +31,25 @@ const getMonthCalendarDates = (year: number, month: number) => {
 
 const CalendarModal = ({ setModal, setModal2, items, id, getData }: any) => {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [minSelectableDate, setMinSelectableDate] = useState<Date>(new Date());
+
+  const selectedDateStore = useStore((state) => state.selectedDate);
+
+  useEffect(() => {
+    // Set the minimum selectable date to the day after the current item's date
+    const item = items.find((el: any) => el.id === id);
+    if (item && item.targetDate) {
+      const itemDate = new Date(
+        item.targetDate.toString().replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3")
+      );
+      const nextDay = new Date(itemDate);
+      nextDay.setDate(itemDate.getDate() + 1);
+      setMinSelectableDate(nextDay);
+      setCurrentDate(nextDay);
+    }
+  }, [id, items]);
+
   const monthNames = [
     "JAN",
     "FEB",
@@ -46,32 +65,53 @@ const CalendarModal = ({ setModal, setModal2, items, id, getData }: any) => {
     "DEC",
   ];
 
+  useEffect(() => {
+    if (selectedDateStore) {
+      const baseDate = selectedDateStore;
+      setMinSelectableDate(baseDate);
+      setCurrentDate(baseDate);
+      setSelectedDate(null); // Reset selected date when modal opens
+    }
+  }, [selectedDateStore]);
+
   const handlePrevMonth = () => {
     setCurrentDate((prevDate) => {
-      const newDate = new Date(prevDate);
-      newDate.setMonth(newDate.getMonth() - 1);
-      return newDate;
+      const newDate = new Date(
+        prevDate.getFullYear(),
+        prevDate.getMonth() - 1,
+        1
+      );
+      return newDate < minSelectableDate ? minSelectableDate : newDate;
     });
   };
 
   const handleNextMonth = () => {
-    setCurrentDate((prevDate) => {
-      const newDate = new Date(prevDate);
-      newDate.setMonth(newDate.getMonth() + 1);
-      return newDate;
-    });
+    setCurrentDate(
+      (prevDate) => new Date(prevDate.getFullYear(), prevDate.getMonth() + 1, 1)
+    );
   };
 
   const handleDateClick = (date: number | null) => {
     if (date) {
-      const newSelectedDate = new Date(currentDate);
-      newSelectedDate.setDate(date);
-      setSelectedDate(newSelectedDate);
+      const newSelectedDate = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        date
+      );
+      if (newSelectedDate >= minSelectableDate) {
+        setSelectedDate(newSelectedDate);
+      }
     }
   };
 
-  const currentYear = currentDate.getFullYear();
-  const currentMonth = currentDate.getMonth();
+  const isDateDisabled = (date: number): boolean => {
+    const dateToCheck = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      date
+    );
+    return dateToCheck < minSelectableDate;
+  };
 
   const formatDateToYYYYMMDD = (date: Date): string => {
     const year = date.getFullYear();
@@ -84,19 +124,20 @@ const CalendarModal = ({ setModal, setModal2, items, id, getData }: any) => {
     if (!selectedDate) return;
 
     const res: any = await instance.get("/user");
-    const item = items.filter((el: any) => el.id === id)[0];
+    const item = items.find((el: any) => el.id === id);
 
-    console.log(formatDateToYYYYMMDD(selectedDate));
+    if (item) {
+      await instance.put(`/todolist/update/${id}`, {
+        userId: res.data.userId,
+        todoText: item.text,
+        colorTag: item.colorTag,
+        targetDate: parseInt(formatDateToYYYYMMDD(selectedDate)),
+        targetTime: item.time,
+      });
 
-    instance.put(`/todolist/update/${id}`, {
-      userId: res.data.userId,
-      todoText: item.text,
-      colorTag: item.colorTag,
-      targetDate: parseInt(formatDateToYYYYMMDD(selectedDate)),
-      targetTime: item.time,
-    });
-    setModal(false);
-    getData();
+      setModal(false);
+      getData();
+    }
   };
 
   return (
@@ -132,7 +173,9 @@ const CalendarModal = ({ setModal, setModal2, items, id, getData }: any) => {
             </svg>
           </button>
           <div className="font-bold min-w-[82px]">
-            {`${monthNames[currentMonth]} ${currentYear}`}
+            {`${
+              monthNames[currentDate.getMonth()]
+            } ${currentDate.getFullYear()}`}
           </div>
           <button
             onClick={handleNextMonth}
@@ -163,24 +206,28 @@ const CalendarModal = ({ setModal, setModal2, items, id, getData }: any) => {
           ))}
         </div>
         <div className="grid grid-cols-7 gap-2 p-2 bg-[#EDEDED]">
-          {getMonthCalendarDates(currentYear, currentMonth).map(
-            ({ date }, index) => (
-              <div
-                key={index}
-                className={`w-8 h-8 flex items-center justify-center cursor-pointer ${
-                  date
-                    ? date === selectedDate?.getDate() &&
-                      currentMonth === selectedDate?.getMonth()
-                      ? "bg-black text-white"
-                      : "text-black hover:bg-gray-200"
-                    : "text-transparent"
-                }`}
-                onClick={() => handleDateClick(date)}
-              >
-                {date || ""}
-              </div>
-            )
-          )}
+          {getMonthCalendarDates(
+            currentDate.getFullYear(),
+            currentDate.getMonth()
+          ).map(({ date }, index) => (
+            <div
+              key={index}
+              className={`w-8 h-8 flex items-center justify-center cursor-pointer ${
+                date
+                  ? date === selectedDate?.getDate() &&
+                    currentDate.getMonth() === selectedDate?.getMonth() &&
+                    currentDate.getFullYear() === selectedDate?.getFullYear()
+                    ? "bg-black text-white"
+                    : isDateDisabled(date)
+                    ? "text-gray-400 cursor-not-allowed"
+                    : "text-black hover:bg-gray-200"
+                  : "text-transparent"
+              }`}
+              onClick={() => !isDateDisabled(date!) && handleDateClick(date)}
+            >
+              {date || ""}
+            </div>
+          ))}
         </div>
         <div
           className="pt-[30px] w-full h-[65px] bg-[#EDEDED] flex justify-center items-center mx-auto rounded-b-lg pb-[30px]"
