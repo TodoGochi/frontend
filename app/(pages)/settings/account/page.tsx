@@ -1,5 +1,6 @@
 "use client";
 
+import { instance } from "@/app/utils/axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -7,13 +8,20 @@ import { useEffect, useState } from "react";
 export default function Page() {
   const router = useRouter();
 
+  const [email, setEmail] = useState("");
   const [isAutoLogin, setIsAutoLogin] = useState(false);
+
+  const getInfo = async () => {
+    const res = await instance.get("/user");
+    setEmail(res.data.email);
+  };
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
     if (accessToken) {
       setIsAutoLogin(true);
     }
+    getInfo();
   }, []);
 
   const handleToggle = () => {
@@ -88,7 +96,7 @@ export default function Page() {
               <div className="text-[18px] font-semibold mb-[6px] font-suit">
                 투두고치
               </div>
-              <div className="text-[12px] font-suit"> dldyddlwl1@naver.com</div>
+              <div className="text-[12px] font-suit"> {email}</div>
             </div>
           </div>
         </div>

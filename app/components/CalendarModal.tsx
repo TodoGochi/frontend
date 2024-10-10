@@ -219,7 +219,7 @@ const CalendarModal = ({ setModal, setModal2, items, id, getData }: any) => {
                     currentDate.getFullYear() === selectedDate?.getFullYear()
                     ? "bg-black text-white"
                     : isDateDisabled(date)
-                    ? "text-gray-300 cursor-not-allowed "
+                    ? "text-[#a6a6a6] cursor-not-allowed "
                     : "text-[#3F3F3F] hover:bg-gray-200"
                   : "text-transparent"
               }`}
