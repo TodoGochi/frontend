@@ -231,7 +231,6 @@ const ListItem: React.FC<ListItemProps> = ({
                   </svg>
                 )}
               </div>
-
               {text}
             </div>
             <div

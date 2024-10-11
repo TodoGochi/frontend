@@ -127,16 +127,17 @@ export default function Page() {
 
     setStatus(resGotchi.data);
 
-    if (resGotchi.data.happiness <= 5) {
+    if (resGotchi.data.happiness <= 4) {
       setCharacter(
         resGotchi.data.level === "baby" ? "/step1_sad.gif" : "/step2_sad.gif"
       );
     }
 
-    if (resGotchi.data.hunger <= 5) {
+    if (resGotchi.data.hunger <= 4) {
       setCharacter(
         resGotchi.data.level === "baby" ? "/step1_sad.gif" : "/step2_sad.gif"
       );
+      hungerSay();
     }
 
     setDay(calculateDaysSinceCreation(resGotchi.data));
@@ -155,6 +156,8 @@ export default function Page() {
 
         return;
       }
+
+      feedSay();
 
       const resGotchiFeed = await instance.post(
         `tamagotchi/${resGotchi.data.id}/feed`,
@@ -179,10 +182,11 @@ export default function Page() {
     );
 
     if (resGotchi.data.happiness === 10) {
-      setMessage("사랑이 너무 많아서 나도 이제 감당할 수 없어!");
+      setMessage("너의 사랑은 충분해!");
       setTimeout(() => {}, 2000);
       return;
     }
+    heartSay();
 
     try {
       const resGotchiPet = await instance.post(
@@ -223,19 +227,30 @@ export default function Page() {
           setCharacterModal(true);
           setButton(1);
           setWhich("coin");
-          setModalText(
-            `${resGotchi.data.nickname}(이)가 찾아온 코인을 지급합니다.`
-          );
+          setModalText(`${resGotchi.data.nickname}(이)가 코인을 찾았어요!`);
+          getStatus();
           setModalCoin(coin - res.data.coin);
         }, 6100);
+      } else {
+        setTimeout(() => {
+          setCharacterModal(true);
+          setButton(1);
+          setModalText(
+            `${resGotchi.data.nickname}(이)가 아무 것도 찾지 못했어요`
+          );
+          setCharacter(
+            resGotchi.data.level === "baby"
+              ? "/step1_sad.gif"
+              : "/step2_sad.gif"
+          );
+          getStatus();
+        }, 6100);
       }
-
       setWalking(true);
     } catch (e: any) {
       setWalking(false);
       console.log(e);
     }
-    getStatus();
   };
 
   const cure = async () => {
@@ -275,7 +290,7 @@ export default function Page() {
     setCharacterModal(true);
     setButton(1);
     setModalCoin(0);
-    setModalText(`${resGotchi.data.nickname}(이)가 산책을 갑니다.`);
+    setModalText(`${resGotchi.data.nickname}(이)가 산책을 떠나요`);
     walk();
   };
 
@@ -347,6 +362,36 @@ export default function Page() {
     setMessage(messages[randomIndex]);
   };
 
+  const heartSay = () => {
+    const messages: string[] = [
+      "너무 포근해, 사랑해!",
+      "이 느낌, 정말 최고야!",
+      "너무 포근해, 사랑해!",
+    ];
+    const randomIndex = Math.floor(Math.random() * messages.length);
+    setMessage(messages[randomIndex]);
+  };
+
+  const feedSay = () => {
+    const messages: string[] = [
+      "냠냠, 고마워!",
+      "더 먹고 싶어, 멍멍!",
+      "이거 먹고 뛰어놀 거야!!",
+    ];
+    const randomIndex = Math.floor(Math.random() * messages.length);
+    setMessage(messages[randomIndex]);
+  };
+
+  const hungerSay = () => {
+    const messages: string[] = [
+      "힘이 없어, 배고파",
+      "배가 꼬르륵-!",
+      "밥 먹고 싶어, 멍!",
+    ];
+    const randomIndex = Math.floor(Math.random() * messages.length);
+    setMessage(messages[randomIndex]);
+  };
+
   const getTodayCoin = async () => {
     const res = await instance.get("/user");
     const resTransaction = await instance.get(
@@ -369,7 +414,7 @@ export default function Page() {
     if (resGotchi.data.happiness <= 5) {
       setCharacterModal(true);
       setModalText(`${resGotchi.data.nickname}(이)가 ${res.data.nickName}님의
-손길을 기다리고 있어요.`);
+손길을 기다려요.`);
       setButton(1);
     }
 
@@ -440,12 +485,14 @@ export default function Page() {
       character !== "/babyCoin.gif" &&
       character !== "/adultCoin.gif" &&
       character !== "/step1_happy.gif" &&
-      character !== "/step2_happy.gif"
+      character !== "/step2_happy.gif" &&
+      character !== "/step2_sad.gif" &&
+      character !== "/step1_sad.gif"
     )
       return;
     setTimeout(() => {
       setCharacter("");
-    }, 2500);
+    }, 3500);
   }, [character]);
 
   function trackCoins(createdAtStr: string, changeAmount: number) {

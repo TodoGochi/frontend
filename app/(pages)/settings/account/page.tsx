@@ -96,7 +96,7 @@ export default function Page() {
               <div className="text-[18px] font-semibold mb-[6px] font-suit">
                 투두고치
               </div>
-              <div className="text-[12px] font-suit"> {email}</div>
+              <div className="text-[12px] font-suit">{email}</div>
             </div>
           </div>
         </div>
