@@ -14,7 +14,11 @@ export default function Page() {
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
-    if (accessToken !== null && accessToken !== "") {
+    if (
+      accessToken !== null &&
+      accessToken !== "" &&
+      accessToken !== "undefined"
+    ) {
       router.push("/tutorial");
     }
   }, [router]);
