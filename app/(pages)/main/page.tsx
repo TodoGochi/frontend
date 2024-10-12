@@ -236,7 +236,7 @@ export default function Page() {
           setCharacterModal(true);
           setButton(1);
           setModalText(
-            `${resGotchi.data.nickname}(이)가 아무 것도 찾지 못했어요`
+            `${resGotchi.data.nickname}(이)가 아무것도 찾지 못했어요`
           );
           setCharacter(
             resGotchi.data.level === "baby"
@@ -275,10 +275,18 @@ export default function Page() {
     getStatus();
   };
 
-  const cureModal = () => {
+  const cureModal = async () => {
+    const res = await instance.get("/user");
+    const resGotchi = await instance.get(
+      `/tamagotchi/${res.data.userId}/status`
+    );
+
     setCharacterModal(true);
-    setModalText(`투두고치가 아파요. \n 치료 하시겠어요?`);
+    setModalText(
+      `${resGotchi.data.nickname}(이)가 아파요. \n 치료 하시겠어요?`
+    );
     setModalCoin(-3);
+    setButton(1);
     setWhich("cure");
   };
 
@@ -290,21 +298,9 @@ export default function Page() {
     setCharacterModal(true);
     setButton(1);
     setModalCoin(0);
+    setWhich("cured");
     setModalText(`${resGotchi.data.nickname}(이)가 산책을 떠나요`);
     walk();
-  };
-
-  const revive = async () => {
-    try {
-      const res = await instance.get("/user");
-      const resGotchi = await instance.get(
-        `/tamagotchi/${res.data.userId}/status`
-      );
-
-      instance.post(`/tamagotchi/${resGotchi.data.id}/resurrect`);
-    } catch (e) {
-      console.log(e);
-    }
   };
 
   const restart = async () => {
@@ -427,8 +423,8 @@ export default function Page() {
     }
 
     if (
-      resGotchi.data.health_status !== "healthy" &&
-      resGotchi.data.health_status !== "sick"
+      resGotchi.data.health_status !== "sick" &&
+      resGotchi.data.health_status !== "healthy"
     ) {
       setCharacterModal(true);
       setCharacter(
@@ -437,9 +433,10 @@ export default function Page() {
       setModalText(`${resGotchi.data.nickname}(이)가 투두고치별로 갔어요.
 어떻게 하시겠어요?`);
       setButton(2);
+      setModalCoin(-10);
     } else if (resGotchi.data.health_status === "sick") {
       setCharacterModal(true);
-      setModalText(`투두고치가 아파요.
+      setModalText(`${resGotchi.data.nickname}(이)가 아파요.
         치료 하시겠어요?`);
       setModalCoin(-3);
       setWhich("cure");
@@ -449,8 +446,8 @@ export default function Page() {
 
   useEffect(() => {
     getStatus();
-    getTodayCoin();
     getInfoFirst();
+    getTodayCoin();
   }, []);
 
   const walkingA = async () => {
@@ -730,7 +727,7 @@ export default function Page() {
 
             <div className="absolute flex justify-center items-center left-[7px] bottom-[10px] z-[102]">
               <div className="flex space-x-[8px]">
-                {status.level === "egg" ? (
+                {status.level === "egg" || status.health_status == "dead" ? (
                   <div className="relative ">
                     <img src="/disableButton.png" alt="button" />
                     <img
@@ -749,15 +746,27 @@ export default function Page() {
                     />
                   </div>
                 )}
-                <div className="relative cursor-pointer" onClick={pet}>
-                  <img src="/button.png" alt="button" />
-                  <img
-                    className="absolute z-[2] top-[2px] left-[21px]"
-                    src="/cute.png"
-                    alt="button"
-                  />
-                </div>
-                {status.level === "egg" ? (
+                {status.health_status == "dead" ? (
+                  <div className="relative">
+                    <img src="/disableButton.png" alt="button" />
+                    <img
+                      className="absolute z-[2] top-[2px] left-[21px]"
+                      src="/cute.png"
+                      alt="button"
+                    />
+                  </div>
+                ) : (
+                  <div className="relative cursor-pointer" onClick={pet}>
+                    <img src="/button.png" alt="button" />
+                    <img
+                      className="absolute z-[2] top-[2px] left-[21px]"
+                      src="/cute.png"
+                      alt="button"
+                    />
+                  </div>
+                )}
+
+                {status.level === "egg" || status.health_status == "dead" ? (
                   <div className="relative ">
                     <img src="/disableButton.png" alt="button" />
                     <img
@@ -805,11 +814,11 @@ export default function Page() {
                 setModal={setCharacterModal}
                 coin={modalCoin}
                 button={button}
-                revive={revive}
                 restart={restart}
                 cure={cure}
                 buttonText={buttonText}
                 which={which}
+                totalCoin={totalCoin}
               />
             )}
           </div>
@@ -852,7 +861,6 @@ export default function Page() {
             setModal={setModal}
             coin={modalCoin}
             button={button}
-            revive={revive}
             restart={restart}
             cure={cure}
             buttonText={buttonText}
