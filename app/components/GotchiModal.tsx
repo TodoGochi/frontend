@@ -20,6 +20,7 @@ export default function GochiModal({
   const [whichClicked, setWhichClicked] = useState("");
   const [modalText, setModalText] = useState(text);
   const [modalCoin, setModalCoin] = useState(coin);
+  const [buttonNumber, setButtonNumber] = useState(button);
 
   const revive = async () => {
     try {
@@ -35,7 +36,15 @@ export default function GochiModal({
         return;
       }
 
-      instance.post(`/tamagotchi/${resGotchi.data.id}/resurrect`);
+      try {
+        instance.post(`/tamagotchi/${resGotchi.data.id}/resurrect`);
+        setModalText(`${nickname}(이)가 부활했어요.
+이번엔 잘 보살펴주세요.`);
+        setModalCoin(0);
+        setButtonNumber(1);
+      } catch (e) {
+        console.log(e);
+      }
     } catch (e) {
       console.log(e);
     }
@@ -129,7 +138,7 @@ export default function GochiModal({
           <div className="mb-[15px]"></div>
         )}
 
-        {button > 1 ? (
+        {buttonNumber > 1 ? (
           <div className="flex absolute gap-[10px] justify-center items-center bottom-[20px]">
             <div
               className="w-[140px] relative flex justify-center items-center h-full"
@@ -138,7 +147,18 @@ export default function GochiModal({
               }
             >
               <svg
-                className="cursor-pointer absolute z-[2] left-[0px] top-[0px]"
+                onClick={
+                  whichClicked === ""
+                    ? () => {
+                        setWhichClicked("revive");
+                      }
+                    : () => {
+                        setWhichClicked("");
+                        setModalText(text);
+                        setModalCoin(coin);
+                      }
+                }
+                className="cursor-pointer absolute z-[2] left-[0px] top-[0px] asd"
                 xmlns="http://www.w3.org/2000/svg"
                 width="140"
                 height="35"
@@ -175,8 +195,9 @@ export default function GochiModal({
                 </div>
               )}
             </div>
-            <div className="relative w-[140px] h-[35px]  justify-center items-center">
+            <div className="relative w-[140px] h-[35px]  justify-center items-center asd">
               <svg
+                onClick={() => setWhichClicked("revive")}
                 className="cursor-pointer absolute z-[2] left-[0px] top-[0px]"
                 xmlns="http://www.w3.org/2000/svg"
                 width="140"
@@ -234,6 +255,13 @@ export default function GochiModal({
             }
           >
             <svg
+              onClick={
+                which === "cure"
+                  ? cure
+                  : () => {
+                      setModal(false);
+                    }
+              }
               className={`absolute z-[2] left-[8px] ${
                 which === "cure" ? "top-[0px]" : "top-[20px]"
               } cursor-pointer`}
