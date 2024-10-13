@@ -480,7 +480,7 @@ export default function Page() {
             ${
               currentStep === 17 || currentStep === 18
                 ? "h-[568px]"
-                : "h-[416px]"
+                : "h-[418px]"
             } bottom-[0px] rounded-tl-[30px] rounded-tr-[30px]   ${
               currentStep === 16 ? "h-[428px]" : ""
             } ${currentStep === 19 || currentStep === 20 ? "h-[27rem] " : ""}`}

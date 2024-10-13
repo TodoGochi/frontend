@@ -1,6 +1,10 @@
 import axios from "axios";
 
 const tokenRefresh = async () => {
+  if (!localStorage.getItem("accessToken")) {
+    return;
+  }
+
   try {
     const response = await axios.post(
       "https://todogochi.store/auth/refresh",
@@ -10,13 +14,11 @@ const tokenRefresh = async () => {
 
     // 새 액세스 토큰을 응답에서 받아 저장
     const newAccessToken = response.data.accessToken; // 실제 응답 구조에 따라 조정 필요
-    localStorage.clear();
     if (newAccessToken) localStorage.setItem("accessToken", newAccessToken);
 
     return newAccessToken;
   } catch (error) {
     console.error("토큰 리프레시 실패:", error);
-    // 리프레시 실패 시 로그아웃 처리 또는 다른 에러 처리
     localStorage.clear();
     throw error;
   }
@@ -54,7 +56,6 @@ instance.interceptors.response.use(
 
       if (responseToken) localStorage.setItem("accessToken", responseToken);
 
-      localStorage.clear();
       error.config.headers = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${responseToken}`,

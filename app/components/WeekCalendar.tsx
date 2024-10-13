@@ -142,11 +142,8 @@ const WeekCalendar = ({
     return `${month} ${year}`;
   }, [selectedDate, currentDate]);
 
-  const isDateSelected = useCallback(
-    (date: Date) =>
-      selectedDate && date.toDateString() === selectedDate.toDateString(),
-    [selectedDate]
-  );
+  const isDateSelected = (date: Date) =>
+    selectedDate && date.toDateString() === selectedDate.toDateString();
 
   const getTodoStatusColor = useCallback(
     (date: Date) => {

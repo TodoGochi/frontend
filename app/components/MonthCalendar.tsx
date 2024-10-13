@@ -269,7 +269,7 @@ const MonthCalendar = ({
         </div>
         <button
           onClick={handleNextMonth}
-          className="text-gray-600 hover:text-gray-900 ml-[20px] mr-[90px]"
+          className="text-gray-600 hover:text-gray-900 ml-[20px] mr-[80px]"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
