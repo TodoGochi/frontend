@@ -16,6 +16,12 @@ interface Experience {
   pet: number;
 }
 
+interface TimeLeft {
+  hour: number;
+  min: number;
+  sec: number;
+}
+
 interface Monster {
   user_id: number;
   level: string;
@@ -41,7 +47,7 @@ export default function Page() {
   const [walking, setWalking] = useState(false);
   const [modalText, setModalText] = useState("");
   const [message, setMessage] = useState("");
-  const [timeLeft, setTimeLeft] = useState<any>({ hour: 48, min: 0 });
+  const [timeLeft, setTimeLeft] = useState<any>({ hour: 48, min: 0, sec: 0 });
   const [todayCoin, setTodayCoin] = useState(0);
   const [which, setWhich] = useState("");
   const [characterModal, setCharacterModal] = useState(false);
@@ -60,28 +66,32 @@ export default function Page() {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeLeft((prevTime: any) => {
-        if (prevTime.hour === 0 && prevTime.min === 0) {
+      setTimeLeft((prevTime: TimeLeft) => {
+        if (prevTime.hour === 0 && prevTime.min === 0 && prevTime.sec === 0) {
           clearInterval(timer);
           return prevTime;
         }
 
         let newHour = prevTime.hour;
         let newMin = prevTime.min;
+        let newSec = prevTime.sec;
 
-        if (newMin > 0) {
+        if (newSec > 0) {
+          newSec--;
+        } else if (newMin > 0) {
           newMin--;
+          newSec = 59;
         } else if (newHour > 0) {
           newHour--;
           newMin = 59;
+          newSec = 59;
         }
 
-        return { hour: newHour, min: newMin };
+        return { hour: newHour, min: newMin, sec: newSec };
       });
       getStatus();
       getTodayCoin();
-      getInfoFirst();
-    }, 60000); // 1분(60000ms)마다 업데이트
+    }, 1000); // 1초(1000ms)마다 업데이트
 
     return () => clearInterval(timer);
   }, []);
@@ -141,7 +151,7 @@ export default function Page() {
     }
 
     setDay(calculateDaysSinceCreation(resGotchi.data));
-    setTimeLeft({ hour: resTime.data.hour, min: resTime.data.min });
+    setTimeLeft({ hour: resTime.data.hour, min: resTime.data.min, sec: 0 });
   };
 
   const feed = async () => {
@@ -509,7 +519,7 @@ export default function Page() {
     );
 
     if (daysDiff === 0) {
-      setTodayCoin((prev) => prev + changeAmount);
+      if (changeAmount > 0) setTodayCoin((prev) => prev + changeAmount);
     }
   }
 
@@ -606,7 +616,8 @@ export default function Page() {
                   </svg>
                   <div className="font-neodunggeunmo absolute z-[130] top-[12px] left-[30px] flex justify-center items-center">
                     {timeLeft.hour && String(timeLeft.hour).padStart(2, "0")}:
-                    {String(timeLeft.min).padStart(2, "0")}
+                    {String(timeLeft.min).padStart(2, "0")}:
+                    {timeLeft.min < 1 && String(timeLeft.sec).padStart(2, "0")}
                   </div>
                 </div>
                 {message !== "" && (
