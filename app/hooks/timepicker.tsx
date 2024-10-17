@@ -28,13 +28,17 @@ export function useTimePicker(
   };
 
   const handleHoursChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = Math.max(1, Math.min(12, Number(e.target.value)));
-    setHours(value);
+    const value = e.target.value;
+    if (value === "" || /^[1-9]$|^[0-2]$/.test(value)) {
+      setHours(value);
+    }
   };
 
   const handleMinutesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = Math.max(0, Math.min(59, Number(e.target.value)));
-    setMinutes(value.toString().padStart(2, "0"));
+    const value = e.target.value;
+    if (value === "" || /^[0-5]?[0-9]$/.test(value)) {
+      setMinutes(value);
+    }
   };
 
   return [
