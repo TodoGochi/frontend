@@ -458,6 +458,14 @@ export function useCharacter() {
     }
   }, [message]);
 
+  useEffect(() => {
+    if (character !== "") {
+      setTimeout(() => {
+        setCharacter("");
+      }, 3000);
+    }
+  }, [character]);
+
   return {
     status,
     message,
