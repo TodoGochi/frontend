@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { instance } from "../utils/axios";
@@ -238,6 +239,8 @@ export const ListItem: React.FC<ListItemProps> = ({
       ) : (
         <div className="mb-[30px]">
           <TodoAdd
+            initialInputValue={item.text}
+            setInitialInputValue={(args: string) => {}}
             getData={getData}
             edit={true}
             id={id}

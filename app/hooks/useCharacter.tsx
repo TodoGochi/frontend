@@ -74,14 +74,6 @@ export function useCharacter() {
         setButton(1);
       }
 
-      if (resGotchi.data.level === "egg") {
-        eggSay();
-      } else if (resGotchi.data.level === "adult") {
-        adultSay();
-      } else {
-        babySay();
-      }
-
       if (
         resGotchi.data.health_status !== "sick" &&
         resGotchi.data.health_status !== "healthy"

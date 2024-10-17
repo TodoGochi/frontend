@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import CustomTimePicker from "./TimePicker";
 import { useTimePicker } from "../hooks/timepicker";
 import { instance } from "../utils/axios";
@@ -49,16 +49,11 @@ const TodoAdd: React.FC<TodoAddProps> = ({
 }) => {
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const [selectedColor, setSelectedColor] = useState("bg-[#ff9b99]");
-  const [inputValue, setInputValue] = useState(initialInputValue);
+  const [inputValue, setInputValue] = useState(initialInputValue || "");
   const [click, setClick] = useState(false);
 
   const selectedDate = useStore((state) => state.selectedDate);
 
-  const [todoState, setTodoState] = useState({
-    selectedDays: [] as string[],
-    selectedColor: "bg-[#ff9b99]",
-    inputValue: "",
-  });
   const ref = useRef<HTMLDivElement>(null);
 
   const days = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
@@ -92,35 +87,13 @@ const TodoAdd: React.FC<TodoAddProps> = ({
     SUN: "Sunday",
   };
 
-  const initialDataRef = useRef(initialData);
-
   const [timeState, timeActions] = useTimePicker();
 
   useEffect(() => {
-    if (initialData) {
-      const { days, color, text, time } = initialData;
-
-      setSelectedDays(days);
-      setSelectedColor(`bg-[#${color}]`);
-      setInputValue(text);
-
-      // 시간 상태 업데이트
-      const [h, m] = time.split(":");
-      let newHours = parseInt(h, 10);
-      let newMinutes = m.substring(0, 2);
-      let newAmPm = "AM";
-
-      if (newHours >= 12) {
-        newAmPm = "PM";
-        if (newHours > 12) newHours -= 12;
-      }
-      if (newHours === 0) {
-        newHours = 12;
-      }
-
-      timeActions.setHours(newHours);
-      timeActions.setMinutes(newMinutes);
-      timeActions.setAmPm(newAmPm);
+    if (initialData?.time) {
+      const [hours, minutes] = initialData.time.split(":");
+      timeActions.setHours(hours);
+      timeActions.setMinutes(minutes);
     }
   }, []);
 
@@ -140,13 +113,12 @@ const TodoAdd: React.FC<TodoAddProps> = ({
     };
   }, [
     tutorial,
-    selectedDays.length,
+    selectedDays,
     selectedColor,
-    days,
     timeState,
     inputValue,
-    timeActions,
-  ]); // 필요한 의존성만 추가
+    initialInputValue,
+  ]);
 
   const handleCheckboxChange = async () => {
     setClick(!click);
@@ -165,7 +137,7 @@ const TodoAdd: React.FC<TodoAddProps> = ({
 
   const formatDateToYYYYMMDD = (date: Date): string => {
     const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-indexed
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
     const day = date.getDate().toString().padStart(2, "0");
 
     return `${year}${month}${day}`;
@@ -187,7 +159,7 @@ const TodoAdd: React.FC<TodoAddProps> = ({
 
   useEffect(() => {
     getDataClicked();
-  }, []);
+  }, [id, selectedDate]);
 
   const toggleDay = (day: string) => {
     setSelectedDays((prev) =>
@@ -197,45 +169,54 @@ const TodoAdd: React.FC<TodoAddProps> = ({
 
   const handleSubmit = async () => {
     setInitialInputValue("");
-    const hours =
-      timeState.hours === 12
-        ? timeState.amPm === "AM"
-          ? "00"
-          : "12"
-        : timeState.amPm === "PM"
-        ? (timeState.hours + 12).toString()
-        : timeState.hours.toString().padStart(2, "0");
+
+    const formattedHours = (() => {
+      if (timeState.hours === null) return "00";
+      if (timeState.hours === "12")
+        return timeState.amPm === "AM" ? "00" : "12";
+      if (timeState.amPm === "PM")
+        return (parseInt(timeState.hours) + 12).toString().padStart(2, "0");
+      return timeState.hours.toString().padStart(2, "0");
+    })();
+
+    const formattedMinutes =
+      timeState.minutes === null
+        ? "00"
+        : timeState.minutes.toString().padStart(2, "0");
+
+    const formattedTime = `${formattedHours}:${formattedMinutes}`;
+
+    console.log(formattedTime);
 
     try {
       const res = await instance.get("/user");
 
+      const commonTodoData = {
+        userId: res.data.userId,
+        todoText: inputValue,
+        colorTag: colorToTag[selectedColor] || "GRAY",
+        targetTime: formattedTime,
+      };
+
       if (selectedDays.length === 0 && !edit) {
-        const postRes: any = await instance.post("/todolist/specific-day", {
-          userId: res.data.userId,
-          todoText: inputValue || todoState.inputValue,
-          colorTag: colorToTag[selectedColor] || "GRAY",
+        await instance.post("/todolist/specific-day", {
+          ...commonTodoData,
           targetDate: parseInt(formatDateToYYYYMMDD(selectedDate as Date)),
-          targetTime: `${hours}:${timeState.minutes}`,
         });
       } else {
         const apiTodo: ApiTodoItem = {
-          userId: res.data.userId,
-          todoText: inputValue || todoState.inputValue,
-          colorTag: colorToTag[selectedColor] || "RED",
+          ...commonTodoData,
           days: selectedDays.map((day) => dayToFull[day]),
-          targetTime: `${hours}:${timeState.minutes}`,
+          colorTag: colorToTag[selectedColor] || "RED",
         };
 
         if (edit) {
-          instance.put(`/todolist/update/${id}`, apiTodo);
-        } else await instance.post("/todolist/weekly", apiTodo);
+          await instance.put(`/todolist/update/${id}`, apiTodo);
+        } else {
+          await instance.post("/todolist/weekly", apiTodo);
+        }
       }
 
-      setTodoState({
-        selectedDays: [],
-        selectedColor: "bg-[#ff9b99]",
-        inputValue: "",
-      });
       setAdd(false);
     } catch (error) {
       console.error("Error submitting todo:", error);
@@ -247,7 +228,7 @@ const TodoAdd: React.FC<TodoAddProps> = ({
     <div>
       <div
         ref={ref}
-        className="w-[350px]  rounded-lg bg-[#FFFFFF] mt-[10px] flex items-center "
+        className="w-[350px] rounded-lg bg-[#FFFFFF] mt-[10px] flex items-center"
       >
         <div
           className={`min-w-[5px] h-[200px] ${selectedColor} rounded-tl-[5px] rounded-bl-[5px]`}
