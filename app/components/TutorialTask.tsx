@@ -348,6 +348,8 @@ const TutorialTask = ({ currentStep }: any) => {
           }`}
         >
           <TodoAdd
+            initialInputValue=""
+            setInitialInputValue={() => {}}
             getData={() => {}}
             tutorial={true}
             setAdd={setAdd}
