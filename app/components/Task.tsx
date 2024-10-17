@@ -130,6 +130,7 @@ const SwipeActionList: React.FC<any> = ({ sized, isSortedByColor }: any) => {
     const handleClickOutside = (event: MouseEvent) => {
       if (ref.current && !ref.current.contains(event.target as Node)) {
         handleSubmit();
+        setInputValue("");
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -300,6 +301,8 @@ const SwipeActionList: React.FC<any> = ({ sized, isSortedByColor }: any) => {
 
       {add && (
         <TodoAdd
+          initialInputValue={inputValue}
+          setInitialInputValue={setInputValue}
           setAdd={setAdd}
           initialData={selectedItem}
           val={inputValue}

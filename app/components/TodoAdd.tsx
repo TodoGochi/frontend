@@ -31,6 +31,8 @@ interface TodoAddProps {
   id?: number;
   getData: () => void;
   setModal3?: (args: boolean) => void;
+  initialInputValue: string;
+  setInitialInputValue: (args: string) => void;
 }
 
 const TodoAdd: React.FC<TodoAddProps> = ({
@@ -42,10 +44,12 @@ const TodoAdd: React.FC<TodoAddProps> = ({
   getData,
   id,
   setModal3,
+  initialInputValue,
+  setInitialInputValue,
 }) => {
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const [selectedColor, setSelectedColor] = useState("bg-[#ff9b99]");
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState(initialInputValue);
   const [click, setClick] = useState(false);
 
   const selectedDate = useStore((state) => state.selectedDate);
@@ -192,6 +196,7 @@ const TodoAdd: React.FC<TodoAddProps> = ({
   };
 
   const handleSubmit = async () => {
+    setInitialInputValue("");
     const hours =
       timeState.hours === 12
         ? timeState.amPm === "AM"
