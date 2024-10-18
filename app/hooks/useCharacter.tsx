@@ -104,6 +104,8 @@ export function useCharacter() {
       setButton(1);
     }
 
+    console.log(resGotchi.data);
+
     if (
       resGotchi.data.level === "baby" &&
       resGotchi.data.levelEffects.effectApplied === false
