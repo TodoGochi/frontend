@@ -5,7 +5,6 @@ import Header from "@/app/components/Header";
 import Character from "@/app/components/Character";
 import Controls from "@/app/components/Controls";
 import TaskList from "@/app/components/TaskList";
-
 import GochiModal from "@/app/components/GotchiModal";
 import { useCharacter } from "@/app/hooks/useCharacter";
 
@@ -19,20 +18,8 @@ export default function Page() {
     timeLeft,
     totalCoin,
     todayCoin,
-    modal,
-    setModal,
-    button,
-    setButton,
-    modalCoin,
-    setModalCoin,
-    buttonText,
-    setButtonText,
-    modalText,
-    setModalText,
-    which,
-    setWhich,
-    characterModal,
-    setCharacterModal,
+    modalState,
+    setModalState,
     feed,
     pet,
     walk,
@@ -46,7 +33,7 @@ export default function Page() {
 
   useEffect(() => {
     getStatus();
-  }, []);
+  }, [getStatus]);
 
   const cureModal = async () => {
     const res = await instance.get("/user");
@@ -54,13 +41,14 @@ export default function Page() {
       `/tamagotchi/${res.data.userId}/status`
     );
 
-    setCharacterModal(true);
-    setModalText(
-      `${resGotchi.data.nickname}(이)가 아파요. \n 치료 하시겠어요?`
-    );
-    setModalCoin(-3);
-    setButton(1);
-    setWhich("cure");
+    setModalState({
+      isOpen: true,
+      isCharacterModal: true,
+      text: `${resGotchi.data.nickname}(이)가 아파요. \n 치료 하시겠어요?`,
+      coin: -3,
+      button: 1,
+      which: "cure",
+    });
   };
 
   const walkModal = async () => {
@@ -68,11 +56,15 @@ export default function Page() {
     const resGotchi = await instance.get(
       `/tamagotchi/${res.data.userId}/status`
     );
-    setCharacterModal(true);
-    setButton(1);
-    setModalCoin(0);
-    setWhich("cured");
-    setModalText(`${resGotchi.data.nickname}(이)가 산책을 떠나요`);
+
+    setModalState({
+      isOpen: true,
+      isCharacterModal: true,
+      text: `${resGotchi.data.nickname}(이)가 산책을 떠나요`,
+      coin: 0,
+      button: 1,
+      which: "cured",
+    });
     walk();
   };
 
@@ -102,16 +94,18 @@ export default function Page() {
             cureModal={cureModal}
           />
 
-          {characterModal && (
+          {modalState.isOpen && modalState.isCharacterModal && (
             <GochiModal
-              text={modalText}
-              setModal={setCharacterModal}
-              coin={modalCoin}
-              button={button}
+              text={modalState.text}
+              setModal={(isOpen: any) =>
+                setModalState((prev) => ({ ...prev, isOpen }))
+              }
+              coin={modalState.coin}
+              button={modalState.button}
               restart={restart}
               cure={cure}
-              buttonText="REVIVE"
-              which={which}
+              buttonText={modalState.buttonText || "REVIVE"}
+              which={modalState.which}
               totalCoin={totalCoin}
             />
           )}

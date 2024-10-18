@@ -1,10 +1,17 @@
-"use client";
-
-import { useState, useEffect } from "react";
+// useCharacter.ts
+import { useState, useEffect, useCallback } from "react";
 import { instance } from "@/app/utils/axios";
+import { CharacterStatus, TimeLeft, ModalState } from "../types/types";
+import {
+  calculateDaysSinceCreation,
+  decrementTime,
+  trackCoins,
+} from "../utils/utils";
+import { getCharacterImage, getRandomMessage } from "../utils/characterUtils";
+import { API_ENDPOINTS } from "../utils/constants";
 
 export function useCharacter() {
-  const [status, setStatus] = useState({
+  const [status, setStatus] = useState<CharacterStatus>({
     user_id: 0,
     level: "",
     health_status: "",
@@ -20,132 +27,202 @@ export function useCharacter() {
   const [character, setCharacter] = useState("");
   const [walking, setWalking] = useState(false);
   const [day, setDay] = useState(0);
-  const [timeLeft, setTimeLeft] = useState({ hour: 48, min: 0, sec: 0 });
+  const [timeLeft, setTimeLeft] = useState<TimeLeft>({
+    hour: 48,
+    min: 0,
+    sec: 0,
+  });
   const [totalCoin, setTotalCoin] = useState(0);
   const [todayCoin, setTodayCoin] = useState(0);
+  const [timerOn, setTimerOn] = useState(false);
+  const [modalState, setModalState] = useState<ModalState>({
+    isOpen: false,
+    button: 2,
+    coin: 0,
+    buttonText: "REVIVE",
+    text: "",
+    which: "",
+    isCharacterModal: false,
+  });
 
-  const [modal, setModal] = useState(false);
-  const [button, setButton] = useState(2);
-  const [modalCoin, setModalCoin] = useState(0);
-  const [buttonText, setButtonText] = useState("REVIVE");
-  const [modalText, setModalText] = useState("");
-  const [which, setWhich] = useState("");
-  const [characterModal, setCharacterModal] = useState(false);
-
-  const getStatus = async () => {
+  const getStatus = useCallback(async (updateCharacter = true) => {
     try {
-      const res = await instance.get("/user");
-      const resGotchi = await instance.get(
-        `/tamagotchi/${res.data.userId}/status`
+      const userRes = await instance.get(API_ENDPOINTS.USER);
+      const tamagotchiRes = await instance.get(
+        API_ENDPOINTS.TAMAGOTCHI_STATUS(userRes.data.userId)
       );
-      const resTime = await instance.get(
-        `/tamagotchi/${resGotchi.data.id}/level-progress`
-      );
-      const resTransaction = await instance.get(
-        `/user/${res.data.userId}/coin-transactions`
-      );
+      const [levelProgressRes, transactionRes] = await Promise.all([
+        instance.get(API_ENDPOINTS.LEVEL_PROGRESS(tamagotchiRes.data.id)),
+        instance.get(API_ENDPOINTS.COIN_TRANSACTIONS(userRes.data.userId)),
+      ]);
 
-      setStatus(resGotchi.data);
-      setTotalCoin(res.data.coin);
-
-      if (resGotchi.data.happiness <= 4 || resGotchi.data.hunger <= 4) {
-        setCharacter(
-          resGotchi.data.level === "baby" ? "/step1_sad.gif" : "/step2_sad.gif"
-        );
-        if (resGotchi.data.hunger <= 4) {
-          hungerSay();
-        }
+      setStatus(tamagotchiRes.data);
+      setTotalCoin(userRes.data.coin);
+      if (updateCharacter) {
+        setCharacter(getCharacterImage(tamagotchiRes.data));
       }
-
-      setDay(calculateDaysSinceCreation(resGotchi.data));
-      setTimeLeft({ hour: resTime.data.hour, min: resTime.data.min, sec: 0 });
-
-      processMultipleDates(
-        resTransaction.data.map((el: any) => ({
-          createdAt: el.createdAt,
-          changeAmount: el.changeAmount,
-        }))
-      );
-
-      if (
-        resGotchi.data.health_status !== "sick" &&
-        resGotchi.data.health_status !== "healthy"
-      ) {
-        setCharacterModal(true);
-        setCharacter(
-          status.level === "baby" ? "/step1_death.gif" : "/step2_death.gif"
-        );
-        setModalText(`${resGotchi.data.nickname}(이)가 투두고치별로 갔어요.
-어떻게 하시겠어요?`);
-        setButton(2);
-        setModalCoin(-10);
-      } else if (resGotchi.data.health_status === "sick") {
-        setCharacterModal(true);
-        setModalText(`${resGotchi.data.nickname}(이)가 아파요.
-        치료 하시겠어요?`);
-        setModalCoin(-3);
-        setWhich("cure");
-        setButton(1);
-      }
+      setDay(calculateDaysSinceCreation(tamagotchiRes.data));
+      updateTimer(levelProgressRes.data);
+      processTransactions(transactionRes.data);
+      checkCharacterStatus(tamagotchiRes.data);
+      checkLevelEffects(tamagotchiRes.data);
     } catch (error) {
       console.error("Error fetching status:", error);
     }
+  }, []);
+
+  const updateTimer = (timeData: { hour: number; min: number }) => {
+    if (timeData.hour !== 0 || timeData.min !== 0) {
+      setTimeLeft({ hour: timeData.hour, min: timeData.min, sec: 0 });
+      setTimerOn(true);
+    } else {
+      setTimerOn(false);
+    }
+  };
+
+  const processTransactions = (transactions: any[]) => {
+    setTodayCoin(0);
+    transactions.forEach((info: any) =>
+      trackCoins(info.createdAt, info.changeAmount, setTodayCoin)
+    );
+  };
+
+  const checkCharacterStatus = (characterData: CharacterStatus) => {
+    if (
+      characterData.health_status !== "sick" &&
+      characterData.health_status !== "healthy"
+    ) {
+      setDeathModal(characterData);
+    } else if (characterData.health_status === "sick") {
+      setSickModal(characterData);
+    }
+  };
+
+  const setDeathModal = (characterData: CharacterStatus) => {
+    setModalState({
+      isOpen: true,
+      isCharacterModal: true,
+      text: `${characterData.nickname}(이)가 투두고치별로 갔어요. 어떻게 하시겠어요?`,
+      button: 2,
+      coin: -10,
+      which: "death",
+    });
+    setCharacter(getCharacterImage(characterData, "death"));
+  };
+
+  const setSickModal = (characterData: CharacterStatus) => {
+    setModalState({
+      isOpen: true,
+      isCharacterModal: true,
+      text: `${characterData.nickname}(이)가 아파요. 치료 하시겠어요?`,
+      coin: -3,
+      which: "cure",
+      button: 1,
+    });
   };
 
   const onlyFirstInfo = async () => {
-    const res = await instance.get("/user");
-    const resGotchi = await instance.get(
-      `/tamagotchi/${res.data.userId}/status`
-    );
-    if (resGotchi.data.happiness <= 5) {
-      setCharacterModal(true);
-      setModalText(`${resGotchi.data.nickname}(이)가 ${res.data.nickName}님의
-손길을 기다려요.`);
-      setButton(1);
-    }
+    try {
+      const userRes = await instance.get(API_ENDPOINTS.USER);
+      const tamagotchiRes = await instance.get(
+        API_ENDPOINTS.TAMAGOTCHI_STATUS(userRes.data.userId)
+      );
 
-    console.log(resGotchi.data);
-
-    if (
-      resGotchi.data.level === "baby" &&
-      resGotchi.data.levelEffects.effectApplied === false
-    ) {
-      setCharacter("/egg_cracking.gif");
-      instance.post(`/tamagotchi/${resGotchi.data.id}/levelupeffect/${1}`, {});
-    } else if (
-      resGotchi.data.level === "adult" &&
-      resGotchi.data.levelEffects.effectApplied === false
-    ) {
-      setCharacter("/step1_next.gif");
-      instance.post(`/tamagotchi/${resGotchi.data.id}/levelupeffect/${2}`, {});
+      checkHappiness(tamagotchiRes.data, userRes.data.nickName);
+    } catch (error) {
+      console.error("Error in onlyFirstInfo:", error);
     }
+  };
+
+  const checkHappiness = (
+    characterData: CharacterStatus,
+    userNickName: string
+  ) => {
+    if (characterData.happiness <= 5) {
+      setModalState({
+        isOpen: true,
+        isCharacterModal: true,
+        text: `${characterData.nickname}(이)가 ${userNickName}님의 손길을 기다려요.`,
+        button: 1,
+        coin: 0,
+        which: "",
+      });
+    }
+  };
+
+  const handleTimerEnd = useCallback(async () => {
+    setCharacter("/egg_cracking.gif");
+    await getStatus(false); // 캐릭터 이미지를 업데이트하지 않음
+  }, [status]);
+
+  useEffect(() => {
+    if (timerOn) {
+      const timer = setInterval(() => {
+        setTimeLeft((prevTime) => {
+          if (prevTime.hour === 0 && prevTime.min === 0 && prevTime.sec === 0) {
+            clearInterval(timer);
+            handleTimerEnd();
+            return prevTime;
+          }
+          return decrementTime(prevTime);
+        });
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [timerOn, handleTimerEnd]);
+
+  const checkLevelEffects = async (characterData: CharacterStatus) => {
+    // console.log(characterData);
+    // if (
+    //   characterData.levelEffects &&
+    //   characterData.levelEffects.every((effect) => effect.effectApplied)
+    // ) {
+    //   return;
+    // }
+    // if (
+    //   characterData.level === "baby" &&
+    //   characterData.levelEffects &&
+    //   characterData?.levelEffects[0]?.effectApplied === false
+    // ) {
+    //   setCharacter("/egg_cracking.gif");
+    //   await instance.post(
+    //     API_ENDPOINTS.LEVEL_UP_EFFECT(characterData.id as number, 1),
+    //     {}
+    //   );
+    //   getStatus();
+    // } else if (
+    //   characterData.level === "adult" &&
+    //   characterData.levelEffects &&
+    //   characterData?.levelEffects[1]?.effectApplied === false
+    // ) {
+    //   setCharacter("/step1_next.gif");
+    //   await instance.post(
+    //     API_ENDPOINTS.LEVEL_UP_EFFECT(characterData.id as number, 2),
+    //     {}
+    //   );
+    //   // baby에서 adult로 레벨 업 후 상태 업데이트
+    //   getStatus();
+    // }
   };
 
   const feed = async () => {
     try {
-      const res = await instance.get("/user");
-      const resGotchi = await instance.get(
-        `/tamagotchi/${res.data.userId}/status`
-      );
+      const userRes = await instance.get(API_ENDPOINTS.USER);
+      const [tamagotchiRes] = await Promise.all([
+        instance.get(API_ENDPOINTS.TAMAGOTCHI_STATUS(userRes.data.userId)),
+      ]);
 
-      if (resGotchi.data.hunger === 10) {
+      if (tamagotchiRes.data.hunger === 10) {
         setMessage("더는 못 먹겠어! 배가 이미 빵빵해.");
         return;
       }
 
-      feedSay();
-
-      await instance.post(`tamagotchi/${resGotchi.data.id}/feed`, {
-        userId: res.data.userId,
+      setMessage(getRandomMessage("feed"));
+      await instance.post(API_ENDPOINTS.FEED(tamagotchiRes.data.id), {
+        userId: userRes.data.userId,
       });
-
-      setCharacter(
-        resGotchi.data.level === "baby"
-          ? "/step1_happy.gif"
-          : "/step2_happy.gif"
-      );
-
-      getStatus();
+      setCharacter(getCharacterImage(tamagotchiRes.data, "happy"));
+      getStatus(false);
     } catch (e) {
       console.log(e);
     }
@@ -153,29 +230,22 @@ export function useCharacter() {
 
   const pet = async () => {
     try {
-      const res = await instance.get("/user");
-      const resGotchi = await instance.get(
-        `/tamagotchi/${res.data.userId}/status`
-      );
+      const userRes = await instance.get(API_ENDPOINTS.USER);
+      const [tamagotchiRes] = await Promise.all([
+        instance.get(API_ENDPOINTS.TAMAGOTCHI_STATUS(userRes.data.userId)),
+      ]);
 
-      if (resGotchi.data.happiness === 10) {
+      if (tamagotchiRes.data.happiness === 10) {
         setMessage("너의 사랑은 충분해!");
         return;
       }
 
-      heartSay();
-
-      await instance.post(`tamagotchi/${resGotchi.data.id}/pet`, {
-        userId: res.data.userId,
+      setMessage(getRandomMessage("pet"));
+      await instance.post(API_ENDPOINTS.PET(tamagotchiRes.data.id), {
+        userId: userRes.data.userId,
       });
-
-      setCharacter(
-        resGotchi.data.level === "baby"
-          ? "/step1_happy.gif"
-          : "/step2_happy.gif"
-      );
-
-      getStatus();
+      setCharacter(getCharacterImage(tamagotchiRes.data, "happy"));
+      getStatus(false);
     } catch (e) {
       console.log(e);
     }
@@ -183,67 +253,33 @@ export function useCharacter() {
 
   const walk = async () => {
     try {
-      const res = await instance.get("/user");
-      const initialCoin = res.data.coin;
-      const resGotchi = await instance.get(
-        `/tamagotchi/${res.data.userId}/status`
-      );
+      const userRes = await instance.get(API_ENDPOINTS.USER);
+      const [tamagotchiRes] = await Promise.all([
+        instance.get(API_ENDPOINTS.TAMAGOTCHI_STATUS(userRes.data.userId)),
+      ]);
 
       setWalking(true);
+      const initialCoin = userRes.data.coin;
 
-      // 캐릭터 걷는 애니메이션 함수
-      const walkAnimation = async () => {
-        setCharacter(
-          resGotchi.data.level === "baby" ? "/babyWalk.gif" : "/adultWalk2.gif"
-        );
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        setCharacter(
-          resGotchi.data.level === "baby" ? "/babyWalk2.gif" : "/adultWalk.gif"
-        );
-        await new Promise((resolve) => setTimeout(resolve, 3000));
-      };
+      await walkAnimation(tamagotchiRes.data);
+      await instance.post(API_ENDPOINTS.PLAY(tamagotchiRes.data.id), {
+        userId: userRes.data.userId,
+      });
 
-      // 걷는 애니메이션 시작
-      const walkAnimationPromise = walkAnimation();
-
-      // 'play' API 호출
-      const resGotchiWalk = await instance.post(
-        `tamagotchi/${resGotchi.data.id}/play`,
-        { userId: res.data.userId }
-      );
-
-      // 업데이트된 코인 잔액 가져오기
-      const resAfterWalk = await instance.get("/user");
+      const resAfterWalk = await instance.get(API_ENDPOINTS.USER);
       const updatedCoin = resAfterWalk.data.coin;
       const coinGained = updatedCoin - initialCoin;
 
-      // 코인 상태 업데이트
       setTotalCoin(updatedCoin);
-
-      // 걷는 애니메이션이 끝날 때까지 기다림
-      await walkAnimationPromise;
-
       setWalking(false);
 
-      // 결과에 따른 캐릭터 상태 설정
-      if (coinGained > 0) {
-        setCharacter(
-          resGotchi.data.level === "baby" ? "/babyCoin.gif" : "/adultCoin.gif"
-        );
-        setModalText(`${resGotchi.data.nickname}(이)가 코인을 찾았어요!`);
-        setModalCoin(coinGained);
-      } else {
-        setCharacter(
-          resGotchi.data.level === "baby" ? "/step1_sad.gif" : "/step2_sad.gif"
-        );
-        setModalText(`${resGotchi.data.nickname}(이)가 아무것도 찾지 못했어요`);
-        setModalCoin(0);
-      }
+      setWalkResult(tamagotchiRes.data, coinGained);
+      await getStatus(false); // 캐릭터 이미지를 업데이트하지 않음
 
-      setCharacterModal(true);
-      setButton(1);
-      setWhich("coin");
-      getStatus(); // 상태 업데이트
+      // 5초 후에 기본 이미지로 돌아가기
+      setTimeout(() => {
+        setCharacter(getCharacterImage(tamagotchiRes.data));
+      }, 5000);
     } catch (e) {
       console.error("Error in walk function:", e);
       setWalking(false);
@@ -251,24 +287,52 @@ export function useCharacter() {
     }
   };
 
+  const walkAnimation = async (characterData: CharacterStatus) => {
+    setCharacter(getCharacterImage(characterData, "walk1"));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    setCharacter(getCharacterImage(characterData, "walk2"));
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+  };
+
+  const setWalkResult = (
+    characterData: CharacterStatus,
+    coinGained: number
+  ) => {
+    if (coinGained > 0) {
+      setCharacter(getCharacterImage(characterData, "coin"));
+      setModalState({
+        isOpen: true,
+        isCharacterModal: true,
+        text: `${characterData.nickname}(이)가 코인을 찾았어요!`,
+        coin: coinGained,
+        which: "coin",
+        button: 1,
+      });
+    } else {
+      setCharacter(getCharacterImage(characterData, "sad"));
+      setModalState({
+        isOpen: true,
+        isCharacterModal: true,
+        text: `${characterData.nickname}(이)가 아무것도 찾지 못했어요`,
+        coin: 0,
+        which: "coin",
+        button: 1,
+      });
+    }
+  };
+
   const cure = async () => {
     try {
-      const res = await instance.get("/user");
-      const resGotchi = await instance.get(
-        `/tamagotchi/${res.data.userId}/status`
-      );
+      const userRes = await instance.get(API_ENDPOINTS.USER);
+      const [tamagotchiRes] = await Promise.all([
+        instance.get(API_ENDPOINTS.TAMAGOTCHI_STATUS(userRes.data.userId)),
+      ]);
 
-      await instance.post(`/tamagotchi/${resGotchi.data.id}/cure`, {
-        userId: res.data.userId,
+      await instance.post(API_ENDPOINTS.CURE(tamagotchiRes.data.id), {
+        userId: userRes.data.userId,
       });
-
-      setCharacter(
-        resGotchi.data.level === "baby"
-          ? "/step1_happy.gif"
-          : "/step2_happy.gif"
-      );
-
-      getStatus();
+      setCharacter(getCharacterImage(tamagotchiRes.data, "happy"));
+      getStatus(false);
     } catch (e) {
       console.log(e);
     }
@@ -276,221 +340,32 @@ export function useCharacter() {
 
   const restart = async () => {
     try {
-      const res = await instance.get("/user");
-      const resGotchi = await instance.get(
-        `/tamagotchi/${res.data.userId}/status`
-      );
+      const userRes = await instance.get(API_ENDPOINTS.USER);
+      const [tamagotchiRes] = await Promise.all([
+        instance.get(API_ENDPOINTS.TAMAGOTCHI_STATUS(userRes.data.userId)),
+      ]);
 
-      await instance.post(`/tamagotchi/${resGotchi.data.id}/restart`);
-
+      await instance.post(API_ENDPOINTS.RESTART(tamagotchiRes.data.id));
       getStatus();
     } catch (e) {
       console.log(e);
     }
   };
 
-  // 캐릭터의 대사 함수들
-  const eggSay = () => {
-    const messages = [
-      "이 순간을 만끽하고 있어!",
-      "너를 위해 내가 더 귀여워질게, 기대해!",
-      "너는 나의 소중한 친구야.",
-      "몸이 막 근질근질해!",
-      "너와 함께 할 수 있어 정말 행복해!",
-      "내 목소리 들리니?",
-    ];
-    const randomIndex = Math.floor(Math.random() * messages.length);
-    setMessage(messages[randomIndex]);
-  };
-
-  const babySay = () => {
-    const messages = [
-      "너의 사랑이 필요해!",
-      "내가 이렇게 귀여운 건 네 덕분이야!",
-      "너를 생각하면서 놀고 있었어.",
-      "내가 최고의 강아지라는 건 모두가 알아!",
-      "너와 함께하는 매일이 소중해.",
-      "산책 가는 건 나의 특권이야!",
-      "내가 귀여운 건 대체로 사실이야.",
-    ];
-    const randomIndex = Math.floor(Math.random() * messages.length);
-    setMessage(messages[randomIndex]);
-  };
-
-  const adultSay = () => {
-    const messages = [
-      "어른 강아지로서 품격을 지켜야 해.",
-      "나의 성숙한 매력에 빠져봐!",
-      "너는 나의 소중한 친구야.",
-      "너와 함께하는 매일이 소중해.",
-      "꾸준한 모습 진짜 멋져, 내 자랑이야!",
-      "일 끝나면 나랑 산책하러 가자, 약속이야!",
-      "일할 때 나도 옆에서 응원해 줄게!",
-      "내 귀여움이 힘이 돼.",
-    ];
-    const randomIndex = Math.floor(Math.random() * messages.length);
-    setMessage(messages[randomIndex]);
-  };
-
-  const heartSay = () => {
-    const messages = [
-      "너무 포근해, 사랑해!",
-      "이 느낌, 정말 최고야!",
-      "너무 포근해, 사랑해!",
-    ];
-    const randomIndex = Math.floor(Math.random() * messages.length);
-    setMessage(messages[randomIndex]);
-  };
-
-  const feedSay = () => {
-    const messages = [
-      "냠냠, 고마워!",
-      "더 먹고 싶어, 멍멍!",
-      "이거 먹고 뛰어놀 거야!!",
-    ];
-    const randomIndex = Math.floor(Math.random() * messages.length);
-    setMessage(messages[randomIndex]);
-  };
-
-  const hungerSay = () => {
-    const messages = [
-      "힘이 없어, 배고파",
-      "배가 꼬르륵-!",
-      "밥 먹고 싶어, 멍!",
-    ];
-    const randomIndex = Math.floor(Math.random() * messages.length);
-    setMessage(messages[randomIndex]);
-  };
-
-  // 날짜 계산 함수
-  function calculateDaysSinceCreation(userData: any) {
-    const createdAt = new Date(userData.created_at);
-    const today = new Date();
-
-    const createdAtUTC = Date.UTC(
-      createdAt.getFullYear(),
-      createdAt.getMonth(),
-      createdAt.getDate()
-    );
-    const todayUTC = Date.UTC(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate()
-    );
-
-    const millisecondsPerDay = 1000 * 60 * 60 * 24;
-    const daysDifference = Math.floor(
-      (todayUTC - createdAtUTC) / millisecondsPerDay
-    );
-
-    return daysDifference;
-  }
-
-  // 코인 추적 함수
-  function trackCoins(createdAtStr: any, changeAmount: any) {
-    const createdAt = new Date(createdAtStr);
-    const today = new Date();
-
-    const createdAtKST = new Date(createdAt.getTime() + 9 * 60 * 60 * 1000);
-    const todayKST = new Date(today.getTime() + 9 * 60 * 60 * 1000);
-
-    createdAtKST.setUTCHours(0, 0, 0, 0);
-    todayKST.setUTCHours(0, 0, 0, 0);
-
-    const daysDiff = Math.floor(
-      (todayKST.getTime() - createdAtKST.getTime()) / (1000 * 60 * 60 * 24)
-    );
-
-    if (daysDiff === 0 && changeAmount > 0) {
-      setTodayCoin((prev) => prev + changeAmount);
-    }
-  }
-
-  function processMultipleDates(data: any) {
-    setTodayCoin(0); // 오늘의 코인을 초기화
-    data.forEach((info: any) => trackCoins(info.createdAt, info.changeAmount));
-  }
-
   useEffect(() => {
     getStatus();
     onlyFirstInfo();
   }, []);
 
-  // 컴포넌트 마운트 시 초기화
   useEffect(() => {
-    // 초기 메시지 설정
-    if (status.level === "egg") {
-      eggSay();
-    } else if (status.level === "baby") {
-      babySay();
-    } else if (status.level === "adult") {
-      adultSay();
-    }
-
-    // 메시지 타이머 설정
-    if (message !== "") {
-      const messageTimer = setTimeout(() => {
-        setMessage("");
-      }, 3000);
-
-      return () => clearTimeout(messageTimer);
-    }
+    setMessage(getRandomMessage(status.level));
+    const messageTimer = setTimeout(() => setMessage(""), 3000);
+    return () => clearTimeout(messageTimer);
   }, [status.level]);
 
-  // 레벨 진행 타이머
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        if (prevTime.hour === 0 && prevTime.min === 0 && prevTime.sec === 0) {
-          clearInterval(timer);
-          return prevTime;
-        }
-
-        let { hour, min, sec } = prevTime;
-
-        if (sec > 0) {
-          sec--;
-        } else if (min > 0) {
-          min--;
-          sec = 59;
-        } else if (hour > 0) {
-          hour--;
-          min = 59;
-          sec = 59;
-        }
-
-        return { hour, min, sec };
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
-
-  // 메시지 상태 초기화
-  useEffect(() => {
-    if (message !== "") {
-      const msgTimer = setTimeout(() => {
-        setMessage("");
-      }, 3000);
-
-      return () => clearTimeout(msgTimer);
-    }
-  }, [message]);
-
-  useEffect(() => {
-    let timer = null;
-    if (character !== "") {
-      timer = setTimeout(() => {
-        setCharacter("");
-      }, 5000);
-    }
-
-    // Cleanup function
-    return () => {
-      if (timer) {
-        clearTimeout(timer);
-      }
-    };
+    const timer = setTimeout(() => setCharacter(""), 5000);
+    return () => clearTimeout(timer);
   }, [character]);
 
   return {
@@ -502,20 +377,8 @@ export function useCharacter() {
     timeLeft,
     totalCoin,
     todayCoin,
-    modal,
-    setModal,
-    button,
-    setButton,
-    modalCoin,
-    setModalCoin,
-    buttonText,
-    setButtonText,
-    modalText,
-    setModalText,
-    which,
-    setWhich,
-    characterModal,
-    setCharacterModal,
+    modalState,
+    setModalState,
     feed,
     pet,
     walk,
