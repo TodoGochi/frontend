@@ -67,13 +67,6 @@ export function useCharacter() {
         }))
       );
 
-      if (resGotchi.data.happiness <= 5) {
-        setCharacterModal(true);
-        setModalText(`${resGotchi.data.nickname}(이)가 ${res.data.nickName}님의
-손길을 기다려요.`);
-        setButton(1);
-      }
-
       if (
         resGotchi.data.health_status !== "sick" &&
         resGotchi.data.health_status !== "healthy"
@@ -96,6 +89,33 @@ export function useCharacter() {
       }
     } catch (error) {
       console.error("Error fetching status:", error);
+    }
+  };
+
+  const onlyFirstInfo = async () => {
+    const res = await instance.get("/user");
+    const resGotchi = await instance.get(
+      `/tamagotchi/${res.data.userId}/status`
+    );
+    if (resGotchi.data.happiness <= 5) {
+      setCharacterModal(true);
+      setModalText(`${resGotchi.data.nickname}(이)가 ${res.data.nickName}님의
+손길을 기다려요.`);
+      setButton(1);
+    }
+
+    if (
+      resGotchi.data.level === "baby" &&
+      resGotchi.data.levelEffects.effectApplied === false
+    ) {
+      setCharacter("/egg_cracking.gif");
+      instance.post(`/tamagotchi/${resGotchi.data.id}/levelupeffect/${1}`, {});
+    } else if (
+      resGotchi.data.level === "adult" &&
+      resGotchi.data.levelEffects.effectApplied === false
+    ) {
+      setCharacter("/step1_next.gif");
+      instance.post(`/tamagotchi/${resGotchi.data.id}/levelupeffect/${2}`, {});
     }
   };
 
@@ -178,7 +198,7 @@ export function useCharacter() {
         setCharacter(
           resGotchi.data.level === "baby" ? "/babyWalk2.gif" : "/adultWalk.gif"
         );
-        await new Promise((resolve) => setTimeout(resolve, 4000));
+        await new Promise((resolve) => setTimeout(resolve, 3000));
       };
 
       // 걷는 애니메이션 시작
@@ -221,10 +241,6 @@ export function useCharacter() {
       setCharacterModal(true);
       setButton(1);
       setWhich("coin");
-
-      // 3초 대기
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-      setCharacter("");
       getStatus(); // 상태 업데이트
     } catch (e) {
       console.error("Error in walk function:", e);
@@ -395,6 +411,7 @@ export function useCharacter() {
 
   useEffect(() => {
     getStatus();
+    onlyFirstInfo();
   }, []);
 
   // 컴포넌트 마운트 시 초기화
@@ -459,11 +476,19 @@ export function useCharacter() {
   }, [message]);
 
   useEffect(() => {
+    let timer = null;
     if (character !== "") {
-      setTimeout(() => {
+      timer = setTimeout(() => {
         setCharacter("");
-      }, 3000);
+      }, 5000);
     }
+
+    // Cleanup function
+    return () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
   }, [character]);
 
   return {

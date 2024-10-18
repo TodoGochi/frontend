@@ -46,8 +46,8 @@ export default function Character({
             </svg>
             <div className="font-neodunggeunmo absolute z-[130] top-[12px] left-[30px] flex justify-center items-center">
               {timeLeft.hour && String(timeLeft.hour).padStart(2, "0")}:
-              {String(timeLeft.min).padStart(2, "0")}:
-              {timeLeft.min < 1 && String(timeLeft.sec).padStart(2, "0")}
+              {String(timeLeft.min).padStart(2, "0")}
+              {timeLeft.min < 1 && ":" + String(timeLeft.sec).padStart(2, "0")}
             </div>
           </div>
           {timeLeft.hour === 0 && timeLeft.min === 0 ? (
