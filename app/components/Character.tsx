@@ -49,10 +49,10 @@ export default function Character({
         <rect x="6" y="2" width="88" height="1" fill="#D8D8D8" />
         <rect x="6" y="32" width="88" height="1" fill="#D8D8D8" />
       </svg>
-      <div className="font-neodunggeunmo absolute z-[130] top-[12px] left-[30px] flex justify-center items-center">
+      <div className="font-neodunggeunmo absolute z-[130] top-[12px] left-[20px] flex justify-center items-center">
         {hour ? String(hour).padStart(2, "0") : "00"}:
         {String(min).padStart(2, "0")}
-        {min < 1 && ":" + String(sec).padStart(2, "0")}
+        {":" + String(sec).padStart(2, "0")}
       </div>
     </div>
   );

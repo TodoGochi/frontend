@@ -16,6 +16,7 @@ export interface CharacterStatus {
     pet: number;
   };
   levelEffects?: {
+    level: number;
     effectApplied: boolean;
   }[];
   id?: number;

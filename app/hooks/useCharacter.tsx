@@ -65,15 +65,23 @@ export function useCharacter() {
       updateTimer(levelProgressRes.data);
       processTransactions(transactionRes.data);
       checkCharacterStatus(tamagotchiRes.data);
-      checkLevelEffects(tamagotchiRes.data);
+      applyLevelEffect(tamagotchiRes.data);
     } catch (error) {
       console.error("Error fetching status:", error);
     }
   }, []);
 
-  const updateTimer = (timeData: { hour: number; min: number }) => {
-    if (timeData.hour !== 0 || timeData.min !== 0) {
-      setTimeLeft({ hour: timeData.hour, min: timeData.min, sec: 0 });
+  const updateTimer = (timeData: {
+    hour: number;
+    min: number;
+    sec: number;
+  }) => {
+    if (timeData.hour !== 0 || timeData.min !== 0 || timeData.sec !== 0) {
+      setTimeLeft({
+        hour: timeData.hour,
+        min: timeData.min,
+        sec: timeData.sec,
+      });
       setTimerOn(true);
     } else {
       setTimerOn(false);
@@ -171,38 +179,30 @@ export function useCharacter() {
     }
   }, [timerOn, handleTimerEnd]);
 
-  const checkLevelEffects = async (characterData: CharacterStatus) => {
-    // console.log(characterData);
-    // if (
-    //   characterData.levelEffects &&
-    //   characterData.levelEffects.every((effect) => effect.effectApplied)
-    // ) {
-    //   return;
-    // }
-    // if (
-    //   characterData.level === "baby" &&
-    //   characterData.levelEffects &&
-    //   characterData?.levelEffects[0]?.effectApplied === false
-    // ) {
-    //   setCharacter("/egg_cracking.gif");
-    //   await instance.post(
-    //     API_ENDPOINTS.LEVEL_UP_EFFECT(characterData.id as number, 1),
-    //     {}
-    //   );
-    //   getStatus();
-    // } else if (
-    //   characterData.level === "adult" &&
-    //   characterData.levelEffects &&
-    //   characterData?.levelEffects[1]?.effectApplied === false
-    // ) {
-    //   setCharacter("/step1_next.gif");
-    //   await instance.post(
-    //     API_ENDPOINTS.LEVEL_UP_EFFECT(characterData.id as number, 2),
-    //     {}
-    //   );
-    //   // baby에서 adult로 레벨 업 후 상태 업데이트
-    //   getStatus();
-    // }
+  const applyLevelEffect = async (characterData: CharacterStatus) => {
+    console.log(characterData);
+
+    const babyEffect = characterData?.levelEffects?.find(
+      (effect) => effect?.level === 1 && effect.effectApplied === true
+    );
+
+    const adultEffect = characterData?.levelEffects?.find(
+      (effect) => effect?.level === 2 && effect.effectApplied === true
+    );
+
+    if (characterData.level === "baby" && !babyEffect) {
+      setCharacter("/egg_cracking.gif");
+      await instance.post(
+        API_ENDPOINTS.LEVEL_UP_EFFECT(characterData.id as number, 1),
+        {}
+      );
+    } else if (characterData.level === "adult" && !adultEffect) {
+      setCharacter("/step1_next.gif");
+      await instance.post(
+        API_ENDPOINTS.LEVEL_UP_EFFECT(characterData.id as number, 2),
+        {}
+      );
+    }
   };
 
   const feed = async () => {
@@ -362,6 +362,11 @@ export function useCharacter() {
     const messageTimer = setTimeout(() => setMessage(""), 3000);
     return () => clearTimeout(messageTimer);
   }, [status.level]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setMessage(""), 5000);
+    return () => clearTimeout(timer);
+  }, [message]);
 
   useEffect(() => {
     const timer = setTimeout(() => setCharacter(""), 5000);
