@@ -49,6 +49,10 @@ export default function Page() {
   };
 
   const makeGochi = async () => {
+    if (nickname.length === 0) {
+      alert("닉네임을 입력해줘!");
+      return;
+    }
     const res = await instance.get("/user");
     try {
       instance.post("/tamagotchi/create", {
