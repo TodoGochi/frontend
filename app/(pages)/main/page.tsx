@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { instance } from "@/app/utils/axios";
-import Header from "@/app/components/Header";
 import Character from "@/app/components/Character";
 import Controls from "@/app/components/Controls";
 import TaskList from "@/app/components/TaskList";

@@ -215,12 +215,18 @@ export default function GochiModal({
                   className="relative flex z-[3] justify-center items-center text-white h-full font-neodunggeunmo cursor-pointer"
                   onClick={
                     whichClicked === "restart"
-                      ? restart
+                      ? () => {
+                          restart();
+                          setModal(false);
+                        }
                       : whichClicked === "revive" &&
                         modalText !==
                           `코인이 부족해요.
 코인을 모은 후 부활시켜주세요.`
-                      ? revive
+                      ? () => {
+                          revive();
+                          setModal(false);
+                        }
                       : () => {
                           setWhichClicked("restart");
                         }
