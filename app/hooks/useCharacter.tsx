@@ -65,7 +65,6 @@ export function useCharacter() {
       updateTimer(levelProgressRes.data);
       processTransactions(transactionRes.data);
       checkCharacterStatus(tamagotchiRes.data);
-      applyLevelEffect(tamagotchiRes.data);
     } catch (error) {
       console.error("Error fetching status:", error);
     }
@@ -137,6 +136,7 @@ export function useCharacter() {
       );
 
       checkHappiness(tamagotchiRes.data, userRes.data.nickName);
+      applyLevelEffect(tamagotchiRes.data);
     } catch (error) {
       console.error("Error in onlyFirstInfo:", error);
     }
