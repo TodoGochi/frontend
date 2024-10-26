@@ -263,7 +263,10 @@ export default function GochiModal({
             <svg
               onClick={
                 which === "cure"
-                  ? cure
+                  ? () => {
+                      cure();
+                      setModal(false);
+                    }
                   : () => {
                       setModal(false);
                     }

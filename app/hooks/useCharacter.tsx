@@ -146,7 +146,10 @@ export function useCharacter() {
     characterData: CharacterStatus,
     userNickName: string
   ) => {
-    if (characterData.health_status === "dead") {
+    if (
+      characterData.health_status === "dead" ||
+      characterData.health_status === "sick"
+    ) {
       return;
     }
 
