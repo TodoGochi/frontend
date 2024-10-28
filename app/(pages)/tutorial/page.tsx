@@ -49,8 +49,8 @@ export default function Page() {
   };
 
   const makeGochi = async () => {
-    if (nickname.length === 0) {
-      alert("닉네임을 입력해줘!");
+    if (nickname.length === 0 || nickname.length === 1) {
+      alert("닉네임은 2자 이상 입력해줘!");
       return;
     }
     const res = await instance.get("/user");
