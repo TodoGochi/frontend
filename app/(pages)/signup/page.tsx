@@ -24,7 +24,6 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
 
   const clickHandler = () => {
-    console.log(nicknameGood);
     if (
       use &&
       person &&
@@ -32,7 +31,8 @@ export default function Page() {
       validateEmail(email) &&
       !duplicated &&
       password === passwordConfirm &&
-      nicknameGood
+      nicknameGood &&
+      nickname.length > 0
     ) {
       axios.post(
         "https://todogochi.store/auth/sign-up",
@@ -372,7 +372,8 @@ export default function Page() {
               validateEmail(email) &&
               !duplicated &&
               password === passwordConfirm &&
-              nicknameGood
+              nicknameGood &&
+              nickname.length > 0
                 ? "bg-[#3F3F3F] cursor-pointer"
                 : "bg-[#999999] "
             }`}
