@@ -252,6 +252,11 @@ export function useCharacter() {
         instance.get(API_ENDPOINTS.TAMAGOTCHI_STATUS(userRes.data.userId)),
       ]);
 
+      if (tamagotchiRes.data.health_status === "sick") {
+        setMessage("치료가 시급해... 멍멍...");
+        return;
+      }
+
       if (tamagotchiRes.data.happiness === 10) {
         setMessage("너의 사랑은 충분해!");
         return;
@@ -283,6 +288,7 @@ export function useCharacter() {
       const initialCoin = userRes.data.coin;
 
       if (initialCoin === 0) {
+        setMessage("코인이 부족해... 멍...");
         return;
       }
 

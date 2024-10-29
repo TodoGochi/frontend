@@ -56,12 +56,7 @@ export default function Page() {
       `/tamagotchi/${res.data.userId}/status`
     );
 
-    if (res.data.coin === 0) {
-      alert("코인이 부족해 멍...");
-      return;
-    }
-
-    if (resGotchi.data.health_status === "sick") {
+    if (resGotchi.data.health_status === "sick" || res.data.coin === 0) {
       walk();
     } else {
       setModalState({
