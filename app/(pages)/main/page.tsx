@@ -56,15 +56,24 @@ export default function Page() {
       `/tamagotchi/${res.data.userId}/status`
     );
 
-    setModalState({
-      isOpen: true,
-      isCharacterModal: true,
-      text: `${resGotchi.data.nickname}(이)가 산책을 떠나요`,
-      coin: 0,
-      button: 1,
-      which: "cured",
-    });
-    walk();
+    if (res.data.coin === 0) {
+      alert("코인이 부족해 멍...");
+      return;
+    }
+
+    if (resGotchi.data.health_status === "sick") {
+      walk();
+    } else {
+      setModalState({
+        isOpen: true,
+        isCharacterModal: true,
+        text: `${resGotchi.data.nickname}(이)가 산책을 떠나요`,
+        coin: 0,
+        button: 1,
+        which: "cured",
+      });
+      walk();
+    }
   };
 
   return (

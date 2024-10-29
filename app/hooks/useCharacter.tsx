@@ -219,6 +219,11 @@ export function useCharacter() {
         instance.get(API_ENDPOINTS.TAMAGOTCHI_STATUS(userRes.data.userId)),
       ]);
 
+      if (tamagotchiRes.data.health_status === "sick") {
+        setMessage("치료가 시급해... 멍멍...");
+        return;
+      }
+
       if (userRes.data.coin === 0) {
         alert("코인이 부족해 ㅜㅠ");
         return;
@@ -269,6 +274,11 @@ export function useCharacter() {
       const [tamagotchiRes] = await Promise.all([
         instance.get(API_ENDPOINTS.TAMAGOTCHI_STATUS(userRes.data.userId)),
       ]);
+
+      if (tamagotchiRes.data.health_status === "sick") {
+        setMessage("아파서 기운이 없어... 멍...");
+        return;
+      }
 
       const initialCoin = userRes.data.coin;
 
