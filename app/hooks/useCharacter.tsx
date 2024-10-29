@@ -219,6 +219,11 @@ export function useCharacter() {
         instance.get(API_ENDPOINTS.TAMAGOTCHI_STATUS(userRes.data.userId)),
       ]);
 
+      if (userRes.data.coin === 0) {
+        alert("코인이 부족해 ㅜㅠ");
+        return;
+      }
+
       if (tamagotchiRes.data.hunger === 10) {
         setMessage("더는 못 먹겠어! 배가 이미 빵빵해.");
         return;
@@ -265,8 +270,13 @@ export function useCharacter() {
         instance.get(API_ENDPOINTS.TAMAGOTCHI_STATUS(userRes.data.userId)),
       ]);
 
-      setWalking(true);
       const initialCoin = userRes.data.coin;
+
+      if (initialCoin === 0) {
+        return;
+      }
+
+      setWalking(true);
 
       await walkAnimation(tamagotchiRes.data);
       await instance.post(API_ENDPOINTS.PLAY(tamagotchiRes.data.id), {
