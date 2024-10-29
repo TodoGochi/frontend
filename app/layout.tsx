@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import GoogleAnalytics from "./gtags";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -13,6 +14,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <>
+        {/* Global Site Tag (gtag.js) - Google Analytics */}
+        {/* GA 추가 영역 Start!! */}
+        {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ? (
+          <GoogleAnalytics id={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
+        ) : null}
+        {/* GA 추가 영역 End!! */}
+      </>
       <body className="bg-black">{children}</body>
     </html>
   );
