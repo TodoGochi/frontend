@@ -57,6 +57,8 @@ export function useCharacter() {
       ]);
 
       setStatus(tamagotchiRes.data);
+      setStatus((prev) => ({ ...prev, health_status: "sick" }));
+
       setTotalCoin(userRes.data.coin);
       if (updateCharacter) {
         setCharacter(getCharacterImage(tamagotchiRes.data));
@@ -187,8 +189,6 @@ export function useCharacter() {
   }, [timerOn, handleTimerEnd]);
 
   const applyLevelEffect = async (characterData: CharacterStatus) => {
-    console.log(characterData);
-
     const babyEffect = characterData?.levelEffects?.find(
       (effect) => effect?.level === 1 && effect.effectApplied === true
     );
@@ -225,7 +225,7 @@ export function useCharacter() {
       }
 
       if (userRes.data.coin === 0) {
-        alert("코인이 부족해 ㅜㅠ");
+        setMessage("코인이 부족해... 멍...");
         return;
       }
 

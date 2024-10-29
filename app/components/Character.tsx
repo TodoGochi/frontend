@@ -3,6 +3,7 @@
 import React from "react";
 import Header from "./Header";
 import { CharacterStatus, TimeLeft } from "../types/types";
+import MessageBubble from "./BubbleMessage";
 
 interface CharacterProps {
   status: CharacterStatus;
@@ -76,31 +77,6 @@ export default function Character({
     );
   };
 
-  const renderMessage = () =>
-    message && (
-      <div className="absolute z-[135] top-1/2 -translate-y-[185%] w-[80%] max-w-[300px] translate-x-[11%]">
-        <div className="relative">
-          <img src="speech.png" className="w-full h-auto" alt="speech" />
-          <svg
-            className="absolute bottom-[12px] right-[5%] animate-fade"
-            xmlns="http://www.w3.org/2000/svg"
-            width="15"
-            height="8"
-            viewBox="0 0 15 8"
-            fill="none"
-          >
-            <path
-              d="M15 1L15 0L0 -6.55671e-07L-4.37114e-08 0.999999L1 0.999999L1 2L2 2L2 3L3 3L3 4L4 4L4 5L5 5L5 6L6 6L6 7L7 7L7 8L8 8L8 7L9 7L9 6L10 6L10 5L11 5L11 4L12 4L12 3L13 3L13 2L14 2L14 1L15 1Z"
-              fill="#737373"
-            />
-          </svg>
-          <div className="font-neodunggeunmo text-[12px] absolute top-[50%] left-[20px] transform -translate-y-1/2 w-[calc(100%-40px)]">
-            {message}
-          </div>
-        </div>
-      </div>
-    );
-
   return (
     <>
       {renderBackground()}
@@ -112,7 +88,7 @@ export default function Character({
       />
       {status.level === "egg" && renderTimer()}
       {renderCharacter()}
-      {renderMessage()}
+      <MessageBubble message={message} />
     </>
   );
 }
